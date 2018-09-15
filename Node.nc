@@ -25,17 +25,20 @@ module Node{
 }
 
 implementation{
+  //  This is where we are saving the pack (or package we are sending over to the other Nodes)
    pack sendPackage;
 
    // Prototypes
    void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
 
    event void Boot.booted(){
+     //  Booting/Starting our lowest networking layer exposed in TinyOS which is also called active messages (AM)
       call AMControl.start();
 
       dbg(GENERAL_CHANNEL, "Booted\n");
    }
 
+   //  This function makes sure all the Radios are turned on
    event void AMControl.startDone(error_t err){
       if(err == SUCCESS){
          dbg(GENERAL_CHANNEL, "Radio On\n");
@@ -44,9 +47,10 @@ implementation{
          call AMControl.start();
       }
    }
-
+   //  **Might have to implement this one later
    event void AMControl.stopDone(error_t err){}
 
+     //  type message_t contains our AM pack
    event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len){
       dbg(GENERAL_CHANNEL, "Packet Received\n");
       if(len==sizeof(pack)){
@@ -63,8 +67,10 @@ implementation{
       dbg(GENERAL_CHANNEL, "PING EVENT \n");
       makePack(&sendPackage, TOS_NODE_ID, destination, 0, 0, 0, payload, PACKET_MAX_PAYLOAD_SIZE);
       call Sender.send(sendPackage, destination);
+      //  call Sender.send(sendPackage, destination);
    }
-
+   
+   //  This are functions we are going to be implementing
    event void CommandHandler.printNeighbors(){}
 
    event void CommandHandler.printRouteTable(){}

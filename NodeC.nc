@@ -13,11 +13,24 @@
 
 configuration NodeC{
 }
+// components are basically an "Object"
 implementation {
     components MainC;
     components Node;
     components new AMReceiverC(AM_PACK) as GeneralReceive;
 
+
+    /*
+      ██     ██ ██ ██████  ██ ███    ██  ██████
+      ██     ██ ██ ██   ██ ██ ████   ██ ██
+      ██  █  ██ ██ ██████  ██ ██ ██  ██ ██   ███
+      ██ ███ ██ ██ ██   ██ ██ ██  ██ ██ ██    ██
+       ███ ███  ██ ██   ██ ██ ██   ████  ██████
+    */
+
+
+    //  This is where we are Wiring our whole program.
+    //  We are basically wiring objects together so they can talk to each other, this is their interface.
     Node -> MainC.Boot;
 
     Node.Receive -> GeneralReceive;
