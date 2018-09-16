@@ -72,6 +72,7 @@ implementation{
      //  Checking if file is modified
      if (len==sizeof(pack)) {
        pack* myMsg=(pack*) payload;
+       logPack(myMsg);
        // Checking if this is a Ping Protocol
        if (myMsg->protocol == PROTOCOL_PING) {
         // Checking if package is at Destination
