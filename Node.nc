@@ -26,9 +26,17 @@ module Node{
    uses interface CommandHandler;
 }
 
+<<<<<<< HEAD
 //SomeRandom
 //Collision Chekcks
 //Another Random Line
+=======
+
+
+/////////////////////////////////////////////////////////////
+
+
+>>>>>>> cf29bff1790cec872e2dcf742aa00d2152cef4d5
 
 implementation{
   //  This is where we are saving the pack (or package we are sending over to the other Nodes)
