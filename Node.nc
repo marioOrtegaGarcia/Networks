@@ -26,6 +26,7 @@ module Node{
    uses interface CommandHandler;
 }
 
+
 implementation{
   //  This is where we are saving the pack (or package we are sending over to the other Nodes)
    pack sendPackage;
@@ -60,6 +61,8 @@ implementation{
      //  type message_t contains our AM pack
      //  We need to send to everyone, and just check with this function if it's meant for us.
    event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len){
+     //something something
+     //Testing github
 
      //  Know if it's a ping/pingReply
      //  Check to see if i've received it or not, check list
@@ -67,17 +70,18 @@ implementation{
      //  If not, then forward the message to AMBroadcast
      //
      //  IF its a reply
-
+     pack* nPack = (pack*) payload;
     // Check if PING
-    if(payload->protocol = PROTOCOL_PING) {
+    if(nPack->protocol == PROTOCOL_PING) {
       //  If not destination
-      if(payload->destination != TOS_NODE_ID) {
+      if(nPack->dest != TOS_NODE_ID) {
         // Active Message is dead
-        if(payload->TTL = 0){
+        if(nPack->TTL == 0){
 
-          // If Final Destination
+          // If final destination
         } else {
-          makePack(&sendPackage, TOS_NODE_ID, destination, payload->TTL--, payload->protocol, payload->seq , payload, sizeof(payload->payload));
+          makePack(&sendPackage, TOS_NODE_ID, nPack->dest, nPack->TTL--, nPack->protocol,
+            nPack->seq , nPack->payload, sizeof(nPack->payload));
         }
 
       } else {
@@ -91,7 +95,7 @@ implementation{
         dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
         return msg;
       }
-    } else if (payload->protocol = PROTOCOL_PINGREPLY) {
+    } else if (nPack->protocol = PROTOCOL_PINGREPLY) {
 
     }
    }
