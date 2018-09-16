@@ -70,20 +70,20 @@ implementation{
      //  If not, then forward the message to AMBroadcast
      //
      //  IF its a reply
-     pack* nPack = (pack*) payload;
-    // Check if PING
+    pack* nPack = (pack*) payload;
+    // Checking if this is a Ping Protocol
     if(nPack->protocol == PROTOCOL_PING) {
-      //  If not destination
+      dbg(FLOODING_CHANNEL, "Sending Ping\n" )
+      //  If it is a Ping then check if it's not your's
       if(nPack->dest != TOS_NODE_ID) {
-        // Active Message is dead
+        // If Active Message is dead
         if(nPack->TTL == 0){
 
-          // If final destination
+          // If AM is still alive
         } else {
-          makePack(&sendPackage, TOS_NODE_ID, nPack->dest, nPack->TTL--, nPack->protocol,
-            nPack->seq , nPack->payload, sizeof(nPack->payload));
+          makePack(&sendPackage, nPack->src, nPack->dest, nPack->TTL--, nPack->protocol, nPack->seq , nPack->payload, sizeof(nPack->payload));
         }
-
+      // If the Ping is your's
       } else {
         //
         dbg(GENERAL_CHANNEL, "Packet Received\n");
@@ -95,6 +95,7 @@ implementation{
         dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
         return msg;
       }
+      // If it's a Ping reply
     } else if (nPack->protocol = PROTOCOL_PINGREPLY) {
 
     }
