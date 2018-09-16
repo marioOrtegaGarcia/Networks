@@ -60,6 +60,8 @@ implementation{
      //  type message_t contains our AM pack
      //  We need to send to everyone, and just check with this function if it's meant for us.
    event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len){
+     
+     //Testing github
 
      //  Know if it's a ping/pingReply
      //  Check to see if i've received it or not, check list
@@ -74,10 +76,11 @@ implementation{
       if(nPack->dest != TOS_NODE_ID) {
         // Active Message is dead
         if(nPack->TTL == 0){
-          // If Not final destination and still alive
+
+          // If Final Destination
         } else {
-          makePack(&sendPackage, TOS_NODE_ID, nPack->dest, nPack->TTL--, nPack->protocol, nPack->seq , nPack->payload, sizeof(nPack->payload));
-          call ping()
+          makePack(&sendPackage, TOS_NODE_ID, nPack->dest, nPack->TTL--, nPack->protocol,
+            nPack->seq , nPack->payload, sizeof(nPack->payload));
         }
 
       } else {
