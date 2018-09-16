@@ -82,8 +82,8 @@ implementation{
              // Message is still alive
            } else {
              dbg(GENERAL_CHANNEL, "PING EVENT \n");
-             makePack(myMsg, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, (uint8_t* )myMsg->payload, sizeof(myMsg->payload));
-             call Sender.send(&myMsg, myMsg->dest);
+             makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, (uint8_t* )myMsg->payload, sizeof(myMsg->payload));
+             call Sender.send(sendPackage, myMsg->dest);
            }
            // Package made it to destination
          } else {
