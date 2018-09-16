@@ -30,7 +30,7 @@ module Node{
 implementation{
   //  This is where we are saving the pack (or package we are sending over to the other Nodes)
    pack sendPackage;
-   int sequence = 0;
+   uint16_t nodeSeq = 0;
    //  Here we can lis all the neighbors for this mote
    List<int> neighbors;
 
