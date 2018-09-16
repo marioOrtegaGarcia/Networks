@@ -98,7 +98,7 @@ implementation{
        }
      } else if (myMsg->protocol == PROTOCOL_PINGREPLY) {
        //WHAT TO DO WHEN ITS A REPLY
-       dbg(FLOODING_CHANNEL, "~~~~~~~~~~~Ping Replied~~~~~~~~~~~ \n");
+       dbg(GENERAL_CHANNEL, "~~~~~~~~~~~Ping Replied~~~~~~~~~~~ \n");
      } else {
        //I dont know this protocol
      }
