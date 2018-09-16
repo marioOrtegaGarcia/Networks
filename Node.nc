@@ -85,19 +85,29 @@ implementation{
           if (myMsg->TTL == 0) {
              dbg(GENERAL_CHANNEL, "MESSAGE DIED \n");
         } else {
+
+
+
+
+
+
           if (myMsg->src == TOS_NODE_ID && myMsg->seq <= nodeSeq) {
             // An old ping from me
+            logPack(&sendPackage);
           } else {
             // Send to someone else
             makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, payload, len);
-            logPack(&sendPackage);
+            //logPack(&sendPackage);
             call Sender.send(sendPackage, myMsg->dest);
             // Ping Back
             makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, PROTOCOL_PINGREPLY, myMsg->seq, payload, len);
-            logPack(&sendPackage);
+            l//ogPack(&sendPackage);
             call Sender.send(sendPackage, AM_BROADCAST_ADDR);
           }
         }
+
+
+
        }
      } else if (myMsg->protocol == PROTOCOL_PINGREPLY) {
        //WHAT TO DO WHEN ITS A REPLY
