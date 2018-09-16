@@ -90,16 +90,15 @@ implementation{
              dbg(GENERAL_CHANNEL, "MESSAGE DIED \n");
         } else {
           if (myMsg->src == TOS_NODE_ID) {
-            if (myMsg->seq <= nodeSeq) {
+            if (myMsg->seq < nodeSeq) {
               // An old ping from me
               logPack(&sendPackage);
             }
           } else {
             // Send to someone else
             makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, payload, len);
-            //logPack(&sendPackage);
-            dbg(GENERAL_CHANNEL, "src: %d, dest: %d, ttl: %d", myMsg->src, myMsg->dest, myMsg->TTL);
-            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+            logPack(&sendPackage);
+            call Sender.send(sendPackage, myMsg->dest);
             // Ping Back
             makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, PROTOCOL_PINGREPLY, myMsg->seq, payload, len);
             //logPack(&sendPackage);
@@ -116,9 +115,7 @@ implementation{
    event void CommandHandler.ping(uint16_t destination, uint8_t *payload){
       dbg(GENERAL_CHANNEL, "PING EVENT \n");
 
-      //makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq++ , payload, PACKET_MAX_PAYLOAD_SIZE);
-      makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq , payload, PACKET_MAX_PAYLOAD_SIZE);
-      nodeSeq++;
+      makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq++ , payload, PACKET_MAX_PAYLOAD_SIZE);
       logPack(&sendPackage);
       call Sender.send(sendPackage, destination);
    }
