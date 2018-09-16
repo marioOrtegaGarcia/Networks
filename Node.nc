@@ -98,7 +98,7 @@ implementation{
             makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, payload, len);
             //logPack(&sendPackage);
             dbg(GENERAL_CHANNEL, "src: %d, dest: %d, ttl: %d", myMsg->src, myMsg->dest, myMsg->TTL);
-            call Sender.send(sendPackage, myMsg->dest);
+            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
             // Ping Back
             makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, PROTOCOL_PINGREPLY, myMsg->seq, payload, len);
             //logPack(&sendPackage);
