@@ -89,11 +89,11 @@ implementation{
           } else {
             // Send to someone else
             makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, payload, len);
-            logPack(sendPackage);
+            logPack(&sendPackage);
             call Sender.send(sendPackage, myMsg->dest);
             // Ping Back
             makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, PROTOCOL_PINGREPLY, myMsg->seq, payload, len);
-            logPack(sendPackage);
+            logPack(&sendPackage);
             call Sender.send(sendPackage, AM_BROADCAST_ADDR);
           }
         }
@@ -155,7 +155,7 @@ implementation{
       dbg(GENERAL_CHANNEL, "PING EVENT \n");
 
       makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq++ , payload, PACKET_MAX_PAYLOAD_SIZE);
-      logPack(sendPackage);
+      logPack(&sendPackage);
       call Sender.send(sendPackage, destination);
    }
 
