@@ -32,6 +32,7 @@ implementation{
    pack sendPackage;
    uint16_t nodeSeq = 0;
    //  Here we can lis all the neighbors for this mote
+  // We getting an error with neighbors
    //List<int> neighbors;
 
    // Prototypes
@@ -102,7 +103,7 @@ implementation{
             // Ping Back
             makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, PROTOCOL_PINGREPLY, myMsg->seq, payload, len);
             //logPack(&sendPackage);
-            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+            call Sender.send(sendPackage, myMsg->src);
           }
         }
        }
