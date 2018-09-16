@@ -84,11 +84,15 @@ implementation{
           if (myMsg->TTL == 0) {
              dbg(GENERAL_CHANNEL, "MESSAGE DIED \n");
         } else {
-          // Send to someone else
-          makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, payload, len);
-          // Send to sender
-          makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, PROTOCOL_PINGREPLY, myMsg->seq, payload, len);
-          call Sender.send(sendPackage, myMsg->src);
+          if ( not(myMsg->src == TOS_NODE_ID && myMsg->seq <= seq)) {
+            // Send to someone else
+            makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, payload, len);
+            // Send to sender
+            makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, PROTOCOL_PINGREPLY, myMsg->seq, payload, len);
+            call Sender.send(sendPackage, myMsg->src);
+          } else {
+            // An old ping from me
+          }
         }
        }
      } else if (myMsg->protocol == PROTOCOL_PINGREPLY) {
