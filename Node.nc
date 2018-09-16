@@ -77,7 +77,7 @@ implementation{
         // Active Message is dead
         if(nPack->TTL == 0){
 
-          // If Final Destination
+          // If final destination
         } else {
           makePack(&sendPackage, TOS_NODE_ID, nPack->dest, nPack->TTL--, nPack->protocol,
             nPack->seq , nPack->payload, sizeof(nPack->payload));
