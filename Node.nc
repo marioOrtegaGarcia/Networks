@@ -61,8 +61,8 @@ implementation{
      //  We need to send to everyone, and just check with this function if it's meant for us.
    event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len){
 
-     //Testing github
-     //testing 2
+     //testing
+
      //  Know if it's a ping/pingReply
      //  Check to see if i've received it or not, check list
      //  Checking if its for self first, if it is let sender know I got it
