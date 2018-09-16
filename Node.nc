@@ -27,18 +27,6 @@ module Node{
 }
 
 
-<<<<<<< HEAD
-
-/////////////////////////////////////////////////////////////
-
-
-
-//klsak
-
-
-
-=======
->>>>>>> 8ca2353d48670d6af79110577a3bb8a57293524c
 implementation{
   //  This is where we are saving the pack (or package we are sending over to the other Nodes)
    pack sendPackage;
@@ -73,32 +61,12 @@ implementation{
      //  type message_t contains our AM pack
      //  We need to send to everyone, and just check with this function if it's meant for us.
    event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len){
-<<<<<<< HEAD
-     //something something
-     //Testing github
-
-=======
->>>>>>> 8ca2353d48670d6af79110577a3bb8a57293524c
      //  Know if it's a ping/pingReply
      //  Check to see if i've received it or not, check list
      //  Checking if its for self first, if it is let sender know I got it
      //  If not, then forward the message to AMBroadcast
      //
      //  IF its a reply
-<<<<<<< HEAD
-     pack* nPack = (pack*) payload;
-    // Check if PING
-    if(nPack->protocol == PROTOCOL_PING) {
-      //  If not destination
-      if(nPack->dest != TOS_NODE_ID) {
-        // Active Message is dead
-        if(nPack->TTL == 0){
-
-          // If final destination
-        } else {
-          makePack(&sendPackage, TOS_NODE_ID, nPack->dest, nPack->TTL--, nPack->protocol,
-            nPack->seq , nPack->payload, sizeof(nPack->payload));
-=======
      dbg(GENERAL_CHANNEL, "Packet Received\n");
      if(len==sizeof(pack)){
        //Pack found
@@ -140,7 +108,6 @@ implementation{
           // If AM is still alive
         } else {
           //makePack(&sendPackage, nPack->src, nPack->dest, nPack->TTL--, nPack->protocol, nPack->seq , nPack->payload, sizeof(nPack->payload));
->>>>>>> 8ca2353d48670d6af79110577a3bb8a57293524c
         }
       // If the Ping is your's
       } else {
@@ -152,10 +119,7 @@ implementation{
         dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
         return msg;
       }
-<<<<<<< HEAD
-=======
       // If it's a Ping reply
->>>>>>> 8ca2353d48670d6af79110577a3bb8a57293524c
     } else if (nPack->protocol = PROTOCOL_PINGREPLY) {
 
     }*/
