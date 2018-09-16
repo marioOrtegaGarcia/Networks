@@ -18,6 +18,7 @@ implementation {
     components MainC;
     components Node;
     components new AMReceiverC(AM_PACK) as GeneralReceive;
+    components new TimerMilliC() as NodeTimerC;
 
 
     /*
@@ -30,10 +31,12 @@ implementation {
 
 
     //  This is where we are Wiring our whole program.
-    //  We are basically wiring objects together so they can talk to each other, this is their interface, the second part of this wiring is done on our Node class.
+    //  We are basically wiring objects together so they can talk to each other, this is their interface.
     Node -> MainC.Boot;
 
     Node.Receive -> GeneralReceive;
+
+    NodeTimerC.
 
     components ActiveMessageC;
     Node.AMControl -> ActiveMessageC;
@@ -43,6 +46,4 @@ implementation {
 
     components CommandHandlerC;
     Node.CommandHandler -> CommandHandlerC;
-
-
 }
