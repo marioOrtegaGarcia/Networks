@@ -110,33 +110,6 @@ implementation{
      }
      dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
      return msg;
-/*
-     //something something
-     //Testing github
-
-
-
-      if(nPack->dest != TOS_NODE_ID) {
-        // If Active Message is dead
-        if(nPack->TTL == 0){
-          // If AM is still alive
-        } else {
-          //makePack(&sendPackage, nPack->src, nPack->dest, nPack->TTL--, nPack->protocol, nPack->seq , nPack->payload, sizeof(nPack->payload));
-        }
-      // If the Ping is your's
-      } else {
-        if(len==sizeof(pack)){
-           pack* myMsg=(pack*) payload;
-           dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
-           return msg;
-        }
-        dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
-        return msg;
-      }
-      // If it's a Ping reply
-    } else if (nPack->protocol = PROTOCOL_PINGREPLY) {
-
-    }*/
    }
 
    // This is how we send a message to one another
