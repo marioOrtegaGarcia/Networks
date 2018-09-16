@@ -60,70 +60,73 @@ implementation{
 
      //  type message_t contains our AM pack
      //  We need to send to everyone, and just check with this function if it's meant for us.
-   event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len){
-     //  Know if it's a ping/pingReply
-     //  Check to see if i've received it or not, check list
-     //  Checking if its for self first, if it is let sender know I got it
-     //  If not, then forward the message to AMBroadcast
-     //
-     //  IF its a reply
-     dbg(GENERAL_CHANNEL, "Packet Received\n");
-     if(len==sizeof(pack)){
-       //Pack found
-       pack* myMsg=(pack*) payload;
-       // Checking if this is a Ping Protocol
-       if (myMsg->protocol == PROTOCOL_PING) {
-        // Checking if package is still not at Destination
-         if (myMsg->dest != TOS_NODE_ID) {
-           // My Message time to live is 0
-           if (myMsg->TTL == 0) {
-              dbg(GENERAL_CHANNEL, "MESSAGE DIED \n");
-             // Message is still alive
+     event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len){
+       //  Know if it's a ping/pingReply
+       //  Check to see if i've received it or not, check list
+       //  Checking if its for self first, if it is let sender know I got it
+       //  If not, then forward the message to AMBroadcast
+       //
+       //  IF its a reply
+       dbg(GENERAL_CHANNEL, "Packet Received\n");
+       //  Cheacking for any Bit Errors
+       if(len==sizeof(pack)){
+         //  Making a pack* since payload is a void*
+         pack* myMsg=(pack*) payload;
+         // Checking if this is a Ping Protocol
+         if (myMsg->protocol == PROTOCOL_PING) {
+          // Checking if package is still not at Destination
+           if (myMsg->dest != TOS_NODE_ID) {
+             // My Message time to live is 0
+             if (myMsg->TTL == 0) {
+                dbg(GENERAL_CHANNEL, "MESSAGE DIED \n");
+               // Message is still alive
+             } else {
+               //dbg(GENERAL_CHANNEL, "PING EVENT \n");
+               makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, (uint8_t* )myMsg->payload, sizeof(myMsg->payload));
+
+               dbg(FLOODING_CHANNEL, "Flood EVENT from \n");
+               call Sender.send(sendPackage, myMsg->dest);
+             }
+             // Package made it to destination
            } else {
-             dbg(GENERAL_CHANNEL, "PING EVENT \n");
-             makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, (uint8_t* )myMsg->payload, sizeof(myMsg->payload));
-             call Sender.send(sendPackage, myMsg->dest);
+             dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
+             return msg;
            }
-           // Package made it to destination
-         } else {
-           dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
-           return msg;
+           // Checking if this is a Ping Reply
+         } else if (myMsg->protocol == PROTOCOL_PINGREPLY) {
+           dbg(GENERAL_CHANNEL, "PING REPLY REVENT \n");
          }
-         // Checking if this is a Ping Reply
-       } else if (myMsg->protocol == PROTOCOL_PINGREPLY) {
-         dbg(GENERAL_CHANNEL, "PING REPLY REVENT \n");
        }
-     }
-     dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
-     return msg;
-/*
-     //something something
-     //Testing github
+       dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
+       return msg;
+  /*
+       //something something
+       //Testing github
 
 
 
-      if(nPack->dest != TOS_NODE_ID) {
-        // If Active Message is dead
-        if(nPack->TTL == 0){
-          // If AM is still alive
+        if(nPack->dest != TOS_NODE_ID) {
+          // If Active Message is dead
+          if(nPack->TTL == 0){
+            // If AM is still alive
+          } else {
+            //makePack(&sendPackage, nPack->src, nPack->dest, nPack->TTL--, nPack->protocol, nPack->seq , nPack->payload, sizeof(nPack->payload));
+          }
+        // If the Ping is your's
         } else {
-          //makePack(&sendPackage, nPack->src, nPack->dest, nPack->TTL--, nPack->protocol, nPack->seq , nPack->payload, sizeof(nPack->payload));
+          if(len==sizeof(pack)){
+             pack* myMsg=(pack*) payload;
+             dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
+             return msg;
+          }
+          dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
+          return msg;
         }
-      // If the Ping is your's
-      } else {
-        if(len==sizeof(pack)){
-           pack* myMsg=(pack*) payload;
-           dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
-           return msg;
-        }
-        dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
-        return msg;
-      }
-      // If it's a Ping reply
-    } else if (nPack->protocol = PROTOCOL_PINGREPLY) {
+        // If it's a Ping reply
+      } else if (nPack->protocol = PROTOCOL_PINGREPLY) {
 
-    }*/
-   }
+      }*/
+     }
 
    // This is how we send a message to one another
    event void CommandHandler.ping(uint16_t destination, uint8_t *payload){
