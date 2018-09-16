@@ -81,7 +81,7 @@ implementation{
           // If AM is still alive
         } else {
           //dbg(GENERAL_CHANNEL, "\nPacket Still Alive\n");
-          printf("Packet is still alvive")
+          //printf("Packet is still alvive")
           //makePack(&sendPackage, nPack->src, nPack->dest, nPack->TTL--, nPack->protocol, nPack->seq , nPack->payload, sizeof(nPack->payload));
         }
       // If the Ping is your's
