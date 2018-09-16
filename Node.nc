@@ -69,11 +69,11 @@ implementation{
      //  IF its a reply
      pack* nPack = (pack*) payload;
     // Check if PING
-    if(nPack->protocol = PROTOCOL_PING) {
+    if(nPack->protocol == PROTOCOL_PING) {
       //  If not destination
       if(nPack->dest != TOS_NODE_ID) {
         // Active Message is dead
-        if(nPack->TTL = 0){
+        if(nPack->TTL == 0){
 
           // If Final Destination
         } else {
