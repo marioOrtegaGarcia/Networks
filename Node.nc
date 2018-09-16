@@ -76,6 +76,7 @@ implementation{
        pack* myMsg=(pack*) payload;
        // Checking if this is a Ping Protocol
        if (myMsg->protocol == PROTOCOL_PING) {
+<<<<<<< HEAD
         // Checking if package is still not at Destination
          if (myMsg->dest != TOS_NODE_ID) {
            // My Message time to live is 0
@@ -100,6 +101,31 @@ implementation{
          // Checking if this is a Ping Reply
        } else if (myMsg->protocol == PROTOCOL_PINGREPLY) {
          dbg(GENERAL_CHANNEL, "PING REPLY REVENT \n");
+=======
+        // Checking if package is at Destination
+        if (myMsg->dest == TOS_NODE_ID) {
+          dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
+          return msg;
+        } else {
+          // if Pack not home and alive then send it
+          // My Message time to live is 0
+          if (myMsg->TTL == 0) {
+             dbg(GENERAL_CHANNEL, "MESSAGE DIED \n");
+        } else {
+          if (myMsg->src == TOS_NODE_ID && myMsg->seq <= nodeSeq) {
+            // An old ping from me
+          } else {
+            // Send to someone else
+            makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, payload, len);
+            logPack(&sendPackage);
+            call Sender.send(sendPackage, myMsg->dest);
+            // Ping Back
+            makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, PROTOCOL_PINGREPLY, myMsg->seq, payload, len);
+            logPack(&sendPackage);
+            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+          }
+        }
+>>>>>>> 177f34cf792900b3e7162c958bac1b97ae96e164
        }
      }
      dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
@@ -137,8 +163,13 @@ implementation{
    event void CommandHandler.ping(uint16_t destination, uint8_t *payload){
       dbg(GENERAL_CHANNEL, "PING EVENT \n");
 
+<<<<<<< HEAD
       makePack(&sendPackage, TOS_NODE_ID, destination, 0, 0, 0, payload, PACKET_MAX_PAYLOAD_SIZE);
 
+=======
+      makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq++ , payload, PACKET_MAX_PAYLOAD_SIZE);
+      logPack(&sendPackage);
+>>>>>>> 177f34cf792900b3e7162c958bac1b97ae96e164
       call Sender.send(sendPackage, destination);
    }
 
