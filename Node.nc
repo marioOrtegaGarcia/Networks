@@ -70,10 +70,7 @@ implementation{
       //  call Sender.send(sendPackage, destination);
    }
 
-   event void CommandHandler.flooding(){
-
-
-   }
+   //event void CommandHandler.flooding(){}
 
    //  This are functions we are going to be implementing
    event void CommandHandler.printNeighbors(){}
