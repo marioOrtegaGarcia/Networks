@@ -74,7 +74,7 @@ implementation{
       call Sender.send(sendPackage, destination);
 
 
-      dbg(FLOODING_CHANNEL, (string) destination);
+      dbg(FLOODING_CHANNEL, destination);
    }
 
    //  This are functions we are going to be implementing
