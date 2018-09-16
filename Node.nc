@@ -67,17 +67,17 @@ implementation{
      //  If not, then forward the message to AMBroadcast
      //
      //  IF its a reply
-
+     pack* nPack = (pack*) payload;nPack
     // Check if PING
-    if(payload->protocol = PROTOCOL_PING) {
+    if(nPack->protocol = PROTOCOL_PING) {
       //  If not destination
-      if(payload->destination != TOS_NODE_ID) {
+      if(nPack->destination != TOS_NODE_ID) {
         // Active Message is dead
-        if(payload->TTL = 0){
+        if(nPack->TTL = 0){
 
           // If Final Destination
         } else {
-          makePack(&sendPackage, TOS_NODE_ID, destination, payload->TTL--, payload->protocol, payload->seq , payload, sizeof(payload->payload));
+          makePack(&sendPackage, TOS_NODE_ID, destination, nPack->TTL--, nPack->protocol, nPack->seq , nPack->payload, sizeof(nPack->payload));
         }
 
       } else {
