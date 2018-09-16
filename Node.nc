@@ -42,7 +42,8 @@ implementation{
       call AMControl.start();
 
       //start timer
-      call NodeTimerC.startOneShot(1000);
+      //  We need to initiate the node Timer first
+      //call NodeTimerC.startOneShot(1000);
 
       dbg(GENERAL_CHANNEL, "Booted\n");
    }
