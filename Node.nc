@@ -61,15 +61,14 @@ implementation{
      //  type message_t contains our AM pack
      //  We need to send to everyone, and just check with this function if it's meant for us.
    event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len){
+     //  Know if it's a ping/pingReply
+     //  Check to see if i've received it or not, check list
+     //  Checking if its for self first, if it is let sender know I got it
+     //  If not, then forward the message to AMBroadcast
+     //
+     //  IF its a reply
      dbg(GENERAL_CHANNEL, "Packet Received\n");
      if(len==sizeof(pack)){
-       //  Know if it's a ping/pingReply
-       //  Check to see if i've received it or not, check list
-       //  Checking if its for self first, if it is let sender know I got it
-       //  If not, then forward the message to AMBroadcast
-       //
-       //  IF its a reply
-
        //Pack found
        pack* myMsg=(pack*) payload;
        // Checking if this is a Ping Protocol
