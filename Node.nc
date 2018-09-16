@@ -73,9 +73,8 @@ implementation{
       makePack(&sendPackage, TOS_NODE_ID, destination, 0, 0, 0, payload, PACKET_MAX_PAYLOAD_SIZE);
       call Sender.send(sendPackage, destination);
 
-      dbg(FLOODING_CHANNEL, destination);
 
-
+      dbg(FLOODING_CHANNEL, (string) destination);
    }
 
    //  This are functions we are going to be implementing
