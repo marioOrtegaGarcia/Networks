@@ -30,7 +30,7 @@ module Node{
 implementation{
   //  This is where we are saving the pack (or package we are sending over to the other Nodes)
    pack sendPackage;
-   int sequence = 0;
+   uint16_t nodeSeq = 0;
    //  Here we can lis all the neighbors for this mote
    //List neighbors;
 
@@ -84,7 +84,7 @@ implementation{
           if (myMsg->TTL == 0) {
              dbg(GENERAL_CHANNEL, "MESSAGE DIED \n");
         } else {
-          makePack(&sendPackage, TOS_NODE_ID, destination, 0, 0, 0, payload, PACKET_MAX_PAYLOAD_SIZE);
+          makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, myMsg->payload, len);
           call Sender.send(sendPackage, destination);
         }
        } else if (myMsg->protocol == PROTOCOL_PINGREPLY) {
@@ -141,7 +141,7 @@ implementation{
    event void CommandHandler.ping(uint16_t destination, uint8_t *payload){
       dbg(GENERAL_CHANNEL, "PING EVENT \n");
 
-      makePack(&sendPackage, TOS_NODE_ID, destination, 0, 0, 0, payload, PACKET_MAX_PAYLOAD_SIZE);
+      makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq++, payload, PACKET_MAX_PAYLOAD_SIZE);
 
       call Sender.send(sendPackage, destination);
    }
