@@ -77,7 +77,7 @@ implementation{
 
           // If Final Destination
         } else {
-          makePack(&sendPackage, TOS_NODE_ID, destination, nPack->TTL--, nPack->protocol, nPack->seq , nPack->payload, sizeof(nPack->payload));
+          makePack(&sendPackage, TOS_NODE_ID, nPack->dest, nPack->TTL--, nPack->protocol, nPack->seq , nPack->payload, sizeof(nPack->payload));
         }
 
       } else {
