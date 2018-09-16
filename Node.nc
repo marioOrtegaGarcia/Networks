@@ -84,7 +84,7 @@ implementation{
           if (myMsg->TTL == 0) {
              dbg(GENERAL_CHANNEL, "MESSAGE DIED \n");
         } else {
-          if ( not(myMsg->src == TOS_NODE_ID && myMsg->seq <= seq)) {
+          if (myMsg->src != TOS_NODE_ID && myMsg->seq >= seq) {
             // Send to someone else
             makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, payload, len);
             // Send to sender
