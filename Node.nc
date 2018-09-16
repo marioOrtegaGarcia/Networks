@@ -62,7 +62,7 @@ implementation{
    event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len){
 
      //Testing github
-     //testing 2
+
      //  Know if it's a ping/pingReply
      //  Check to see if i've received it or not, check list
      //  Checking if its for self first, if it is let sender know I got it
