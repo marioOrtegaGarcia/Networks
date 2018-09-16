@@ -89,6 +89,8 @@ implementation{
         }
        } else if (myMsg->protocol == PROTOCOL_PINGREPLY) {
          //WHAT TO DO WHEN ITS A REPLY
+       } else {
+         //I dont know this protocol
        }
      }
 
