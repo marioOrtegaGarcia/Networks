@@ -91,7 +91,7 @@ implementation{
         dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
         return msg;
       }
-    } else if (payload->protocol = PROTOCOL_PINGREPLY) {
+    } else if (nPack->protocol = PROTOCOL_PINGREPLY) {
 
     }
    }
