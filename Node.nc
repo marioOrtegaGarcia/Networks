@@ -71,7 +71,7 @@ implementation{
     // Check if PING
     if(nPack->protocol = PROTOCOL_PING) {
       //  If not destination
-      if(nPack->destination != TOS_NODE_ID) {
+      if(nPack->dest != TOS_NODE_ID) {
         // Active Message is dead
         if(nPack->TTL = 0){
 
