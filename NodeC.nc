@@ -36,7 +36,7 @@ implementation {
 
     Node.Receive -> GeneralReceive;
 
-    NodeTimerC.
+    //NodeTimerC.
 
     components ActiveMessageC;
     Node.AMControl -> ActiveMessageC;
