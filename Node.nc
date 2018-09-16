@@ -84,7 +84,7 @@ implementation{
           if (myMsg->TTL == 0) {
              dbg(GENERAL_CHANNEL, "MESSAGE DIED \n");
         } else {
-          makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, &myMsg->payload, len);
+          makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, payload, len);
           call Sender.send(sendPackage, myMsg->dest);
         }
        } else if (myMsg->protocol == PROTOCOL_PINGREPLY) {
