@@ -84,8 +84,8 @@ implementation{
           if (myMsg->TTL == 0) {
              dbg(GENERAL_CHANNEL, "MESSAGE DIED \n");
         } else {
-          makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, myMsg->payload, len);
-          call Sender.send(sendPackage, destination);
+          makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, &myMsg->payload, len);
+          call Sender.send(sendPackage, myMsg->dest);
         }
        } else if (myMsg->protocol == PROTOCOL_PINGREPLY) {
          //WHAT TO DO WHEN ITS A REPLY
@@ -141,7 +141,7 @@ implementation{
    event void CommandHandler.ping(uint16_t destination, uint8_t *payload){
       dbg(GENERAL_CHANNEL, "PING EVENT \n");
 
-      makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq++, payload, PACKET_MAX_PAYLOAD_SIZE);
+      makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq++ , payload, PACKET_MAX_PAYLOAD_SIZE);
 
       call Sender.send(sendPackage, destination);
    }
