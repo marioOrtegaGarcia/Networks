@@ -73,7 +73,6 @@ implementation{
     pack* nPack = (pack*) payload;
     // Checking if this is a Ping Protocol
     if(nPack->protocol == PROTOCOL_PING) {
-      dbg(FLOODING_CHANNEL, "Sending Ping\n" )
       //  If it is a Ping then check if it's not your's
       if(nPack->dest != TOS_NODE_ID) {
         // If Active Message is dead
@@ -86,7 +85,6 @@ implementation{
       // If the Ping is your's
       } else {
         //
-        dbg(GENERAL_CHANNEL, "Packet Received\n");
         if(len==sizeof(pack)){
            pack* myMsg=(pack*) payload;
            dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
