@@ -87,11 +87,11 @@ implementation{
           makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, payload, len);
           call Sender.send(sendPackage, myMsg->dest);
         }
-       } else if (myMsg->protocol == PROTOCOL_PINGREPLY) {
-         //WHAT TO DO WHEN ITS A REPLY
-       } else {
-         //I dont know this protocol
        }
+     } else if (myMsg->protocol == PROTOCOL_PINGREPLY) {
+       //WHAT TO DO WHEN ITS A REPLY
+     } else {
+       //I dont know this protocol
      }
 
    }
