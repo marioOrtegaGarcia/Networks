@@ -83,7 +83,7 @@ implementation{
            } else {
              dbg(GENERAL_CHANNEL, "PING EVENT \n");
              makePack(myMsg, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, myMsg->payload, sizeof(myMsg->payload));
-             call Sender.send(sendPackage, destination);
+             call Sender.send(myMsg, myMsg->dest);
            }
            // Package made it to destination
          } else {
