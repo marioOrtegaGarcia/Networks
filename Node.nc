@@ -92,7 +92,7 @@ implementation{
             call Sender.send(sendPackage, myMsg->dest);
             // Ping Back
             makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, PROTOCOL_PINGREPLY, myMsg->seq, payload, len);
-            call Sender.send(sendPackage, myMsg->src);
+            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
           }
         }
        }
