@@ -69,15 +69,15 @@ implementation{
      //  IF its a reply
 
     // Check if PING
-    if(payload->protocol = PROTOCOL_PING) {
+    if(msg->protocol = PROTOCOL_PING) {
       //  If not destination
-      if(payload->destination != TOS_NODE_ID) {
+      if(msg->destination != TOS_NODE_ID) {
         // Active Message is dead
-        if(payload->TTL = 0){
+        if(msg->TTL = 0){
 
           // If Final Destination
         } else {
-          makePack(&sendPackage, TOS_NODE_ID, destination, payload->TTL--, payload->protocol, payload->seq , payload, sizeof(payload->payload));
+          makePack(&sendPackage, TOS_NODE_ID, destination, msg->TTL--, msg->protocol, msg->seq , msg->payload, sizeof(msg->payload));
         }
 
       } else {
