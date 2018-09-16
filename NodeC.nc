@@ -21,15 +21,6 @@ implementation {
     components new TimerMilliC() as NodeTimerC;
 
 
-    /*
-      ██     ██ ██ ██████  ██ ███    ██  ██████
-      ██     ██ ██ ██   ██ ██ ████   ██ ██
-      ██  █  ██ ██ ██████  ██ ██ ██  ██ ██   ███
-      ██ ███ ██ ██ ██   ██ ██ ██  ██ ██ ██    ██
-       ███ ███  ██ ██   ██ ██ ██   ████  ██████
-    */
-
-
     //  This is where we are Wiring our whole program.
     //  We are basically wiring objects together so they can talk to each other, this is their interface.
     Node -> MainC.Boot;
