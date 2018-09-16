@@ -69,6 +69,7 @@ implementation{
      //  IF its a reply
      pack* nPack = (pack*) payload;nPack
     // Check if PING
+<<<<<<< HEAD
     if(nPack->protocol = PROTOCOL_PING) {
       //  If not destination
       if(nPack->destination != TOS_NODE_ID) {
@@ -78,6 +79,17 @@ implementation{
           // If Final Destination
         } else {
           makePack(&sendPackage, TOS_NODE_ID, destination, nPack->TTL--, nPack->protocol, nPack->seq , nPack->payload, sizeof(nPack->payload));
+=======
+    if(msg->protocol = PROTOCOL_PING) {
+      //  If not destination
+      if(msg->destination != TOS_NODE_ID) {
+        // Active Message is dead
+        if(msg->TTL = 0){
+
+          // If Final Destination
+        } else {
+          makePack(&sendPackage, TOS_NODE_ID, destination, msg->TTL--, msg->protocol, msg->seq , msg->payload, sizeof(msg->payload));
+>>>>>>> 3942428ececf3fbadd5dd32359ca918e5d125121
         }
 
       } else {
