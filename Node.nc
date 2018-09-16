@@ -73,7 +73,6 @@ implementation{
     pack* nPack = (pack*) payload;
     // Checking if this is a Ping Protocol
     if(nPack->protocol == PROTOCOL_PING) {
-      dbg(FLOODING_CHANNEL, "Sending Ping\n" )
       //  If it is a Ping then check if it's not your's
       if(nPack->dest != TOS_NODE_ID) {
         // If Active Message is dead
@@ -81,7 +80,9 @@ implementation{
 
           // If AM is still alive
         } else {
-          makePack(&sendPackage, nPack->src, nPack->dest, nPack->TTL--, nPack->protocol, nPack->seq , nPack->payload, sizeof(nPack->payload));
+          //dbg(GENERAL_CHANNEL, "\nPacket Still Alive\n");
+          printf("Packet is still alvive")
+          //makePack(&sendPackage, nPack->src, nPack->dest, nPack->TTL--, nPack->protocol, nPack->seq , nPack->payload, sizeof(nPack->payload));
         }
       // If the Ping is your's
       } else {
