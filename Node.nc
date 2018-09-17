@@ -108,8 +108,8 @@ implementation{
         }
        }
      }
-     dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
-     return msg;
+     //dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
+     //return msg;
    }
 
    // This is how we send a message to one another
