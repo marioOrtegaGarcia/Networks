@@ -31,6 +31,7 @@ implementation{
   //  This is where we are saving the pack (or package we are sending over to the other Nodes)
    pack sendPackage;
    uint16_t nodeSeq = 0;
+   Hashmap(int) seenPacks;
    //  Here we can lis all the neighbors for this mote
   // We getting an error with neighbors
    //List<int> neighbors;
@@ -62,6 +63,39 @@ implementation{
    }
    //  **Might have to implement this one later
    event void AMControl.stopDone(error_t err){}
+
+     //checks to see if current packet has been seen beofore. returns true if it has been seen
+   bool checkPack(pack* payload){
+
+     uint16_t src = payload->src;
+     uint16_t seq = payload->seq;
+
+     //if hashmap is empty, return false
+     if(seenPacks.isEmpty())
+        return false;
+      else if(seenPacks.contains(src)){
+        //if sequence number from src node is greater, replace value w/ new max
+        if((uint16_t)seenPacks.get(src) < seq){
+          return false;
+        }
+        //if stored sequence val is greater than current packet's, it must have been seen before. return true
+        else return true;
+      }
+   }
+
+   //stores src and seq info in seenPacks hashmap
+   void savePack(pack* payload){
+
+     uint16_t src = payload->src;
+     uint16_t seq = payload->seq;
+
+     //if key already exists, replace it
+     if(seenPacks.contains(src)){
+       seenPacks.remove(src);
+     }
+    seenPacks.insert((uint32_t)src, (uint32_t)seq);
+
+   }
 
      //  type message_t contains our AM pack
      //  We need to send to everyone, and just check with this function if it's meant for us.
