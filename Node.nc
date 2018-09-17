@@ -72,14 +72,14 @@ implementation{
 
      //if hashmap is empty, return false
      if(seenPacks.isEmpty())
-        return false;
+        return 0;
       else if(seenPacks.contains(src)){
         //if sequence number from src node is greater, replace value w/ new max
         if((uint16_t)seenPacks.get(src) < seq){
-          return false;
+          return 0;
         }
         //if stored sequence val is greater than current packet's, it must have been seen before. return true
-        else return true;
+        else return 1;
       }
    }
 
