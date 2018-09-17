@@ -79,12 +79,8 @@ implementation{
        logPack(myMsg);
        //  Checking if this is a Ping Protocol
        if (myMsg->protocol == PROTOCOL_PING) {
-<<<<<<< HEAD
-         //  Checking if package is at Destination
-=======
          // Checking if package is at Destination
          //if package reaches destination send out a reply to inform sender that it was recieved
->>>>>>> fe54c7b84a09076ea892cffd441b8031ce0c7960
          if (myMsg->dest == TOS_NODE_ID) {
            dbg(GENERAL_CHANNEL, "~~Finally Home~~\n");
            dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
@@ -113,7 +109,7 @@ implementation{
          }
          // Checking if this is a Ping Reply Protocol
        } else if (myMsg->protocol == PROTOCOL_PINGREPLY) {
-         logPack(myMsg);
+         logPack(&myMsg);
          // Unknown Protocol
        } else {
          dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
