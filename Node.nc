@@ -135,7 +135,7 @@ implementation{
             } else {
               // Forward Cause message not mine, not from me, but it is alive
               // Send to someone else
-              makePack(&sendPackage, myMsg->src, myMsg->dest, --myMsg->TTL, myMsg->protocol, myMsg->seq, myMsg->payload, len);
+              makePack(&sendPackage, myMsg->src, myMsg->dest, --myMsg->TTL, myMsg->protocol, myMsg->seq, &myMsg->payload, len);
               call Sender.send(sendPackage, AM_BROADCAST_ADDR);
               return msg;
             }
@@ -143,7 +143,7 @@ implementation{
          }
          // Checking if this is a Ping Reply Protocol
        } else if (myMsg->protocol == PROTOCOL_PINGREPLY) {
-         logPack(&myMsg);
+         //logPack(&myMsg);
          // Unknown Protocol
        } else {
          dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
