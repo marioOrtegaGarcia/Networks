@@ -79,10 +79,19 @@ implementation{
        logPack(myMsg);
        //  Checking if this is a Ping Protocol
        if (myMsg->protocol == PROTOCOL_PING) {
+<<<<<<< HEAD
          //  Checking if package is at Destination
+=======
+         // Checking if package is at Destination
+         //if package reaches destination send out a reply to inform sender that it was recieved
+>>>>>>> fe54c7b84a09076ea892cffd441b8031ce0c7960
          if (myMsg->dest == TOS_NODE_ID) {
            dbg(GENERAL_CHANNEL, "~~Finally Home~~\n");
            dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
+
+           makePack(&sendPackage, myMsg->dest, myMsg->src, myMsg->TTL, PROTOCOL_PINGREPLY, myMsg->seq, myMsg->payload, len);
+           call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+
            return msg;
          } else {
            if (myMsg->TTL == 0) {
