@@ -95,7 +95,7 @@ implementation{
             } else {
               // Forward Cause message not mine, not from me, but it is alive
               // Send to someone else
-              makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, payload, len);
+              makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, myMsg->payload, len);
               logPack(&sendPackage);
               call Sender.send(sendPackage, myMsg->dest);
               return msg;
