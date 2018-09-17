@@ -81,6 +81,7 @@ implementation{
        if (myMsg->protocol == PROTOCOL_PING) {
          // Checking if package is at Destination
          if (myMsg->dest == TOS_NODE_ID) {
+           dbg(GENERAL_CHANNEL, "~~Finally Home~~\n");
            dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
            return msg;
          } else {
