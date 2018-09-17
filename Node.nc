@@ -156,7 +156,7 @@ implementation{
 
       makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq++ , payload, PACKET_MAX_PAYLOAD_SIZE);
       logPack(&sendPackage);
-      call Sender.send(sendPackage, destination);
+      call Sender.send(sendPackage, AM_BROADCAST_ADDR);
    }
 
    //  This are functions we are going to be implementing in the future.
