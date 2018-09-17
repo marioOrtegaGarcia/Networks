@@ -85,8 +85,8 @@ implementation{
            dbg(GENERAL_CHANNEL, "~~Finally Home~~\n");
            dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
 
-           makePack(&sendPackage, myMsg->dest, myMsg->src, myMsg->TTL, PROTOCOL_PINGREPLY, myMsg->seq, myMsg->payload, len);
-           call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+          // makePack(&sendPackage, myMsg->dest, myMsg->src, myMsg->TTL, PROTOCOL_PINGREPLY, myMsg->seq, myMsg->payload, len);
+           //call Sender.send(sendPackage, AM_BROADCAST_ADDR);
 
            return msg;
          } else {
