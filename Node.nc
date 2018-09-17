@@ -103,6 +103,7 @@ implementation{
             makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, PROTOCOL_PINGREPLY, myMsg->seq, payload, len);
             //logPack(&sendPackage);
             call Sender.send(sendPackage, myMsg->src);
+            return msg;
           }
         }
        }
