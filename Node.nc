@@ -71,15 +71,15 @@ implementation{
      //  Checking if its for self first, if it is let sender know I got it
      //  If not, then forward the message to AMBroadcast
      //
-     //  IF its a reply
+
      dbg(GENERAL_CHANNEL, "Packet Received\n");
      if (len==sizeof(pack)) {
-       //Pack found
+       //  Pack found
        pack* myMsg=(pack*) payload;
        logPack(myMsg);
-       // Checking if this is a Ping Protocol
+       //  Checking if this is a Ping Protocol
        if (myMsg->protocol == PROTOCOL_PING) {
-         // Checking if package is at Destination
+         //  Checking if package is at Destination
          if (myMsg->dest == TOS_NODE_ID) {
            dbg(GENERAL_CHANNEL, "~~Finally Home~~\n");
            dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
@@ -90,7 +90,7 @@ implementation{
            } else {
             if (myMsg->src == TOS_NODE_ID) {
               if (myMsg->seq < nodeSeq) {
-                // An old ping from me
+                //  An old ping from me
                 logPack(&sendPackage);
               }
             } else {
@@ -104,7 +104,7 @@ implementation{
          }
          // Checking if this is a Ping Reply Protocol
        } else if (myMsg->protocol == PROTOCOL_PINGREPLY) {
-
+         logPack(myMsg);
          // Unknown Protocol
        } else {
          dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
