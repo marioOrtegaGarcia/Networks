@@ -73,10 +73,45 @@ implementation{
      //
      //  IF its a reply
      dbg(GENERAL_CHANNEL, "Packet Received\n");
-     if(len==sizeof(pack)){
+     if (len==sizeof(pack)) {
        //Pack found
        pack* myMsg=(pack*) payload;
        logPack(myMsg);
+       // Checking if this is a Ping Protocol
+       if (myMsg->protocol == PROTOCOL_PING) {
+         // Checking if package is at Destination
+         if (myMsg->dest == TOS_NODE_ID) {
+           dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
+           return msg;
+         } else {
+           if (myMsg->TTL == 0) {
+             dbg(GENERAL_CHANNEL, "MESSAGE DIED \n");
+           } else {
+            if (myMsg->src == TOS_NODE_ID) {
+              if (myMsg->seq < nodeSeq) {
+                // An old ping from me
+                logPack(&sendPackage);
+              }
+            } else {
+              // Forward Cause message not mine, not from me, but it is alive
+              // Send to someone else
+              makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, payload, len);
+              logPack(&sendPackage);
+              call Sender.send(sendPackage, myMsg->dest);
+              return msg;
+            }
+           }
+         }
+         // Checking if this is a Ping Reply Protocol
+       } else if (myMsg->protocol == PROTOCOL_PINGREPLY) {
+
+         // Unknown Protocol
+       } else {
+         dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
+         return msg;
+       }
+     }
+/*
        // Checking if this is a Ping Protocol
        if (myMsg->protocol == PROTOCOL_PING) {
         // Checking if package is at Destination
@@ -95,14 +130,16 @@ implementation{
               logPack(&sendPackage);
             }
           } else {
+            // Ping Back
+            makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, PROTOCOL_PINGREPLY, myMsg->seq, payload, len);
+            logPack(&sendPackage);
+            call Sender.send(sendPackage, myMsg->src);
+
             // Send to someone else
             makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, payload, len);
             logPack(&sendPackage);
             call Sender.send(sendPackage, myMsg->dest);
-            // Ping Back
-            makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, PROTOCOL_PINGREPLY, myMsg->seq, payload, len);
-            //logPack(&sendPackage);
-            call Sender.send(sendPackage, myMsg->src);
+
             return msg;
           }
         }
@@ -110,6 +147,7 @@ implementation{
      }
      //dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
      //return msg;
+     */
    }
 
    // This is how we send a message to one another
