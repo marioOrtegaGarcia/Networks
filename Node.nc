@@ -47,11 +47,9 @@ implementation{
   //  This is where we are saving the pack (or package we are sending over to the other Nodes)
    pack sendPackage;
    uint16_t nodeSeq = 0;
-   //Hashmap <uint16_t>
-   //Hashmap <t> PackLogs;
+
    //  Here we can lis all the neighbors for this mote
   // We getting an error with neighbors
-   //List<int> neighbors;
 
    // Prototypes
    void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
