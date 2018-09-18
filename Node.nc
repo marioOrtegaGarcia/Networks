@@ -144,8 +144,8 @@ implementation{
                 logPack(&sendPackage);
               }
             } else {
-              if (! checkPack(myMsg)) {
-                savePack(myMsg);
+              if (! checkPack(&myMsg)) {
+                savePack(&myMsg);
                 // Forward Cause message not mine, not from me, but it is alive
                 // Send to someone else
                 makePack(&sendPackage, myMsg->src, myMsg->dest, --myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
