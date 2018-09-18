@@ -18,7 +18,7 @@ implementation {
     components MainC;
     components Node;
     components new AMReceiverC(AM_PACK) as GeneralReceive;
-    components new TimerMilliC() as NodeTimerC;
+    //components new TimerMilliC() as NodeTimerC;
 
 
 
