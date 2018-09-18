@@ -85,11 +85,11 @@ implementation{
      uint16_t src = payload.src;
      uint16_t seq = payload.seq;
 
-     if (PackLogs.isEmpty()) {
+     if (call PackLogs.isEmpty()) {
        return 0;
      } else {
-       for (uint16_t i = 0; i < PackLogs.size(); i++) {
-         if (payload.src == PackLogs.get(i).src && payload.seq <= Packlogs.get(i).seq)
+       for (uint16_t i = 0; i < call PackLogs.size(); i++) {
+         if (payload.src == call PackLogs.get(i).src && payload.seq <= call Packlogs.get(i).seq)
           return 1;
        }
        return 0;
@@ -101,10 +101,10 @@ implementation{
 
      uint16_t src = payload.src;
      uint16_t seq = payload.seq;
-     dbg(GENERAL_CHANNEL, "PackLogs Size: %s",PackLogs.size())
-     if (PackLogs.size() == (uint16_t)18)
-       PackLogs.popfront();
-     PackLogs.pushback(payload);
+     dbg(GENERAL_CHANNEL, "PackLogs Size: %s", call PackLogs.size())
+     if (call PackLogs.size() == (uint16_t)18)
+       call PackLogs.popfront();
+     call PackLogs.pushback(payload);
    }
 
      //  type message_t contains our AM pack
