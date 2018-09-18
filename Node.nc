@@ -12,6 +12,7 @@
 #include "includes/CommandMsg.h"
 #include "includes/sendInfo.h"
 #include "includes/channels.h"
+#include "dataStructures/modules/HashmapC.nc"
 
 module Node{
 
@@ -24,6 +25,7 @@ module Node{
    uses interface SimpleSend as Sender;
 
    uses interface CommandHandler;
+   uses interface Hashmap;
 }
 
 
