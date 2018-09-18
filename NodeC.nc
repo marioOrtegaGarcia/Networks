@@ -39,6 +39,6 @@ implementation {
     components CommandHandlerC;
     Node.CommandHandler -> CommandHandlerC;
 
-
+    Node.recievedLogs -> PacketLogs;
 
 }
