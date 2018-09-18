@@ -48,7 +48,6 @@ implementation{
    pack sendPackage;
    uint16_t nodeSeq = 0;
    //Hashmap <uint16_t>
-
    //Hashmap <t> seenPacks;
    //  Here we can lis all the neighbors for this mote
   // We getting an error with neighbors
@@ -62,11 +61,9 @@ implementation{
    event void Boot.booted(){
      //  Booting/Starting our lowest networking layer exposed in TinyOS which is also called active messages (AM)
       call AMControl.start();
-
       //start timer
       //  We need to initiate the node Timer first
       //call NodeTimerC.startOneShot(1000);
-
       dbg(GENERAL_CHANNEL, "Booted\n");
    }
 
