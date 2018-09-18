@@ -90,8 +90,9 @@ implementation{
        return 0;
      } else {
        for (index = 0; index < call PackLogs.size(); index++) {
-         if (payload.src == call PackLogs.get((uint16_t)index).src)
-          if (payload.seq <= call Packlogs.get((uint16_t)index).seq)
+         sendPackage = call PackLogs.get((uint16_t)index);
+         if (payload.src == sendPackage.src)
+          if (payload.seq <= sendPackage.seq)
             return 1;
        }
        return 0;
