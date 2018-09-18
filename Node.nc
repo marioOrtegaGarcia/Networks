@@ -48,7 +48,7 @@ implementation{
    pack sendPackage;
    uint16_t nodeSeq = 0;
    //Hashmap <uint16_t>
-   //Hashmap <t> seenPacks;
+   //Hashmap <t> PackLogs;
    //  Here we can lis all the neighbors for this mote
   // We getting an error with neighbors
    //List<int> neighbors;
@@ -88,11 +88,11 @@ implementation{
      uint16_t seq = payload->seq;
 
      //if hashmap is empty, return false
-     if(seenPacks.isEmpty())
+     if(PackLogs.isEmpty())
         return 0;
-      else if(seenPacks.contains(src)){
+      else if(PackLogs.contains(src)){
         //if sequence number from src node is greater, replace value w/ new max
-        if((uint16_t)seenPacks.get(src) < seq){
+        if((uint16_t)PackLogs.get(src) < seq){
           return 0;
         }
         //if stored sequence val is greater than current packet's, it must have been seen before. return true
@@ -100,17 +100,17 @@ implementation{
       }
    }
 
-   //stores src and seq info in seenPacks hashmap
+   //stores src and seq info in PackLogs hashmap
    void savePack(pack* payload){
 
      uint16_t src = payload->src;
      uint16_t seq = payload->seq;
 
      //if key already exists, replace it
-     if(seenPacks.contains(src)){
-       seenPacks.remove(src);
+     if(PackLogs.contains(src)){
+       PackLogs.remove(src);
      }
-    seenPacks.insert((uint32_t)src, (uint32_t)seq);
+    PackLogs.insert((uint32_t)src, (uint32_t)seq);
 
    }
 
