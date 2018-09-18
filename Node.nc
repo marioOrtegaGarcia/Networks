@@ -92,7 +92,7 @@ implementation{
        for (index = 0; index < call PackLogs.size(); index++) {
          sendPackage = call PackLogs.get((uint16_t)index);
          if (payload.src == sendPackage.src)
-          if (payload.seq <= call Packlogs.get((uint16_t)index).seq)
+          if (payload.seq <= call PackLogs.get((uint16_t)index).seq)
             return 1;
        }
        return 0;
