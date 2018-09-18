@@ -39,7 +39,7 @@ implementation {
     components CommandHandlerC;
     Node.CommandHandler -> CommandHandlerC;
 
-    components new HashmapC(pack,18) as PackHashC;
-    Node.HashLogs -> PackHashC;
+    components new ListC(pack,18) as PackListC;
+    Node.PackLogs -> PackListC;
 
 }

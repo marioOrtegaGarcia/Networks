@@ -25,7 +25,7 @@ module Node{
 
    uses interface CommandHandler;
 
-   uses interface Hashmap <pack> as PackLogs;
+   uses interface List <pack> as PackLogs;
 }
 /* Pseudo Code from Lab TA
 *  First Part of Project
@@ -85,17 +85,15 @@ implementation{
      uint16_t src = payload.src;
      uint16_t seq = payload.seq;
 
-     //if hashmap is empty, return false
-     if(PackLogs.isEmpty())
-        return 0;
-      else if(PackLogs.contains((uint32_t)src)){
-        //if sequence number from src node is greater, replace value w/ new max
-        if((uint16_t)PackLogs.get((uint32_t)src) < seq){
-          return 0;
-        }
-        //if stored sequence val is greater than current packet's, it must have been seen before. return true
-        else return 1;
-      }
+     if (PackLogs.isEmpty()) {
+       return false;
+     } else {
+       for (int i = 0; i < PackLogs.size(); i++) {
+         if (payload.src == PackLogs.get(i).src && payload.seq <= Packlogs.get(i).seq)
+          return true
+       }
+       return false;
+     }
    }
 
    //stores src and seq info in PackLogs hashmap
@@ -103,13 +101,10 @@ implementation{
 
      uint16_t src = payload.src;
      uint16_t seq = payload.seq;
-
-     //if key already exists, replace it
-     if(PackLogs.contains(s(uint32_t)rc)){
-       PackLogs.remove((uint32_t)src);
-     }
-    PackLogs.insert((uint32_t)src, (uint32_t)seq);
-
+     dbg(GENERAL_CHANNEL, "PackLogs Size: %s",PackLogs.size())
+     if (PackLogs.size() == (uint16_t)18)
+       PackLogs.popfront();
+     PackLogs.pushback(payload);
    }
 
      //  type message_t contains our AM pack
