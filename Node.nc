@@ -25,10 +25,9 @@ module Node{
 
    uses interface CommandHandler;
 
-   //uses interface List<pack> as PackLogs;
+   uses interface Hashmap <pack> as PackLogs;
 }
-/*
-* Pseudo Code from Lab TA
+/* Pseudo Code from Lab TA
 *  First Part of Project
 * TOS_NODE_ID current node ID
 * Make Pack again and broadcast again if its not yours
@@ -42,25 +41,14 @@ module Node{
 *** Neighbor Discovery
 *** we can make our own protocol from neighbor Discovery
 *
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
 */
 
 implementation{
   //  This is where we are saving the pack (or package we are sending over to the other Nodes)
    pack sendPackage;
    uint16_t nodeSeq = 0;
+   Hashmap <uint16_t>
+
    //Hashmap <t> seenPacks;
    //  Here we can lis all the neighbors for this mote
   // We getting an error with neighbors
@@ -97,7 +85,7 @@ implementation{
    event void AMControl.stopDone(error_t err){}
 
      //checks to see if current packet has been seen beofore. returns true if it has been seen
-   /*bool checkPack(pack* payload){
+   bool checkPack(pack* payload){
 
      uint16_t src = payload->src;
      uint16_t seq = payload->seq;
@@ -113,10 +101,10 @@ implementation{
         //if stored sequence val is greater than current packet's, it must have been seen before. return true
         else return 1;
       }
-   }*/
+   }
 
    //stores src and seq info in seenPacks hashmap
-   /*void savePack(pack* payload){
+   void savePack(pack* payload){
 
      uint16_t src = payload->src;
      uint16_t seq = payload->seq;
@@ -127,7 +115,7 @@ implementation{
      }
     seenPacks.insert((uint32_t)src, (uint32_t)seq);
 
-   }*/
+   }
 
      //  type message_t contains our AM pack
      //  We need to send to everyone, and just check with this function if it's meant for us.
@@ -165,11 +153,14 @@ implementation{
                 logPack(&sendPackage);
               }
             } else {
-              // Forward Cause message not mine, not from me, but it is alive
-              // Send to someone else
-              makePack(&sendPackage, myMsg->src, myMsg->dest, --myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
-              call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-              return msg;
+              if (! checkPack(myMsg)) {
+                savePack(myMsg);
+                // Forward Cause message not mine, not from me, but it is alive
+                // Send to someone else
+                makePack(&sendPackage, myMsg->src, myMsg->dest, --myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
+                call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+                return msg;
+              }
             }
            }
          }
