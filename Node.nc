@@ -25,7 +25,7 @@ module Node{
 
    uses interface CommandHandler;
 
-   uses interface List<pack*> recievedList as PacketLogs;
+   uses interface List<pack> recievedList as PacketLogs;
 }
 /*
 * Pseudo Code from Lab TA
@@ -61,7 +61,7 @@ implementation{
   //  This is where we are saving the pack (or package we are sending over to the other Nodes)
    pack sendPackage;
    uint16_t nodeSeq = 0;
-   Hashmap <t> seenPacks;
+   //Hashmap <t> seenPacks;
    //  Here we can lis all the neighbors for this mote
   // We getting an error with neighbors
    //List<int> neighbors;
@@ -97,7 +97,7 @@ implementation{
    event void AMControl.stopDone(error_t err){}
 
      //checks to see if current packet has been seen beofore. returns true if it has been seen
-   bool checkPack(pack* payload){
+   /*bool checkPack(pack* payload){
 
      uint16_t src = payload->src;
      uint16_t seq = payload->seq;
@@ -113,10 +113,10 @@ implementation{
         //if stored sequence val is greater than current packet's, it must have been seen before. return true
         else return 1;
       }
-   }
+   }*/
 
    //stores src and seq info in seenPacks hashmap
-   void savePack(pack* payload){
+   /*void savePack(pack* payload){
 
      uint16_t src = payload->src;
      uint16_t seq = payload->seq;
@@ -127,7 +127,7 @@ implementation{
      }
     seenPacks.insert((uint32_t)src, (uint32_t)seq);
 
-   }
+   }*/
 
      //  type message_t contains our AM pack
      //  We need to send to everyone, and just check with this function if it's meant for us.
