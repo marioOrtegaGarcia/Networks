@@ -88,8 +88,8 @@ implementation{
      if (call PackLogs.isEmpty()) {
        return 0;
      } else {
-       for (uint16_t i = 0; i < call PackLogs.size(); i++) {
-         if (payload.src == call PackLogs.get(i).src && payload.seq <= call Packlogs.get(i).seq)
+       for (int i = 0; i < call PackLogs.size(); i++) {
+         if (payload.src == call PackLogs.get((uint16_t)i).src && payload.seq <= call Packlogs.get((uint16_t)i).seq)
           return 1;
        }
        return 0;
