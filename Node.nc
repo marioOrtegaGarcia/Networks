@@ -47,7 +47,7 @@ implementation{
   //  This is where we are saving the pack (or package we are sending over to the other Nodes)
    pack sendPackage;
    uint16_t nodeSeq = 0;
-   Hashmap <uint16_t>
+   //Hashmap <uint16_t>
 
    //Hashmap <t> seenPacks;
    //  Here we can lis all the neighbors for this mote
