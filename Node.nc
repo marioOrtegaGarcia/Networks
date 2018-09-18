@@ -90,7 +90,7 @@ implementation{
         return 0;
       else if(PackLogs.contains(src)){
         //if sequence number from src node is greater, replace value w/ new max
-        if((uint16_t)PackLogs.get(src) < seq){
+        if((uint16_t)PackLogs.get(((uint32_t))src) < seq){
           return 0;
         }
         //if stored sequence val is greater than current packet's, it must have been seen before. return true
