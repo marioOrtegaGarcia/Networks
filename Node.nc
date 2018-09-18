@@ -25,7 +25,7 @@ module Node{
 
    uses interface CommandHandler;
 
-   uses interface List<pack> recievedList as recievedLogs;
+   uses interface List<pack> as recievedLogs;
 }
 /*
 * Pseudo Code from Lab TA
