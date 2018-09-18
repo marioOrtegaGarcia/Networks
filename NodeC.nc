@@ -19,6 +19,7 @@ implementation {
     components Node;
     components new AMReceiverC(AM_PACK) as GeneralReceive;
     components new TimerMilliC() as NodeTimerC;
+    uses interface List<pack> recievedList as PacketLogs;
 
 
     //  This is where we are Wiring our whole program.
@@ -37,4 +38,7 @@ implementation {
 
     components CommandHandlerC;
     Node.CommandHandler -> CommandHandlerC;
+
+
+
 }

@@ -12,7 +12,6 @@
 #include "includes/CommandMsg.h"
 #include "includes/sendInfo.h"
 #include "includes/channels.h"
-#include "dataStructures/modules/HashmapC.nc"
 
 module Node{
 
@@ -25,9 +24,38 @@ module Node{
    uses interface SimpleSend as Sender;
 
    uses interface CommandHandler;
-   uses interface Hashmap;
-}
 
+   uses interface List<pack*> recievedList as PacketLogs;
+}
+/*
+* Pseudo Code from Lab TA
+*  First Part of Project
+* TOS_NODE_ID current node ID
+* Make Pack again and broadcast again if its not yours
+* When you've seen the package you are supposed to ignore it using the sequence Number
+***  Ping Reply
+*  Flip source and destination and set it as the ping protocol
+*** Sequence number starts at 0 only increment when you ping
+* TTL is based on number of nodes so we can set it to 20
+* Decrease TTL-- each time you send
+*
+*** Neighbor Discovery
+*** we can make our own protocol from neighbor Discovery
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*/
 
 implementation{
   //  This is where we are saving the pack (or package we are sending over to the other Nodes)
@@ -40,6 +68,8 @@ implementation{
 
    // Prototypes
    void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
+   bool checkPack(pack* payload);
+   void savePack(pack* payload);
 
    event void Boot.booted(){
      //  Booting/Starting our lowest networking layer exposed in TinyOS which is also called active messages (AM)
