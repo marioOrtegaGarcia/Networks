@@ -40,6 +40,6 @@ implementation {
     Node.CommandHandler -> CommandHandlerC;
 
     components new HashmapC(pack,18) as PackHashC;
-    Node.PackLogs -> PackHashC;
+    Node.HashLogs -> PackHashC;
 
 }

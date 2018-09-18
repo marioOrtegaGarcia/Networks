@@ -53,8 +53,8 @@ implementation{
 
    // Prototypes
    void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
-   bool checkPack(pack* payload);
-   void savePack(pack* payload);
+   bool checkPack(pack payload);
+   void savePack(pack payload);
 
    event void Boot.booted(){
      //  Booting/Starting our lowest networking layer exposed in TinyOS which is also called active messages (AM)
@@ -80,10 +80,10 @@ implementation{
    event void AMControl.stopDone(error_t err){}
 
      //checks to see if current packet has been seen beofore. returns true if it has been seen
-   bool checkPack(pack* payload){
+   bool checkPack(pack payload){
 
-     uint16_t src = payload->src;
-     uint16_t seq = payload->seq;
+     uint16_t src = payload.src;
+     uint16_t seq = payload.seq;
 
      //if hashmap is empty, return false
      if(PackLogs.isEmpty())
@@ -99,10 +99,10 @@ implementation{
    }
 
    //stores src and seq info in PackLogs hashmap
-   void savePack(pack* payload){
+   void savePack(pack payload){
 
-     uint16_t src = payload->src;
-     uint16_t seq = payload->seq;
+     uint16_t src = payload.src;
+     uint16_t seq = payload.seq;
 
      //if key already exists, replace it
      if(PackLogs.contains(s(uint32_t)rc)){
