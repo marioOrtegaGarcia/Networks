@@ -47,6 +47,7 @@ implementation{
   //  This is where we are saving the pack (or package we are sending over to the other Nodes)
    pack sendPackage;
    uint16_t nodeSeq = 0;
+   int index = 0;
 
    //  Here we can lis all the neighbors for this mote
   // We getting an error with neighbors
@@ -88,8 +89,8 @@ implementation{
      if (call PackLogs.isEmpty()) {
        return 0;
      } else {
-       for (int i = 0; i < call PackLogs.size(); i++) {
-         if (payload.src == call PackLogs.get((uint16_t)i).src && payload.seq <= call Packlogs.get((uint16_t)i).seq)
+       for (index = 0; i < call PackLogs.size(); i++) {
+         if (payload.src == call PackLogs.get((uint16_t)index).src && payload.seq <= call Packlogs.get((uint16_t)index).seq)
           return 1;
        }
        return 0;
