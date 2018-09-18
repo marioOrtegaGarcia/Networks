@@ -103,7 +103,7 @@ implementation{
 
      uint16_t src = payload.src;
      uint16_t seq = payload.seq;
-     dbg(GENERAL_CHANNEL, "PackLogs Size: %s", call PackLogs.size())
+     //dbg(GENERAL_CHANNEL, "PackLogs Size: %s", call PackLogs.size())
      if (call PackLogs.size() == (uint16_t)18)
        call PackLogs.popfront();
      call PackLogs.pushback(payload);
