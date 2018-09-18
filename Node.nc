@@ -89,7 +89,7 @@ implementation{
      if (call PackLogs.isEmpty()) {
        return 0;
      } else {
-       for (index = 0; i < call PackLogs.size(); i++) {
+       for (index = 0; index < call PackLogs.size(); index++) {
          if (payload.src == call PackLogs.get((uint16_t)index).src && payload.seq <= call Packlogs.get((uint16_t)index).seq)
           return 1;
        }
