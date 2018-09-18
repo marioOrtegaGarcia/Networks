@@ -86,13 +86,13 @@ implementation{
      uint16_t seq = payload.seq;
 
      if (PackLogs.isEmpty()) {
-       return false;
+       return 0;
      } else {
        for (int i = 0; i < PackLogs.size(); i++) {
          if (payload.src == PackLogs.get(i).src && payload.seq <= Packlogs.get(i).seq)
-          return true
+          return 1;
        }
-       return false;
+       return 0;
      }
    }
 
