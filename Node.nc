@@ -12,7 +12,7 @@
 #include "includes/CommandMsg.h"
 #include "includes/sendInfo.h"
 #include "includes/channels.h"
-#include "dataStructures/interfaces/Hashmap.nc"
+#include "dataStructures/modules/HashmapC.nc"
 
 module Node{
 
