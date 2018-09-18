@@ -88,9 +88,9 @@ implementation{
      //if hashmap is empty, return false
      if(PackLogs.isEmpty())
         return 0;
-      else if(PackLogs.contains(src)){
+      else if(PackLogs.contains((uint32_t)src)){
         //if sequence number from src node is greater, replace value w/ new max
-        if((uint16_t)PackLogs.get(((uint32_t))src) < seq){
+        if((uint16_t)PackLogs.get((uint32_t)src) < seq){
           return 0;
         }
         //if stored sequence val is greater than current packet's, it must have been seen before. return true
@@ -105,8 +105,8 @@ implementation{
      uint16_t seq = payload->seq;
 
      //if key already exists, replace it
-     if(PackLogs.contains(src)){
-       PackLogs.remove(src);
+     if(PackLogs.contains(s(uint32_t)rc)){
+       PackLogs.remove((uint32_t)src);
      }
     PackLogs.insert((uint32_t)src, (uint32_t)seq);
 
