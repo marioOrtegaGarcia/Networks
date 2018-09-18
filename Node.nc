@@ -92,7 +92,7 @@ implementation{
        for (index = 0; index < call PackLogs.size(); index++) {
          sendPackage = call PackLogs.get((uint16_t)index);
          if (payload.src == sendPackage.src)
-          if (payload.seq <= sendPackage.seq)
+          if (payload.seq <= call Packlogs.get((uint16_t)index).seq)
             return 1;
        }
        return 0;
@@ -104,7 +104,7 @@ implementation{
 
      uint16_t src = payload.src;
      uint16_t seq = payload.seq;
-     //dbg(GENERAL_CHANNEL, "PackLogs Size: %s", call PackLogs.size())
+     dbg(GENERAL_CHANNEL, "PackLogs Size: %s", call PackLogs.size())
      if (call PackLogs.size() == (uint16_t)18)
        call PackLogs.popfront();
      call PackLogs.pushback(payload);
