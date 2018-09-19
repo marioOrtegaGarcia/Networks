@@ -100,7 +100,8 @@ implementation{
      bool hasSeen(pack* payload) {
        if (payload->protocol == PROTOCOL_PING) {
          uint32_t src = payload->src;
-       } else if (payload->protocol == PROTOCOL_PINGREPLY) {
+       }
+       if (payload->protocol == PROTOCOL_PINGREPLY) {
          uint32_t src = payload->dest;
        }
        uint32_t seq = payload->seq;
