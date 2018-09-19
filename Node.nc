@@ -146,7 +146,7 @@ implementation{
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
            //  Package Log
            logPack(myMsg);
-           logPack(sendPackage);
+           logPack(&sendPackage);
            updatePack(myMsg);
          }
 
