@@ -166,7 +166,7 @@ implementation{
      if (myMsg->protocol == PROTOCOL_PING) {
        // My Message
        if (myMsg->dest == TOS_NODE_ID) {
-         if (!hasSeen(myMsg)) {
+         if (hasSeen(myMsg)) {
            //  Recieve message
            //dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
            dbg(FLOODING_CHANNEL, "Received Package Payload: %s\n", myMsg->payload);
@@ -177,7 +177,7 @@ implementation{
            //  Package Log
            checkPack(myMsg);
          }
-         
+
        // Not my Message
        } else {
          //Forward to printNeighbors
