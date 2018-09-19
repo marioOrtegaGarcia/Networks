@@ -168,7 +168,7 @@ implementation{
        // Not my Message
        } else {
          //Forward to printNeighbors
-         makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
+         makePack(&sendPackage, myMsg->src, myMsg->dest, --myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
          call Sender.send(sendPackage, AM_BROADCAST_ADDR);
          //Ping Reply?
          //Log Pack
@@ -181,9 +181,11 @@ implementation{
        if (myMsg->dest == TOS_NODE_ID) {
          checkPack(myMsg);
        } else {
-         makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
+         makePack(&sendPackage, myMsg->src, myMsg->dest, --myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
          call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+         checkPack(myMsg);
        }
+
      } // End of Ping Reply Protocol
 
     return msg;
@@ -219,7 +221,7 @@ implementation{
                 savePack(sendPackage);
                 // Forward Cause message not mine, not from me, but it is alive
                 // Send to someone else
-                makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
+                makePack(&sendPackage, myMsg->src, myMsg->dest, --myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
                 call Sender.send(sendPackage, AM_BROADCAST_ADDR);
                 return msg;
               }
