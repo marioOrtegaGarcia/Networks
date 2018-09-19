@@ -175,7 +175,7 @@ implementation{
            makePack(&sendPackage, myMsg->dest, myMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)myMsg->payload, len);
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
            //  Package Log
-           logPack(myMsg);
+           //logPack(myMsg);
            updatePack(myMsg);
          }
 
@@ -188,7 +188,7 @@ implementation{
          call Sender.send(sendPackage, AM_BROADCAST_ADDR);
          //Ping Reply?
          //Log Pack
-         logPack(myMsg);
+         //logPack(myMsg);
          updatePack(myMsg);
        }
      } // End of Ping Protocol
@@ -196,13 +196,14 @@ implementation{
      //  Ping Reply Protocol
      if (myMsg->protocol == PROTOCOL_PINGREPLY) {
        if (myMsg->dest == TOS_NODE_ID) {
+         dbg(FLOODING_CHANNEL, "MADE IT!!!!!!!!!!!!!!!!!!!!!!\n")
          updatePack(myMsg);
        } else {
          if(myMsg->TTL > 0)
           myMsg->TTL -= /*(nx_uint8_t)*/ 1;
          makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
          call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-         logPack(myMsg);
+         //logPack(myMsg);
          updatePack(myMsg);
        }
 
