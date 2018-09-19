@@ -98,7 +98,7 @@ implementation{
      }
 
      bool hasSeen(pack* payload) {
-
+       uint32_t seq;
        uint32_t src;
        if (payload->protocol == PROTOCOL_PING) {
          src = payload->src;
@@ -106,7 +106,7 @@ implementation{
        else if (payload->protocol == PROTOCOL_PINGREPLY) {
          src = payload->dest;
        }
-       uint32_t seq = payload->seq;
+        seq = payload->seq;
 
        //if packet log isnt empty and contains the src key
        //and if the value at the src key is less than the current packet's sequence, then we know we haven't seen this packet before
