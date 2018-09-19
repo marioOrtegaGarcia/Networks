@@ -144,7 +144,7 @@ implementation{
      //  If not, then forward the message to AMBroadcast
      //
 
-     dbg(GENERAL_CHANNEL, "Packet Received\n");
+     //dbg(GENERAL_CHANNEL, "Packet Received\n");
 
      //pack* myMsg;
      //myMsg=(pack*) payload;
@@ -152,6 +152,7 @@ implementation{
      // Take out Packs that are corrupted or dead
      if (len !=sizeof(pack) || myMsg->TTL == 0) {
        // Kill
+       dbg(GENERAL_CHANNEL, "Package Dead: %s\n", myMsg->payload);
      }
 
      //  Ping Protocol
