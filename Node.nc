@@ -103,10 +103,13 @@ implementation{
 
        //if packet log isnt empty and contains the src key
        //and if the value at the src key is less than the current packet's sequence, then we know we haven't seen this packet before
-       if(! call PackLogs.isEmpty())
-         if(call PackLogs.contains(src))
-            if((call PackLogs.get(seq)) <= seq)
+       if(! call PackLogs.isEmpty()) {
+         if(call PackLogs.contains(src)) {
+            if((call PackLogs.get(seq)) <= seq) {
               return 1;
+            }
+          }
+        }
       //otherwise we havent seen the packet before
        return 0;
      }
@@ -147,6 +150,7 @@ implementation{
            //  Package Log
            logPack(myMsg);
            logPack(&sendPackage);
+           updatePack(&sendPackage);
            updatePack(myMsg);
          }
 
