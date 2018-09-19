@@ -101,10 +101,10 @@ implementation{
 
        uint32_t src;
        if (payload->protocol == PROTOCOL_PING) {
-         uint32_t src = payload->src;
+         src = payload->src;
        }
-       if (payload->protocol == PROTOCOL_PINGREPLY) {
-         uint32_t src = payload->dest;
+       else if (payload->protocol == PROTOCOL_PINGREPLY) {
+         src = payload->dest;
        }
        uint32_t seq = payload->seq;
 
