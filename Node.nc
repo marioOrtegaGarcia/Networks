@@ -98,7 +98,11 @@ implementation{
      }
 
      bool hasSeen(pack* payload) {
-       uint32_t src = payload->src;
+       if (payload->protocol == PROTOCOL_PING) {
+         uint32_t src = payload->src;
+       } else if (payload->protocol == PROTOCOL_PINGREPLY) {
+         uint32_t src = payload->dest;
+       }
        uint32_t seq = payload->seq;
 
        //if packet log isnt empty and contains the src key
