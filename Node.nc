@@ -107,9 +107,9 @@ implementation{
        if(! call PackLogs.isEmpty())
          if(call PackLogs.contains(src))
             if((call PackLogs.get(seq)) < seq)
-              return true;
+              return 1;
       //otherwise we havent seen the packet before
-       return false;
+       return 0;
      }
      /*
 
@@ -165,17 +165,19 @@ implementation{
      //  Ping Protocol
      if (myMsg->protocol == PROTOCOL_PING) {
        // My Message
-       if (myMsg->dest == TOS_NODE_ID && !hasSeen(myMsg)) {
-         //  Recieve message
-         //dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
-         dbg(FLOODING_CHANNEL, "Received Package Payload: %s\n", myMsg->payload);
-         //  Ping reply
-         nodeSeq++;
-         makePack(&sendPackage, myMsg->dest, myMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)myMsg->payload, len);
-         call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-         //  Package Log
-         checkPack(myMsg);
-
+       if (myMsg->dest == TOS_NODE_ID) {
+         if (!hasSeen(myMsg)) {
+           //  Recieve message
+           //dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
+           dbg(FLOODING_CHANNEL, "Received Package Payload: %s\n", myMsg->payload);
+           //  Ping reply
+           nodeSeq++;
+           makePack(&sendPackage, myMsg->dest, myMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)myMsg->payload, len);
+           call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+           //  Package Log
+           checkPack(myMsg);
+         }
+         
        // Not my Message
        } else {
          //Forward to printNeighbors
