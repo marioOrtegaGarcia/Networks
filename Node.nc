@@ -165,7 +165,8 @@ implementation{
          //Ping Reply?
          //Log Pack
          //logPack(myMsg);
-         updatePack(myMsg);
+         ////////////////updatePack(myMsg);
+         updatePack(&sendPackage);
        }
 
      } // End of Ping Protocol
@@ -178,14 +179,16 @@ implementation{
          if (myMsg->dest == TOS_NODE_ID) {
 
            dbg(FLOODING_CHANNEL, "MADE IT!!!!!!!!!!!!!!!!!!!!!!\n");
-           updatePack(myMsg);
+           ////////////////updatePack(myMsg);
+           updatePack(&sendPackage);
            return msg;
          } else {
            if(myMsg->TTL > 0) myMsg->TTL -= /*(nx_uint8_t)*/ 1;
            makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
            logPack(myMsg);
-           updatePack(myMsg);
+           ////////////////updatePack(myMsg);
+           updatePack(&sendPackage);
          }
 
        }
