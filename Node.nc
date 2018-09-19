@@ -145,6 +145,7 @@ implementation{
            dbg(FLOODING_CHANNEL, "<> Received Package Payload: %s\n", myMsg->payload);
            //  Ping reply
            updatePack(&sendPackage);
+           updatePack(myMsg);
            nodeSeq++;
            makePack(&sendPackage, myMsg->dest, myMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)myMsg->payload, len);
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
@@ -153,8 +154,6 @@ implementation{
            logPack(myMsg);
            dbg(GENERAL_CHANNEL, "sendPackage sendPackage sendPackage sendPackage sendPackage sendPackage sendPackage \n");
            logPack(&sendPackage);
-
-           //updatePack(myMsg);
          }
 
        // Not my Message
