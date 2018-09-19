@@ -136,25 +136,24 @@ implementation{
 
      //  Ping Protocol
      if (myMsg->protocol == PROTOCOL_PING) {
-
        // My Message
        if (myMsg->dest == TOS_NODE_ID) {
            //  Recieve message
-           //~~Sdbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
            dbg(FLOODING_CHANNEL, "<> Received Package Payload: %s\n", myMsg->payload);
-           //  Ping reply
-           updatePack(&sendPackage);
+           updatePack(myMsg);
 
+           //  Ping reply
            nodeSeq++;
            makePack(&sendPackage, myMsg->dest, myMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)myMsg->payload, len);
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+
            //  Package Log
            dbg(GENERAL_CHANNEL, "myMsg myMsg myMsg myMsg myMsg myMsg myMsg myMsg myMsg myMsg \n");
            logPack(myMsg);
            dbg(GENERAL_CHANNEL, "sendPackage sendPackage sendPackage sendPackage sendPackage sendPackage sendPackage \n");
            logPack(&sendPackage);
            updatePack(&sendPackage);
-           updatePack(myMsg);
+           //updatePack(myMsg);
 
        // Not my Message
        } else {
@@ -177,7 +176,7 @@ implementation{
          if (myMsg->dest == TOS_NODE_ID) {
            dbg(FLOODING_CHANNEL, "MADE IT!!!!!!!!!!!!!!!!!!!!!!\n");
            ////////////////updatePack(myMsg);
-           updatePack(&sendPackage);
+           updatePack(&myMsg);
            return msg;
          } else {
            if (!hasSeen(myMsg)) {
