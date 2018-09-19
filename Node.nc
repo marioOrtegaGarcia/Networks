@@ -90,9 +90,10 @@ implementation{
        //if packet log isnt empty and contains the src key
       if(!hasSeen(payload)){
         //remove old key value pair and insert new one
-        logPack(payload);
+
         call PackLogs.remove(src);
        }
+       logPack(payload);
        call PackLogs.insert(src, seq);
      }
 
