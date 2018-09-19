@@ -162,7 +162,7 @@ implementation{
          dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
          //  Ping reply
          nodeSeq++;
-         makePack(&sendPackage, myMsg->dest, myMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t)myMsg->payload, len);
+         makePack(&sendPackage, myMsg->dest, myMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)myMsg->payload, len);
          call Sender.send(sendPackage, AM_BROADCAST_ADDR);
          //  Package Log
          checkPack(myMsg);
