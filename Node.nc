@@ -89,7 +89,8 @@ implementation{
        uint32_t seq = payload->seq;
 
        //if packet log isnt empty and contains the src key
-       if(! call PackLogs.isEmpty() && call PackLogs.contains(src)){
+       if(! call PackLogs.isEmpty()) {
+         if(call PackLogs.contains(src)){
 
          //and if the value at the src key is less than the current packet's sequence, then we know we haven't seen this packet before
          if(call PackLogs.get(seq) < seq){
@@ -98,6 +99,7 @@ implementation{
            call PackLogs.remove(src);
            call PackLogs.insert(src, seq);
          }
+        }
        }
      }
      /*
