@@ -196,8 +196,10 @@ implementation{
      //  Ping Reply Protocol
      if (myMsg->protocol == PROTOCOL_PINGREPLY) {
        if (myMsg->dest == TOS_NODE_ID) {
-         dbg(FLOODING_CHANNEL, "MADE IT!!!!!!!!!!!!!!!!!!!!!!\n");
-         updatePack(myMsg);
+         if (!hasSeen(myMsg)) {
+           dbg(FLOODING_CHANNEL, "MADE IT!!!!!!!!!!!!!!!!!!!!!!\n");
+           updatePack(myMsg);
+         }
        } else {
          if(myMsg->TTL > 0)
           myMsg->TTL -= /*(nx_uint8_t)*/ 1;
