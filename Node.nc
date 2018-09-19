@@ -117,74 +117,72 @@ implementation{
      //  type message_t contains our AM pack
      //  We need to send to everyone, and just check with this function if it's meant for us.
    event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len){
-     pack* myMsg =(pack*) payload;
+     pack* recievedMsg =(pack*) payload;
      //  Know if it's a ping/pingReply
      //  Check to see if i've received it or not, check list
      //  Checking if its for self first, if it is let sender know I got it
      //  If not, then forward the message to AMBroadcast
      //
      //dbg(GENERAL_CHANNEL, "Packet Received\n");
-     //pack* myMsg;
-     //myMsg=(pack*) payload;
+     //pack* recievedMsg;
+     //recievedMsg=(pack*) payload;
 
      // Take out Packs that are corrupted or dead or that we have seen
-     if (len !=sizeof(pack) || myMsg->TTL == 0 || hasSeen(myMsg)) {
+     if (len !=sizeof(pack) || recievedMsg->TTL == 0 || hasSeen(recievedMsg)) {
        // Kill
        //dbg(FLOODING_CHANNEL, "Package Dead\n");
        return msg;
      }
 
      //  Ping Protocol
-     if (myMsg->protocol == PROTOCOL_PING) {
+     if (recievedMsg->protocol == PROTOCOL_PING) {
        // My Message
-       if (myMsg->dest == TOS_NODE_ID) {
-           //  Recieve message
-           dbg(FLOODING_CHANNEL, "<> Received Package Payload: %s\n", myMsg->payload);
-           updatePack(myMsg);
+       if (recievedMsg->dest == TOS_NODE_ID) {
+           //  Recieve myMessage
+           dbg(FLOODING_CHANNEL, "<> Received Package Payload: %s\n", recievedMsg->payload);
+           updatePack(recievedMsg);
 
-           //  Ping reply
+           //  Reply w/ pingReply
            nodeSeq++;
-           makePack(&sendPackage, myMsg->dest, myMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)myMsg->payload, len);
+           makePack(&sendPackage, recievedMsg->dest, recievedMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)recievedMsg->payload, len);
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
 
            //  Package Log
-           dbg(GENERAL_CHANNEL, "myMsg myMsg myMsg myMsg myMsg myMsg myMsg myMsg myMsg myMsg \n");
-           logPack(myMsg);
-           dbg(GENERAL_CHANNEL, "sendPackage sendPackage sendPackage sendPackage sendPackage sendPackage sendPackage \n");
+           logPack(recievedMsg);
            logPack(&sendPackage);
            updatePack(&sendPackage);
-           //updatePack(myMsg);
+           //updatePack(recievedMsg);
 
        // Not my Message
        } else {
          //Forward to printNeighbors
-         if (myMsg->TTL > 0) myMsg->TTL -= /*(nx_uint8_t)*/ 1;
-         makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
+         if (recievedMsg->TTL > 0) recievedMsg->TTL -= /*(nx_uint8_t)*/ 1;
+         makePack(&sendPackage, recievedMsg->src, recievedMsg->dest, recievedMsg->TTL, recievedMsg->protocol, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
          call Sender.send(sendPackage, AM_BROADCAST_ADDR);
          //Ping Reply?
          //Log Pack
-         //logPack(myMsg);
-         ////////////////updatePack(myMsg);
+         //logPack(recievedMsg);
+         ////////////////updatePack(recievedMsg);
          updatePack(&sendPackage);
        }
 
      } // End of Ping Protocol
 
      //  Ping Reply Protocol
-     if (myMsg->protocol == PROTOCOL_PINGREPLY) {
+     if (recievedMsg->protocol == PROTOCOL_PINGREPLY) {
        //package is mine
-         if (myMsg->dest == TOS_NODE_ID) {
+         if (recievedMsg->dest == TOS_NODE_ID) {
            dbg(FLOODING_CHANNEL, "MADE IT!!!!!!!!!!!!!!!!!!!!!!\n");
-           ////////////////updatePack(myMsg);
-           updatePack(&myMsg);
+           ////////////////updatePack(recievedMsg);
+           updatePack(&recievedMsg);
            return msg;
          } else {
-           if (!hasSeen(myMsg)) {
-             if(myMsg->TTL > 0) myMsg->TTL -= /*(nx_uint8_t)*/ 1;
-             makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
+           if (!hasSeen(recievedMsg)) {
+             if(recievedMsg->TTL > 0) recievedMsg->TTL -= /*(nx_uint8_t)*/ 1;
+             makePack(&sendPackage, recievedMsg->src, recievedMsg->dest, recievedMsg->TTL, recievedMsg->protocol, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
              call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-             logPack(myMsg);
-             //updatePack(myMsg);
+             logPack(recievedMsg);
+             //updatePack(recievedMsg);
              updatePack(&sendPackage);
            }
          }
