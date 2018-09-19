@@ -169,7 +169,7 @@ implementation{
          if (!hasSeen(myMsg)) {
            //  Recieve message
            //~~Sdbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
-           dbg(FLOODING_CHANNEL, "Received Package Payload: %s\n", myMsg->payload);
+           dbg(FLOODING_CHANNEL, "<> Received Package Payload: %s\n", myMsg->payload);
            //  Ping reply
            nodeSeq++;
            makePack(&sendPackage, myMsg->dest, myMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)myMsg->payload, len);
@@ -306,7 +306,7 @@ implementation{
 
       nodeSeq++;
       makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
-      logPack(&sendPackage);
+      //logPack(&sendPackage);
 
       call Sender.send(sendPackage, AM_BROADCAST_ADDR);
    }
