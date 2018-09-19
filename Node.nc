@@ -107,9 +107,9 @@ implementation{
        if(! call PackLogs.isEmpty())
          if(call PackLogs.contains(src))
             if((call PackLogs.get(seq)) < seq)
-              return 1;
+              return 0;
       //otherwise we havent seen the packet before
-       return 0;
+       return 1;
      }
      /*
 
@@ -166,7 +166,7 @@ implementation{
      if (myMsg->protocol == PROTOCOL_PING) {
        // My Message
        if (myMsg->dest == TOS_NODE_ID) {
-         if (hasSeen(myMsg)) {
+         if (!hasSeen(myMsg)) {
            //  Recieve message
            //dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
            dbg(FLOODING_CHANNEL, "Received Package Payload: %s\n", myMsg->payload);
