@@ -150,8 +150,8 @@ implementation{
            //  Package Log
            logPack(recievedMsg);
            logPack(&sendPackage);
-           updatePack(&sendPackage);
-           //updatePack(recievedMsg);
+           //updatePack(&sendPackage);
+           updatePack(recievedMsg);
 
        // Not my Message
        } else {
