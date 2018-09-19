@@ -152,7 +152,7 @@ implementation{
      // Take out Packs that are corrupted or dead
      if (len !=sizeof(pack) || myMsg->TTL == 0) {
        // Kill
-       dbg(GENERAL_CHANNEL, "Package Dead: \n");
+       //dbg(GENERAL_CHANNEL, "Package Dead\n");
      }
 
      //  Ping Protocol
@@ -160,7 +160,8 @@ implementation{
        // My Message
        if (myMsg->dest == TOS_NODE_ID) {
          //  Recieve message
-         dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
+         //dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
+         dbg(FLOODING_CHANNEL, "Received Package Payload: %s\n", myMsg->payload);
          //  Ping reply
          nodeSeq++;
          makePack(&sendPackage, myMsg->dest, myMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)myMsg->payload, len);
