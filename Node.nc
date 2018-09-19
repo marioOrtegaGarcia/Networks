@@ -163,7 +163,7 @@ implementation{
          //  Ping reply
          nodeSeq++;
          makePack(&sendPackage, myMsg->dest, myMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t)myMsg->payload, len);
-         call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+         call Sender.send(&sendPackage, AM_BROADCAST_ADDR);
          //  Package Log
          checkPack(myMsg);
 
@@ -171,7 +171,7 @@ implementation{
        } else {
          //Forward to printNeighbors
          makePack(&sendPackage, myMsg->src, myMsg->dest, --myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
-         call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+         call Sender.send(&sendPackage, AM_BROADCAST_ADDR);
          //Ping Reply?
          //Log Pack
          checkPack(myMsg);
@@ -184,7 +184,7 @@ implementation{
          checkPack(myMsg);
        } else {
          makePack(&sendPackage, myMsg->src, myMsg->dest, --myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
-         call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+         call Sender.send(&sendPackage, AM_BROADCAST_ADDR);
          checkPack(myMsg);
        }
 
@@ -287,7 +287,7 @@ implementation{
       makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
       logPack(&sendPackage);
 
-      call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+      call Sender.send(&sendPackage, AM_BROADCAST_ADDR);
    }
 
    //  This are functions we are going to be implementing in the future.
