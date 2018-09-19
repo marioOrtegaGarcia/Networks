@@ -98,19 +98,20 @@ implementation{
      }
 
      bool hasSeen(pack* payload) {
-       uint32_t seq;
-       uint32_t src;
+       uint32_t seq = payload->seq;
+       uint32_t src = payload->src;
+
 
       if (payload->protocol == PROTOCOL_PINGREPLY) {
         src = payload->dest;
       } else {
-        src = payload->src;
+        src =
       }
-        seq = payload->seq;
+        seq
 
        //if packet log isnt empty and contains the src key
        //and if the value at the src key is less than the current packet's sequence, then we know we haven't seen this packet before
-       //if(! call PackLogs.isEmpty())
+       if(! call PackLogs.isEmpty())
          if(call PackLogs.contains(src))
             if((call PackLogs.get(seq)) <= seq)
               return 1;
