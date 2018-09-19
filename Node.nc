@@ -25,7 +25,7 @@ module Node{
 
    uses interface CommandHandler;
 
-   uses interface Hashmap <pack> as PackLogs;
+   uses interface Hashmap <uint32_t> as PackLogs;
 }
 /* Pseudo Code from Lab TA
 *  First Part of Project
@@ -93,7 +93,7 @@ implementation{
          if(call PackLogs.contains(src)){
 
          //and if the value at the src key is less than the current packet's sequence, then we know we haven't seen this packet before
-         if(call PackLogs.get(seq) < seq){
+         if((call PackLogs.get(seq)) < seq){
 
            //remove old key value pair and insert new one
            call PackLogs.remove(src);
