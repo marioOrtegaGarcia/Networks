@@ -93,7 +93,7 @@ implementation{
 
         call PackLogs.remove(src);
        }
-       logPack(payload);
+       //logPack(payload);
        call PackLogs.insert(src, seq);
      }
 
