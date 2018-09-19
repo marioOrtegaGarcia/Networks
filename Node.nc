@@ -163,20 +163,21 @@ implementation{
      //  Ping Reply Protocol
      if (myMsg->protocol == PROTOCOL_PINGREPLY) {
        //package is mine
-       if (myMsg->dest == TOS_NODE_ID) {
-         if (!hasSeen(myMsg)) {
+       if (!hasSeen(myMsg)) {
+
+         if (myMsg->dest == TOS_NODE_ID) {
            logPack(myMsg);
            dbg(FLOODING_CHANNEL, "MADE IT!!!!!!!!!!!!!!!!!!!!!!\n");
            updatePack(myMsg);
+         } else {
+           if(myMsg->TTL > 0) myMsg->TTL -= /*(nx_uint8_t)*/ 1;
+           makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, myMsg->protocol, nodeSeq, (uint8_t*)myMsg->payload, len);
+           call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+           //logPack(myMsg);
+           updatePack(myMsg);
          }
-       } else {
-         if(myMsg->TTL > 0) myMsg->TTL -= /*(nx_uint8_t)*/ 1;
-         makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, myMsg->protocol, nodeSeq, (uint8_t*)myMsg->payload, len);
-         call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-         //logPack(myMsg);
-         updatePack(myMsg);
+         
        }
-
      } // End of Ping Reply Protocol
 
     return msg;
