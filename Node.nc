@@ -148,7 +148,9 @@ implementation{
            makePack(&sendPackage, myMsg->dest, myMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)myMsg->payload, len);
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
            //  Package Log
+           dbg(GENERAL_CHANNEL, "myMsg log: ");
            logPack(myMsg);
+           dbg(GENERAL_CHANNEL, "sendPackage log: ");
            logPack(&sendPackage);
            updatePack(&sendPackage);
            updatePack(myMsg);
