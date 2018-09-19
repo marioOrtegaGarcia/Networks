@@ -153,7 +153,7 @@ implementation{
            dbg(GENERAL_CHANNEL, "sendPackage sendPackage sendPackage sendPackage sendPackage sendPackage sendPackage \n");
            logPack(&sendPackage);
            updatePack(&sendPackage);
-           updatePack(myMsg);
+           //updatePack(myMsg);
          }
 
        // Not my Message
