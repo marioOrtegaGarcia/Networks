@@ -98,6 +98,8 @@ implementation{
      }
 
      bool hasSeen(pack* payload) {
+
+       uint32_t src;
        if (payload->protocol == PROTOCOL_PING) {
          uint32_t src = payload->src;
        }
@@ -179,7 +181,7 @@ implementation{
            updatePack(myMsg);
          } else {
            if(myMsg->TTL > 0) myMsg->TTL -= /*(nx_uint8_t)*/ 1;
-           makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, myMsg->protocol, nodeSeq, (uint8_t*)myMsg->payload, len);
+           makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
            //logPack(myMsg);
            updatePack(myMsg);
