@@ -178,7 +178,7 @@ implementation{
            if(myMsg->TTL > 0) myMsg->TTL -= /*(nx_uint8_t)*/ 1;
            makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-           //logPack(myMsg);
+           logPack(myMsg);
            updatePack(myMsg);
          }
 
