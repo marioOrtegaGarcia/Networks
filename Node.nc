@@ -172,7 +172,7 @@ implementation{
          call Sender.send(sendPackage, AM_BROADCAST_ADDR);
          //Ping Reply?
          //Log Pack
-         checkPack(myMsg)
+         checkPack(myMsg);
        }
      } // End of Ping Protocol
 
