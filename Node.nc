@@ -159,7 +159,7 @@ implementation{
      // Take out Packs that are corrupted or dead
      if (len !=sizeof(pack) || myMsg->TTL == 0) {
        // Kill
-       dbg(FLOODING_CHANNEL, "Package Dead\n");
+       //~~dbg(FLOODING_CHANNEL, "Package Dead\n");
      }
 
      //  Ping Protocol
