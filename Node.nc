@@ -134,34 +134,33 @@ implementation{
      //  Ping Protocol
      if (myMsg->protocol == PROTOCOL_PING) {
        if (!hasSeen(myMsg)) {
-         // My Message
-         if (myMsg->dest == TOS_NODE_ID) {
+       // My Message
+       if (myMsg->dest == TOS_NODE_ID) {
 
-            //  Recieve message
-            //~~Sdbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
-            dbg(FLOODING_CHANNEL, "<> Received Package Payload: %s\n", myMsg->payload);
-            //  Ping reply
-            nodeSeq++;
-            makePack(&sendPackage, myMsg->dest, myMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)myMsg->payload, len);
-            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-            //  Package Log
-            //logPack(myMsg);
-            updatePack(myMsg);
+           //  Recieve message
+           //~~Sdbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
+           dbg(FLOODING_CHANNEL, "<> Received Package Payload: %s\n", myMsg->payload);
+           //  Ping reply
+           nodeSeq++;
+           makePack(&sendPackage, myMsg->dest, myMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)myMsg->payload, len);
+           call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+           //  Package Log
+           //logPack(myMsg);
+           updatePack(myMsg);
 
 
-            // Not my Message
-            } else {
-              //Forward to printNeighbors
-              if (myMsg->TTL > 0) myMsg->TTL -= /*(nx_uint8_t)*/ 1;
-              makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
-              call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-              //Ping Reply?
-              //Log Pack
-              //logPack(myMsg);
-              updatePack(myMsg);
-            }
-          }
-        }
+       // Not my Message
+       } else {
+         //Forward to printNeighbors
+         if (myMsg->TTL > 0) myMsg->TTL -= /*(nx_uint8_t)*/ 1;
+         makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
+         call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+         //Ping Reply?
+         //Log Pack
+         //logPack(myMsg);
+         updatePack(myMsg);
+       }
+     }
      } // End of Ping Protocol
 
      //  Ping Reply Protocol
