@@ -154,6 +154,7 @@ implementation{
            logPack(myMsg);
            dbg(GENERAL_CHANNEL, "sendPackage sendPackage sendPackage sendPackage sendPackage sendPackage sendPackage \n");
            logPack(&sendPackage);
+           updatePack(sendPackage);
            updatePack(myMsg);
          }
 
@@ -188,7 +189,7 @@ implementation{
            makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
            logPack(myMsg);
-           ////////////////updatePack(myMsg);
+           //updatePack(myMsg);
            updatePack(&sendPackage);
          }
 
