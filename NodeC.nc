@@ -18,15 +18,15 @@ implementation {
     components MainC;
     components Node;
     components new AMReceiverC(AM_PACK) as GeneralReceive;
+    components new HashmapC(uint32_t,18) as PackLogsC;
     //components new TimerMilliC() as NodeTimerC;
-
-
 
     //  This is where we are Wiring our whole program.
     //  We are basically wiring objects together so they can talk to each other, this is their interface.
     Node -> MainC.Boot;
 
     Node.Receive -> GeneralReceive;
+    Node.PackLogs -> PackLogsC;
 
     //NodeTimerC.
 
@@ -39,7 +39,7 @@ implementation {
     components CommandHandlerC;
     Node.CommandHandler -> CommandHandlerC;
 
-    components new HashmapC(pack,18) as PackLogsC;
-    Node.PackLogs -> PackLogsC;
+
+
 
 }
