@@ -105,9 +105,9 @@ implementation{
        if(! call PackLogs.isEmpty())
          if(call PackLogs.contains(src))
             if((call PackLogs.get(seq)) < seq)
-              return 0;
+              return 1;
       //otherwise we havent seen the packet before
-       return 1;
+       return 0;
      }
 
      //  type message_t contains our AM pack
