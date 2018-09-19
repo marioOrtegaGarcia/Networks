@@ -130,7 +130,7 @@ implementation{
      // Take out Packs that are corrupted or dead or that we have seen
      if (len !=sizeof(pack) || myMsg->TTL == 0 || hasSeen(myMsg)) {
        // Kill
-       dbg(FLOODING_CHANNEL, "Package Dead\n");
+       //dbg(FLOODING_CHANNEL, "Package Dead\n");
        return msg;
      }
 
@@ -153,7 +153,7 @@ implementation{
            logPack(myMsg);
            dbg(GENERAL_CHANNEL, "sendPackage sendPackage sendPackage sendPackage sendPackage sendPackage sendPackage \n");
            logPack(&sendPackage);
-           //updatePack(&sendPackage);
+           updatePack(&sendPackage);
            updatePack(myMsg);
 
        // Not my Message
