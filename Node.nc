@@ -55,6 +55,7 @@ implementation{
    // Prototypes
    void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
    void checkPack(pack* payload);
+   bool hasSeen(pack* payload);
    //void savePack(pack* payload);
 
    event void Boot.booted(){
@@ -89,18 +90,26 @@ implementation{
        uint32_t seq = payload->seq;
 
        //if packet log isnt empty and contains the src key
-       if(! call PackLogs.isEmpty()) {
-         if(call PackLogs.contains(src)){
+      if(hasSeen(payload)){
 
-         //and if the value at the src key is less than the current packet's sequence, then we know we haven't seen this packet before
-         if((call PackLogs.get(seq)) < seq){
-
-           //remove old key value pair and insert new one
-           call PackLogs.remove(src);
-           call PackLogs.insert(src, seq);
-         }
-        }
+        //remove old key value pair and insert new one
+        call PackLogs.remove(src);
+        call PackLogs.insert(src, seq);
        }
+     }
+
+     bool hasSeen(pack* payload) {
+       uint32_t src = payload->src;
+       uint32_t seq = payload->seq;
+
+       //if packet log isnt empty and contains the src key
+       //and if the value at the src key is less than the current packet's sequence, then we know we haven't seen this packet before
+       if(! call PackLogs.isEmpty())
+         if(call PackLogs.contains(src))
+            if((call PackLogs.get(seq)) < seq)
+              return true;
+      //otherwise we havent seen the packet before
+       return false;
      }
      /*
 
@@ -143,22 +152,20 @@ implementation{
      //  Checking if its for self first, if it is let sender know I got it
      //  If not, then forward the message to AMBroadcast
      //
-
      //dbg(GENERAL_CHANNEL, "Packet Received\n");
-
      //pack* myMsg;
      //myMsg=(pack*) payload;
 
      // Take out Packs that are corrupted or dead
      if (len !=sizeof(pack) || myMsg->TTL == 0) {
        // Kill
-       //dbg(GENERAL_CHANNEL, "Package Dead\n");
+       dbg(FLOODING_CHANNEL, "Package Dead\n");
      }
 
      //  Ping Protocol
      if (myMsg->protocol == PROTOCOL_PING) {
        // My Message
-       if (myMsg->dest == TOS_NODE_ID) {
+       if (myMsg->dest == TOS_NODE_ID && !hasSeen(myMsg)) {
          //  Recieve message
          //dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
          dbg(FLOODING_CHANNEL, "Received Package Payload: %s\n", myMsg->payload);
