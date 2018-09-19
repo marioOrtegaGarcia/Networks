@@ -54,7 +54,7 @@ implementation{
 
    // Prototypes
    void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
-   void checkPack(pack* payload);
+   void updatePack(pack* payload);
    bool hasSeen(pack* payload);
    //void savePack(pack* payload);
 
@@ -84,7 +84,7 @@ implementation{
      //checks to see if current packet has been seen beofore. returns true if it has been seen
 
      //check packets to see if they have passed through this node beofore
-     void checkPack(pack* payload) {
+     void updatePack(pack* payload) {
 
        uint32_t src = payload->src;
        uint32_t seq = payload->seq;
@@ -159,7 +159,7 @@ implementation{
      // Take out Packs that are corrupted or dead
      if (len !=sizeof(pack) || myMsg->TTL == 0) {
        // Kill
-       //~~dbg(FLOODING_CHANNEL, "Package Dead\n");
+       dbg(FLOODING_CHANNEL, "Package Dead\n");
      }
 
      //  Ping Protocol
@@ -175,7 +175,7 @@ implementation{
            makePack(&sendPackage, myMsg->dest, myMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)myMsg->payload, len);
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
            //  Package Log
-           checkPack(myMsg);
+           updatePack(myMsg);
          }
 
        // Not my Message
@@ -186,19 +186,19 @@ implementation{
          call Sender.send(sendPackage, AM_BROADCAST_ADDR);
          //Ping Reply?
          //Log Pack
-         checkPack(myMsg);
+         updatePack(myMsg);
        }
      } // End of Ping Protocol
 
      //  Ping Reply Protocol
      if (myMsg->protocol == PROTOCOL_PINGREPLY) {
        if (myMsg->dest == TOS_NODE_ID) {
-         checkPack(myMsg);
+         updatePack(myMsg);
        } else {
          myMsg->TTL -= (nx_uint8_t) 1;
          makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
          call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-         checkPack(myMsg);
+         updatePack(myMsg);
        }
 
      } // End of Ping Reply Protocol
