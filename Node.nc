@@ -146,6 +146,7 @@ implementation{
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
            //  Package Log
            logPack(myMsg);
+           logPack(sendPackage);
            updatePack(myMsg);
          }
 
@@ -169,7 +170,7 @@ implementation{
        if (!hasSeen(myMsg)) {
 
          if (myMsg->dest == TOS_NODE_ID) {
-           logPack(myMsg);
+
            dbg(FLOODING_CHANNEL, "MADE IT!!!!!!!!!!!!!!!!!!!!!!\n");
            updatePack(myMsg);
            return msg;
