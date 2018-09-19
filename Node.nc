@@ -81,8 +81,6 @@ implementation{
    //  **Might have to implement this one later
    event void AMControl.stopDone(error_t err){}
 
-     //checks to see if current packet has been seen beofore. returns true if it has been seen
-
      //check packets to see if they have passed through this node beofore
      void updatePack(pack* payload) {
 
@@ -91,11 +89,10 @@ implementation{
 
        //if packet log isnt empty and contains the src key
       if(hasSeen(payload)){
-
         //remove old key value pair and insert new one
         call PackLogs.remove(src);
-        call PackLogs.insert(src, seq);
        }
+       call PackLogs.insert(src, seq);
      }
 
      bool hasSeen(pack* payload) {
@@ -111,37 +108,6 @@ implementation{
       //otherwise we havent seen the packet before
        return 1;
      }
-     /*
-
-   bool checkPack(pack payload){
-
-     uint16_t src = payload.src;
-     uint16_t seq = payload.seq;
-
-     if (call PackLogs.isEmpty()) {
-       return 0;
-     } else {
-       for (index = 0; index < call PackLogs.size(); index++) {
-         sendPackage = call PackLogs.get((uint16_t)index);
-         if (payload.src == sendPackage.src)
-          if (payload.seq <= sendPackage.seq)
-            return 1;
-       }
-       return 0;
-     }
-   }
-
-   //stores src and seq info in PackLogs hashmap
-   void savePack(pack payload){
-
-     uint16_t src = payload.src;
-     uint16_t seq = payload.seq;
-     //dbg(GENERAL_CHANNEL, "PackLogs Size: %s", call PackLogs.size())
-     if (call PackLogs.size() == (uint16_t)18)
-       call PackLogs.popfront();
-     call PackLogs.pushback(payload);
-   }
-   */
 
      //  type message_t contains our AM pack
      //  We need to send to everyone, and just check with this function if it's meant for us.
@@ -195,6 +161,7 @@ implementation{
 
      //  Ping Reply Protocol
      if (myMsg->protocol == PROTOCOL_PINGREPLY) {
+       //package is mine
        if (myMsg->dest == TOS_NODE_ID) {
          if (!hasSeen(myMsg)) {
            dbg(FLOODING_CHANNEL, "MADE IT!!!!!!!!!!!!!!!!!!!!!!\n");
@@ -212,91 +179,6 @@ implementation{
      } // End of Ping Reply Protocol
 
     return msg;
-
-    /* if (len==sizeof(pack)) {
-       //  Pack found
-       pack* myMsg=(pack*) payload;
-       (myMsg);
-       //  Checking if this is a Ping Protocol
-       if (myMsg->protocol == PROTOCOL_PING) {
-         // Checking if package is at Destination
-         //if package reaches destination send out a reply to inform sender that it was recieved
-         if (myMsg->dest == TOS_NODE_ID) {
-           dbg(GENERAL_CHANNEL, "~~Finally Home~~\n");
-           dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
-
-          // makePack(&sendPackage, myMsg->dest, myMsg->src, myMsg->TTL, PROTOCOL_PINGREPLY, myMsg->seq, myMsg->payload, len);
-           //call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-
-           return msg;
-         } else {
-           if (myMsg->TTL == 0) {
-             dbg(GENERAL_CHANNEL, "MESSAGE DIED \n");
-           } else {
-            if (myMsg->src == TOS_NODE_ID) {
-              if (myMsg->seq < nodeSeq) {
-                //  An old ping from me
-                logPack(&sendPackage);
-              }
-            } else {
-              makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
-              if (! checkPack(sendPackage)) {
-                savePack(sendPackage);
-                // Forward Cause message not mine, not from me, but it is alive
-                // Send to someone else
-                makePack(&sendPackage, myMsg->src, myMsg->dest, --myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
-                call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-                return msg;
-              }
-            }
-           }
-         }
-         // Checking if this is a Ping Reply Protocol
-       } else if (myMsg->protocol == PROTOCOL_PINGREPLY) {
-         //logPack(&myMsg);
-         // Unknown Protocol
-       } else {
-         dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
-         return msg;
-       }
-     }*/
-/*
-       // Checking if this is a Ping Protocol
-       if (myMsg->protocol == PROTOCOL_PING) {
-        // Checking if package is at Destination
-        if (myMsg->dest == TOS_NODE_ID) {
-          dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
-          return msg;
-        } else {
-          // if Pack not home and alive then send it
-          // My Message time to live is 0
-          if (myMsg->TTL == 0) {
-             dbg(GENERAL_CHANNEL, "MESSAGE DIED \n");
-        } else {
-          if (myMsg->src == TOS_NODE_ID) {
-            if (myMsg->seq < nodeSeq) {
-              // An old ping from me
-              logPack(&sendPackage);
-            }
-          } else {
-            // Ping Back
-            makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, PROTOCOL_PINGREPLY, myMsg->seq, payload, len);
-            logPack(&sendPackage);
-            call Sender.send(sendPackage, myMsg->src);
-
-            // Send to someone else
-            makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL--, myMsg->protocol, myMsg->seq, payload, len);
-            logPack(&sendPackage);
-            call Sender.send(sendPackage, myMsg->dest);
-
-            return msg;
-          }
-        }
-       }
-     }
-     //dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
-     //return msg;
-     */
    }
 
    // This is how we send a message to one another
