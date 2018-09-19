@@ -152,7 +152,7 @@ implementation{
      // Take out Packs that are corrupted or dead
      if (len !=sizeof(pack) || myMsg->TTL == 0) {
        // Kill
-       dbg(GENERAL_CHANNEL, "Package Dead: %s\n", myMsg->payload);
+       dbg(GENERAL_CHANNEL, "Package Dead: \n");
      }
 
      //  Ping Protocol
