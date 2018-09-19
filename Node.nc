@@ -157,7 +157,7 @@ implementation{
      //myMsg=(pack*) payload;
 
      // Take out Packs that are corrupted or dead
-     if (len !=sizeof(pack) || myMsg->TTL == 1) {
+     if (len !=sizeof(pack) || myMsg->TTL == 0) {
        // Kill
        dbg(FLOODING_CHANNEL, "Package Dead\n");
      }
@@ -182,7 +182,8 @@ implementation{
        // Not my Message
        } else {
          //Forward to printNeighbors
-         myMsg->TTL -= (nx_uint8_t) 1;
+         if (myMsg->TTL > 0)
+          myMsg->TTL -= (nx_uint8_t) 1;
          makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
          call Sender.send(sendPackage, AM_BROADCAST_ADDR);
          //Ping Reply?
@@ -197,7 +198,8 @@ implementation{
        if (myMsg->dest == TOS_NODE_ID) {
          updatePack(myMsg);
        } else {
-         myMsg->TTL -= (nx_uint8_t) 1;
+         if(myMsg->TTL > 0)
+          myMsg->TTL -= (nx_uint8_t) 1;
          makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
          call Sender.send(sendPackage, AM_BROADCAST_ADDR);
          logPack(myMsg);
