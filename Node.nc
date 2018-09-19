@@ -137,6 +137,7 @@ implementation{
      //  type message_t contains our AM pack
      //  We need to send to everyone, and just check with this function if it's meant for us.
    event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len){
+     pack* myMsg =(pack*) payload;
      //  Know if it's a ping/pingReply
      //  Check to see if i've received it or not, check list
      //  Checking if its for self first, if it is let sender know I got it
@@ -145,8 +146,8 @@ implementation{
 
      dbg(GENERAL_CHANNEL, "Packet Received\n");
 
-     pack* myMsg;
-     myMsg=(pack*) payload;
+     //pack* myMsg;
+     //myMsg=(pack*) payload;
 
      // Take out Packs that are corrupted or dead
      if (len !=sizeof(pack) || myMsg->TTL == 0) {
