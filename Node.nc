@@ -88,7 +88,7 @@ implementation{
        uint32_t seq = payload->seq;
 
        //if packet log isnt empty and contains the src key
-      if(hasSeen(payload)){
+      if(!hasSeen(payload)){
         //remove old key value pair and insert new one
         call PackLogs.remove(src);
        }
