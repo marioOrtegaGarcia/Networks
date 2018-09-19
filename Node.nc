@@ -183,7 +183,7 @@ implementation{
        } else {
          //Forward to printNeighbors
          if (myMsg->TTL > 0)
-          myMsg->TTL -= (nx_uint8_t) 1;
+          myMsg->TTL -= /*(nx_uint8_t)*/ 1;
          makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
          call Sender.send(sendPackage, AM_BROADCAST_ADDR);
          //Ping Reply?
@@ -199,7 +199,7 @@ implementation{
          updatePack(myMsg);
        } else {
          if(myMsg->TTL > 0)
-          myMsg->TTL -= (nx_uint8_t) 1;
+          myMsg->TTL -= /*(nx_uint8_t)*/ 1;
          makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
          call Sender.send(sendPackage, AM_BROADCAST_ADDR);
          logPack(myMsg);
