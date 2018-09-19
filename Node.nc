@@ -166,6 +166,7 @@ implementation{
        //package is mine
        if (myMsg->dest == TOS_NODE_ID) {
          if (!hasSeen(myMsg)) {
+           logPack(myMsg);
            dbg(FLOODING_CHANNEL, "MADE IT!!!!!!!!!!!!!!!!!!!!!!\n");
            updatePack(myMsg);
          }
