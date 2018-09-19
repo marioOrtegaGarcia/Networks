@@ -148,8 +148,8 @@ def main():
     s.runTime(10);
     s.ping(1, 3, "Hi!");
     s.runTime(20);
-    #s.ping(1, 4, "Chao!");
-    #s.runTime(20);
+    s.ping(3, 4, "Chao!");
+    s.runTime(20);
 
 if __name__ == '__main__':
     main()

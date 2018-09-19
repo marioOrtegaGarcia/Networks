@@ -5,7 +5,7 @@
  * @author UCM ANDES Lab
  * @author Alex Beltran
  * @date   2013/09/03
- * 
+ *
  */
 
 interface List<t>{
