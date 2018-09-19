@@ -25,7 +25,7 @@ module Node{
 
    uses interface CommandHandler;
 
-   uses interface List <pack> as PackLogs;
+   uses interface Hashmap <pack> as PackLogs;
 }
 /* Pseudo Code from Lab TA
 *  First Part of Project
@@ -83,13 +83,21 @@ implementation{
      //checks to see if current packet has been seen beofore. returns true if it has been seen
 
      //check packets to see if they have passed through this node beofore
-     void checkPack(pack payload) {
+     void checkPack(pack* payload) {
 
-       uint16_t src = payload.src;
-       uint16_t seq = payload.seq;
+       uint32_t src = payload->src;
+       uint32_t seq = payload->seq;
 
-       if(! call PackLogs.isEmpty()){
+       //if packet log isnt empty and contains the src key
+       if(! call PackLogs.isEmpty() && call PackLogs.contains(src)){
 
+         //and if the value at the src key is less than the current packet's sequence, then we know we haven't seen this packet before
+         if(call PackLogs.get(seq) < seq){
+
+           //remove old key value pair and insert new one
+           call PackLogs.remove(src);
+           call PackLogs.insert(src, seq);
+         }
        }
      }
      /*
@@ -111,7 +119,7 @@ implementation{
        return 0;
      }
    }
-   */
+
    //stores src and seq info in PackLogs hashmap
    void savePack(pack payload){
 
@@ -122,6 +130,7 @@ implementation{
        call PackLogs.popfront();
      call PackLogs.pushback(payload);
    }
+   */
 
      //  type message_t contains our AM pack
      //  We need to send to everyone, and just check with this function if it's meant for us.
@@ -140,27 +149,44 @@ implementation{
      if (len !=sizeof(pack) || myMsg->TTL == 0) {
        // Kill
      }
-     // My Message
+
+     //  Ping Protocol
      if (myMsg->protocol == PROTOCOL_PING) {
-       //  Recieve message
-       //  Ping reply
-       //  Package Log
-     }
-     // Not my Message
-     if () {
-       //Forward to printNeighbors
-       //Ping Reply?
-       //Log Pack
-     }
-     //  Ping Reply
-     if () {
-       //Reply and flood back
-       //Swap src and dst change protocol to ping reply
-     }
+       // My Message
+       if (myMsg->dest == TOS_NODE_ID) {
+         //  Recieve message
+         dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
+         //  Ping reply
+         nodeSeq++;
+         makePack(&sendPackage, myMsg->dest, myMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, myMsg->payload, len);
+         call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+         //  Package Log
+         checkPack(myMsg);
 
+       // Not my Message
+       } else {
+         //Forward to printNeighbors
+         makePack(&sendPackage, myMsg->src, myMsg->dest, --myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
+         call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+         //Ping Reply?
+         //Log Pack
+         checkPack(myMsg)
+       }
+     } // End of Ping Protocol
 
+     //  Ping Reply Protocol
+     if (myMsg->protocol == PROTOCOL_PINGREPLY) {
+       if (myMsg->dest == TOS_NODE_ID) {
+         checkPack(myMsg);
+       } else {
+         makePack(&sendPackage, myMsg->src, myMsg->dest, --myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
+         call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+       }
+     } // End of Ping Reply Protocol
 
-     if (len==sizeof(pack)) {
+    return msg;
+
+    /* if (len==sizeof(pack)) {
        //  Pack found
        pack* myMsg=(pack*) payload;
        logPack(myMsg);
@@ -206,7 +232,7 @@ implementation{
          dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
          return msg;
        }
-     }
+     }*/
 /*
        // Checking if this is a Ping Protocol
        if (myMsg->protocol == PROTOCOL_PING) {
@@ -248,10 +274,13 @@ implementation{
 
    // This is how we send a message to one another
    event void CommandHandler.ping(uint16_t destination, uint8_t *payload){
+
       dbg(GENERAL_CHANNEL, "PING EVENT \n");
 
-      makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq++ , payload, PACKET_MAX_PAYLOAD_SIZE);
+      nodeSeq++;
+      makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
       logPack(&sendPackage);
+
       call Sender.send(sendPackage, AM_BROADCAST_ADDR);
    }
 
