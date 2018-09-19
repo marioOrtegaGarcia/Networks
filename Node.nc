@@ -105,7 +105,7 @@ implementation{
        //and if the value at the src key is less than the current packet's sequence, then we know we haven't seen this packet before
        if(! call PackLogs.isEmpty())
          if(call PackLogs.contains(src))
-            if((call PackLogs.get(seq)) > seq)
+            if((call PackLogs.get(seq)) < seq)
               return 1;
       //otherwise we havent seen the packet before
        return 0;
@@ -171,7 +171,6 @@ implementation{
          }
        } else {
          if(myMsg->TTL > 0) myMsg->TTL -= /*(nx_uint8_t)*/ 1;
-        nodeSeq++;
          makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, myMsg->protocol, nodeSeq, (uint8_t*)myMsg->payload, len);
          call Sender.send(sendPackage, AM_BROADCAST_ADDR);
          //logPack(myMsg);
