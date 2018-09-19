@@ -159,7 +159,7 @@ implementation{
      // Take out Packs that are corrupted or dead
      if (len !=sizeof(pack) || myMsg->TTL == 0) {
        // Kill
-       dbg(FLOODING_CHANNEL, "Package Dead\n");
+       //~~dbg(FLOODING_CHANNEL, "Package Dead\n");
      }
 
      //  Ping Protocol
@@ -168,7 +168,7 @@ implementation{
        if (myMsg->dest == TOS_NODE_ID) {
          if (!hasSeen(myMsg)) {
            //  Recieve message
-           //dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
+           //~~Sdbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
            dbg(FLOODING_CHANNEL, "Received Package Payload: %s\n", myMsg->payload);
            //  Ping reply
            nodeSeq++;
@@ -181,7 +181,8 @@ implementation{
        // Not my Message
        } else {
          //Forward to printNeighbors
-         makePack(&sendPackage, myMsg->src, myMsg->dest, --myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
+         myMsg->TTL -= (nx_uint8_t) 1;
+         makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
          call Sender.send(sendPackage, AM_BROADCAST_ADDR);
          //Ping Reply?
          //Log Pack
@@ -194,7 +195,8 @@ implementation{
        if (myMsg->dest == TOS_NODE_ID) {
          checkPack(myMsg);
        } else {
-         makePack(&sendPackage, myMsg->src, myMsg->dest, --myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
+         myMsg->TTL -= (nx_uint8_t) 1;
+         makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
          call Sender.send(sendPackage, AM_BROADCAST_ADDR);
          checkPack(myMsg);
        }
