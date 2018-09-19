@@ -127,10 +127,10 @@ implementation{
      //pack* myMsg;
      //myMsg=(pack*) payload;
 
-     // Take out Packs that are corrupted or dead
-     if (len !=sizeof(pack) || myMsg->TTL == 0) {
+     // Take out Packs that are corrupted or dead or that we have seen
+     if (len !=sizeof(pack) || myMsg->TTL == 0 || hasSeen(myMsg)) {
        // Kill
-       //~~dbg(FLOODING_CHANNEL, "Package Dead\n");
+       dbg(FLOODING_CHANNEL, "Package Dead\n");
        return msg;
      }
 
@@ -139,7 +139,6 @@ implementation{
 
        // My Message
        if (myMsg->dest == TOS_NODE_ID) {
-         if (!hasSeen(myMsg)) {
            //  Recieve message
            //~~Sdbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
            dbg(FLOODING_CHANNEL, "<> Received Package Payload: %s\n", myMsg->payload);
@@ -156,7 +155,6 @@ implementation{
            logPack(&sendPackage);
            //updatePack(&sendPackage);
            updatePack(myMsg);
-         }
 
        // Not my Message
        } else {
@@ -176,24 +174,21 @@ implementation{
      //  Ping Reply Protocol
      if (myMsg->protocol == PROTOCOL_PINGREPLY) {
        //package is mine
-       if (!hasSeen(myMsg)) {
-
          if (myMsg->dest == TOS_NODE_ID) {
-
            dbg(FLOODING_CHANNEL, "MADE IT!!!!!!!!!!!!!!!!!!!!!!\n");
            ////////////////updatePack(myMsg);
            updatePack(&sendPackage);
            return msg;
          } else {
-           if(myMsg->TTL > 0) myMsg->TTL -= /*(nx_uint8_t)*/ 1;
-           makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
-           call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-           logPack(myMsg);
-           //updatePack(myMsg);
-           updatePack(&sendPackage);
+           if (!hasSeen(myMsg)) {
+             if(myMsg->TTL > 0) myMsg->TTL -= /*(nx_uint8_t)*/ 1;
+             makePack(&sendPackage, myMsg->src, myMsg->dest, myMsg->TTL, myMsg->protocol, myMsg->seq, (uint8_t*)myMsg->payload, len);
+             call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+             logPack(myMsg);
+             //updatePack(myMsg);
+             updatePack(&sendPackage);
+           }
          }
-
-       }
      } // End of Ping Reply Protocol
 
     return msg;
