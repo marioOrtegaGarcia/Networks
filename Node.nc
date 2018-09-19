@@ -145,7 +145,8 @@ implementation{
 
      dbg(GENERAL_CHANNEL, "Packet Received\n");
 
-     pack* myMsg = (pack*) payload;
+     pack* myMsg;
+     myMsg=(pack*) payload;
 
      // Take out Packs that are corrupted or dead
      if (len !=sizeof(pack) || myMsg->TTL == 0) {
