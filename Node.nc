@@ -145,12 +145,12 @@ implementation{
 
      dbg(GENERAL_CHANNEL, "Packet Received\n");
 
+     pack* myMsg=(pack*) payload;
+
      // Take out Packs that are corrupted or dead
-     if (len !=sizeof(pack) || (pack*)payload->TTL == 0) {
+     if (len !=sizeof(pack) || myMsg->TTL == 0) {
        // Kill
      }
-
-     pack* myMsg=(pack*) payload;
 
      //  Ping Protocol
      if (myMsg->protocol == PROTOCOL_PING) {
