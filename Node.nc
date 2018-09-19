@@ -128,6 +128,7 @@ implementation{
      if (len !=sizeof(pack) || myMsg->TTL == 0) {
        // Kill
        //~~dbg(FLOODING_CHANNEL, "Package Dead\n");
+       return msg;
      }
 
      //  Ping Protocol
