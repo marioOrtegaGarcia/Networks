@@ -81,6 +81,19 @@ implementation{
    event void AMControl.stopDone(error_t err){}
 
      //checks to see if current packet has been seen beofore. returns true if it has been seen
+
+     //check packets to see if they have passed through this node beofore
+     void checkPack(pack payload) {
+
+       uint16_t src = payload.src;
+       uint16_t seq = payload.seq;
+
+       if(! call PackLogs.isEmpty()){
+
+       }
+     }
+     /*
+
    bool checkPack(pack payload){
 
      uint16_t src = payload.src;
@@ -98,7 +111,7 @@ implementation{
        return 0;
      }
    }
-
+   */
    //stores src and seq info in PackLogs hashmap
    void savePack(pack payload){
 
@@ -120,6 +133,33 @@ implementation{
      //
 
      dbg(GENERAL_CHANNEL, "Packet Received\n");
+
+     pack* myMsg=(pack*) payload;
+
+     // Take out Packs that are corrupted or dead
+     if (len !=sizeof(pack) || myMsg->TTL == 0) {
+       // Kill
+     }
+     // My Message
+     if (myMsg->protocol == PROTOCOL_PING) {
+       //  Recieve message
+       //  Ping reply
+       //  Package Log
+     }
+     // Not my Message
+     if () {
+       //Forward to printNeighbors
+       //Ping Reply?
+       //Log Pack
+     }
+     //  Ping Reply
+     if () {
+       //Reply and flood back
+       //Swap src and dst change protocol to ping reply
+     }
+
+
+
      if (len==sizeof(pack)) {
        //  Pack found
        pack* myMsg=(pack*) payload;
