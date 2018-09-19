@@ -133,10 +133,10 @@ implementation{
 
      //  Ping Protocol
      if (myMsg->protocol == PROTOCOL_PING) {
-       if (!hasSeen(myMsg)) {
+
        // My Message
        if (myMsg->dest == TOS_NODE_ID) {
-
+         if (!hasSeen(myMsg)) {
            //  Recieve message
            //~~Sdbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
            dbg(FLOODING_CHANNEL, "<> Received Package Payload: %s\n", myMsg->payload);
@@ -147,7 +147,7 @@ implementation{
            //  Package Log
            //logPack(myMsg);
            updatePack(myMsg);
-
+         }
 
        // Not my Message
        } else {
@@ -160,7 +160,7 @@ implementation{
          //logPack(myMsg);
          updatePack(myMsg);
        }
-     }
+
      } // End of Ping Protocol
 
      //  Ping Reply Protocol
