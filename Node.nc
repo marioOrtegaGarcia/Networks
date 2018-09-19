@@ -154,7 +154,7 @@ implementation{
            logPack(myMsg);
            dbg(GENERAL_CHANNEL, "sendPackage sendPackage sendPackage sendPackage sendPackage sendPackage sendPackage \n");
            logPack(&sendPackage);
-           updatePack(sendPackage);
+           updatePack(&sendPackage);
            updatePack(myMsg);
          }
 
