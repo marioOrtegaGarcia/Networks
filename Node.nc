@@ -146,9 +146,6 @@ implementation{
       }
         dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
         return msg;
-
-
-
      }
 
 
@@ -228,7 +225,7 @@ implementation{
 
     return msg;
     */
-   }
+   //}
 
    // This is how we send a message to one another
    event void CommandHandler.ping(uint16_t destination, uint8_t *payload){
