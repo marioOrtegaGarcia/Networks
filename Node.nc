@@ -162,7 +162,7 @@ implementation{
          call Sender.send(sendPackage, AM_BROADCAST_ADDR);
          //Ping Reply?
          //Log Pack
-         //logPack(recievedMsg);
+         logPack(recievedMsg);
          updatePack(recievedMsg);
          updatePack(&sendPackage);
        }
