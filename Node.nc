@@ -73,7 +73,8 @@ implementation{
    }
 
    event void Timer.fired() {
-     dbg(GENERAL_CHANNEL, "Timer has begun!!");
+     dbg(GENERAL_CHANNEL, "Timer has begun!!\n");
+
    }
 
    //  This function makes sure all the Radios are turned on
