@@ -143,6 +143,7 @@ implementation{
         makePack(&sendPackage, recievedMsg->src, recievedMsg->dest, recievedMsg->TTL, recievedMsg->protocol, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
         //    If it's not for us then we just rellay the message to all out neighbors
         call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+        return msg;
       }
         dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
         return msg;
