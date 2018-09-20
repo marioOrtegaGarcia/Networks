@@ -127,6 +127,7 @@ implementation{
        logPack(recievedMsg);
        if (recievedMsg->TTL == MAX_TTL || Timer.isRunning()) {
          makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PINGNEIGHBOR, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
+         call Sender.send(sendPackage, AM_BROADCAST_ADDR);
      }
 
        if (recievedMsg->TTL == 0) {
