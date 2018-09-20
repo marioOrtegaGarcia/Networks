@@ -95,6 +95,8 @@ implementation{
        }
        //logPack(payload);
        call PackLogs.insert(src, seq);
+       dbg(FLOODING_CHANNEL, "UPDATING PACKET ->>>> SRC: %d SEQ: %d\n", recievedMsg->src, recievedMsg->seq);
+
      }
 
      bool hasSeen(pack* payload) {
