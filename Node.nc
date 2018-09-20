@@ -50,9 +50,8 @@ module Node{
 */
 
 implementation{
-  //  This is where we are saving the pack (or package we are sending over to the other Nodes)
+
    pack sendPackage;
-   // Increases each time the node sends something.
    uint16_t nodeSeq = 0;
 
    //  Here we can lis all the neighbors for this mote
@@ -62,7 +61,6 @@ implementation{
    void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
    void updatePack(pack* payload);
    bool hasSeen(pack* payload);
-   void discoverNeighbors();
    //void savePack(pack* payload);
 
    event void Boot.booted(){
@@ -80,21 +78,7 @@ implementation{
       dbg(GENERAL_CHANNEL, "Booted\n");
    }
 
-   event void Timer.fired() {
-
-   }
-
-   void discoverNeighbors(){
-
-
-/*
-      pack* temp;
-
-     makePack(&temp, TOS_NODE_ID, TOS_NODE_ID, MAX_TTL, PROTOCOL_PINGNEIGHBOR, nodeSeq, (uint8_t*)"hi", sizeof(pack));
-     call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-*/
-     //log neighbors in list
-   }
+   event void Timer.fired() {}//Were using run timer sice this function is fired over a hundread times
 
    //  This function makes sure all the Radios are turned on
    event void AMControl.startDone(error_t err){
