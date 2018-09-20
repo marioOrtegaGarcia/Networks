@@ -127,9 +127,15 @@ implementation{
      //recievedMsg=(pack*) payload;
 
      // Take out Packs that are corrupted or dead or that we have seen
-     if (len !=sizeof(pack) || recievedMsg->TTL == 0 || hasSeen(recievedMsg)) {
+     if (len !=sizeof(pack)) {
        // Kill
+       dbg(FLOODING_CHANNEL, "Package Corrupted\n");
+       return msg;
+     } else if (recievedMsg->TTL == 0) {
        dbg(FLOODING_CHANNEL, "Package Dead\n");
+       return msg;
+     } else if (hasSeen(recievedMsg)) {
+       dbg(FLOODING_CHANNEL, "Package Seen B4 \n");
        return msg;
      }
 
