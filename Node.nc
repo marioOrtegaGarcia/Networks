@@ -125,7 +125,7 @@ implementation{
      if (len == sizeof(pack)) {
        recievedMsg =(pack*) payload;
        logPack(recievedMsg);
-       if (recievedMsg->TTL == MAX_TTL || call Timer.isRunning()) {
+       if (recievedMsg->TTL == MAX_TTL || recievedMsg->dest == AM_BROADCAST_ADDR || call Timer.isRunning()) {
          makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PINGNEIGHBOR, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
          call Sender.send(sendPackage, AM_BROADCAST_ADDR);
      }
@@ -182,7 +182,7 @@ implementation{
         }
         if (!foundMatch) {
           call NeighborList.pushback(recievedMsg->src);
-          dbg(GENERAL_CHANNEL, "Neighbors Discovered: %d\n",call NeighborList.get(index) );
+          dbg(GENERAL_CHANNEL, "Neighbors Discovered: %d\n", call NeighborList.get(index) );
         }
       //  dbg(GENERAL_CHANNEL, "Neighbors Discovered: \n");
         for(index = 0; index < call NeighborList.size(); index++){
