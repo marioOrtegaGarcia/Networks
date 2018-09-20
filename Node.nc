@@ -200,7 +200,7 @@ implementation{
       nodeSeq++;
       dbg(GENERAL_CHANNEL, "PING SEQUENCE: %d\n", nodeSeq);
       makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
-      //logPack(&sendPackage);
+      logPack(&sendPackage);
 
       call Sender.send(sendPackage, AM_BROADCAST_ADDR);
       updatePack(&sendPackage);
