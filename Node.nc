@@ -46,6 +46,7 @@ module Node{
 implementation{
   //  This is where we are saving the pack (or package we are sending over to the other Nodes)
    pack sendPackage;
+   // Increases each time the node sends something.
    uint16_t nodeSeq = 0;
    int index = 0;
 
@@ -101,30 +102,49 @@ implementation{
        }
 
        //  Pings to us in 2 Cases: Ping & pingReply when pinging back to me
-       if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->) {
-         
-       }
+      if (recievedMsg->dest == TOS_NODE_ID) {
+
+        // Ping to US
+        if (recievedMsg->protocol == PROTOCOL_PING) {
+          //    Log the message
+          dbg(FLOODING_CHANNEL, "!!!    Received Package Payload: %s  Src: %d  !!!!\n", recievedMsg->payload, recievedMsg->dest);
+          //    Make Ping pingReply packet reset TTL & increase nodeSeq
+           nodeSeq++;
+           makePack(&sendPackage, recievedMsg->dest, recievedMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)recievedMsg->payload, len);
+           updatePack(&sendPackage);
+           //    Reply with a Ping pingReply packet
+           call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+          //dbg(GENERAL_CHANNEL, "PING SEQUENCE: %d", nodeSeq);
+
+          //  Ping Reply to US
+        } else if (recievedMsg->protocol == PROTOCOL_PINGREPLY) {
+          dbg(FLOODING_CHANNEL, "~~~     Ping Reply  from: %d\n", recievedMsg->src);
+          //   Log
+          //updatePack(&recievedMsg);
+          return msg;
+
+          // Neighbor Discovery
+        } else {//Need to add Neighbor Discovery Here
+
+          //     (Recieving obviously)
+          //     Save sender under list of neighbors
+          //     PingBack with our ID
+        }
+
+        // Rellay
+      } else {
+
+        dbg(GENERAL_CHANNEL, " Relaying Package for:  %d", recievedMsg->src)
+        recievedMsg->TTL -=  1;
+        updatePack(recievedMsg);
+        makePack(&sendPackage, recievedMsg->src, recievedMsg->dest, recievedMsg->TTL, recievedMsg->protocol, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
+
+        call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+      }
 
 
-       //  Check Protocol Number and if it's for us
-       //    Log the message
-       //    Make new packet w/ TTL - 1 and
-       //    Reply with a Ping pingReply packet
-
-       //  Ping Reply to us
-       //  Check if its for us
-       //   Log
-
-       // Neighbor Discovery
-       //     (Recieving obviously)
-       //     Save sender under list of neighbors
-       //     PingBack with our ID
-       //
-       //
-       //
 
 
-       // Rellay
          //    If it's not for us then we just rellay the message to all out neighbors
          //    new packet w/ TTL - 1
 
@@ -133,12 +153,7 @@ implementation{
      }
 
 
-
-
-
-
-
-
+/*()
      // Take out Packs that are corrupted or dead or that we have seen
      if (len !=sizeof(pack)) {
        // Kill
@@ -198,7 +213,7 @@ implementation{
            //
          } else {
            if (!hasSeen(recievedMsg)) {
-             if(recievedMsg->TTL > 0) recievedMsg->TTL -= /*(nx_uint8_t)*/ 1;
+             if(recievedMsg->TTL > 0) recievedMsg->TTL -=  1;
              makePack(&sendPackage, recievedMsg->src, recievedMsg->dest, recievedMsg->TTL, recievedMsg->protocol, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
              call Sender.send(sendPackage, AM_BROADCAST_ADDR);
              logPack(recievedMsg);
@@ -213,6 +228,7 @@ implementation{
      }
 
     return msg;
+    */
    }
 
    // This is how we send a message to one another
