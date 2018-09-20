@@ -55,8 +55,8 @@ implementation{
 
    // Prototypes
    void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
-   void updatePack(pack payload);
-   bool hasSeen(pack payload);
+   void updatePack(pack* payload);
+   bool hasSeen(pack* payload);
    //void savePack(pack* payload);
 
    event void Boot.booted(){
@@ -97,11 +97,10 @@ implementation{
         return msg;
 
        //  Debugs for when Pack is being cut off
-      } else if (hasSeen(&recievedMsg)) {
+      } else if (hasSeen(recievedMsg)) {
            dbg(GENERAL_CHANNEL, "Package Seen B4 <--> SRC: %d SEQ: %d\n", recievedMsg->src, recievedMsg->seq);
            return msg;
          }
-
 
        //  Pings to us in 2 Cases: Ping & pingReply when pinging back to me
       if (recievedMsg->dest == TOS_NODE_ID) {
@@ -149,6 +148,8 @@ implementation{
         dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
         return msg;
      }
+     dbg(GENERAL_CHANNEL, "Corrupt Packet Type %d\n", len);
+     return msg;
 }
 
 /*()
@@ -289,11 +290,12 @@ implementation{
    }
 
    bool hasSeen(pack* payload) {
+     pack temp;
+     int i;
 
      dbg(FLOODING_CHANNEL, "payload: %s, hash Key: %d, hashed Value : %d\n", payload->payload, payload->src, payload->seq);
 
-     pack temp;
-     int i;
+
      if(!call PackLogs.isEmpty()){
       for (i = 0; i < call PackLogs.size(); i++) {
         temp = call PackLogs->get(i);
