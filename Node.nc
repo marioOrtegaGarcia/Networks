@@ -185,7 +185,7 @@ implementation{
         }
         dbg(GENERAL_CHANNEL, "Neighbors Discovered: ");
         for(index = 0; index < call NeighborList.size(); index++){
-          dbg(GENERAL_CHANNEL, "%d, ", NeighborList.get(index));
+          dbg(GENERAL_CHANNEL, "%d, ", call NeighborList.get(index));
         }
         dbg(GENERAL_CHANNEL, "\n");
 
