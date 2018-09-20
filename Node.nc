@@ -182,11 +182,11 @@ implementation{
         }
         if (!foundMatch) {
           call NeighborList.pushback(recievedMsg->src);
-          dbg(GENERAL_CHANNEL, "Neighbors Discovered: %d\n",recievedMsg->src );
+          dbg(GENERAL_CHANNEL, "Neighbors Discovered: %d\n",call NeighborList.get(index) );
         }
       //  dbg(GENERAL_CHANNEL, "Neighbors Discovered: \n");
         for(index = 0; index < call NeighborList.size(); index++){
-          dbg(GENERAL_CHANNEL, "%d, ", call NeighborList.get(index));
+          dbg(GENERAL_CHANNEL, "%d, \n", call NeighborList.get(index));
         }
         dbg(GENERAL_CHANNEL, "\n");
 
