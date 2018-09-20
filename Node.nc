@@ -65,14 +65,15 @@ implementation{
    event void Boot.booted(){
      //  Booting/Starting our lowest networking layer exposed in TinyOS which is also called active messages (AM)
       call AMControl.start();
-      call Timer.startPeriodic( 250 );
+      call Timer.startPeriodic( 1000 );
       //start timer
       //  We need to initiate the node Timer first
       //call NodeTimerC.startOneShot(1000);
       dbg(GENERAL_CHANNEL, "Booted\n");
    }
    event void Timer.fired() {
-    
+    makePack(&sendPackage, TOS_NODE_ID, 0, 1, PROTOCOL_PINGNEIGHBOR, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
+    call Sender.send(sendPackage, AM_BROADCAST_ADDR);
   }
 
    //  This function makes sure all the Radios are turned on
@@ -96,6 +97,7 @@ implementation{
    event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len){
      pack* recievedMsg;
      int size, index;
+     bool foundMatch;
      // If the Pack is Corrupt we dont want it
      if (len == sizeof(pack)) {
        recievedMsg =(pack*) payload;
@@ -138,9 +140,13 @@ implementation{
 
           if (recievedMsg->protocol == PROTOCOL_PINGNEIGHBOR) {
             size = call NeighborList.size();
+            foundMatch = 0;
             for (index = 0; index < size ; index++) {
               if(NeighborList.get(index) == recievedMsg->src)
-                call NeighborList.pushback(recievedMsg->src);
+                foundMatch = 1;
+            }
+            if (!foundMatch) {
+              NeighborList.pushback(recievedMsg->src);
             }
 
             //     (Recieving obviously)
