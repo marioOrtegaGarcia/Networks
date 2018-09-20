@@ -134,7 +134,7 @@ implementation{
         // Rellay
       } else {
 
-        dbg(GENERAL_CHANNEL, " Relaying Package for:  %d", recievedMsg->src)
+        dbg(GENERAL_CHANNEL, " Relaying Package for:  %d", recievedMsg->src);
         //    new packet w/ TTL - 1
         if(recievedMsg->TTL > 0) recievedMsg->TTL -=  1;
         updatePack(recievedMsg);
