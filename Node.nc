@@ -131,7 +131,7 @@ implementation{
         } else {//Need to add Neighbor Discovery Here
 
           if (recievedMsg->protocol == PROTOCOL_PINGNEIGHBOR) {
-            int size = call NeighborList.size();
+            size = call NeighborList.size();
             for (index = 0; index < size : index++) {
                 call NeighborList.pushback(recievedMsg->src);
             }
