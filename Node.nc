@@ -95,7 +95,7 @@ implementation{
        }
        //logPack(payload);
        call PackLogs.insert(src, seq);
-       dbg(FLOODING_CHANNEL, "UPDATING PACKET ->>>> SRC: %d SEQ: %d\n", recievedMsg->src, recievedMsg->seq);
+       dbg(FLOODING_CHANNEL, "UPDATING PACKET ->>>> SRC: %d SEQ: %d\n", payload->src, payload->seq);
 
      }
 
