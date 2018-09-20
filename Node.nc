@@ -135,7 +135,7 @@ implementation{
        dbg(FLOODING_CHANNEL, "Package Dead\n");
        return msg;
      } else if (hasSeen(recievedMsg)) {
-       dbg(FLOODING_CHANNEL, "Package Seen B4 \n");
+       dbg(FLOODING_CHANNEL, "Package Seen B4 <-> SRC: %d SEQ: %d", recievedMsg->src, recievedMsg->seq);
        return msg;
      }
 
@@ -148,7 +148,7 @@ implementation{
            updatePack(recievedMsg);
 
            //  Reply w/ pingReply
-           //nodeSeq++;
+           nodeSeq++;
            dbg(GENERAL_CHANNEL, "PING SEQUENCE: %d", nodeSeq);
            makePack(&sendPackage, recievedMsg->dest, recievedMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)recievedMsg->payload, len);
 
