@@ -186,7 +186,7 @@ implementation{
         }
       //  dbg(GENERAL_CHANNEL, "Neighbors Discovered: \n");
         for(index = 0; index < call NeighborList.size(); index++){
-          dbg(NEIGHBOR_CHANNEL, "%d, \n", call NeighborList.get(index));
+          dbg(NEIGHBOR_CHANNEL, "%d is Neighbors w/ %d\n", TOS_NODE_ID,call NeighborList.get(index));
         }
         dbg(NEIGHBOR_CHANNEL, "\n");
 
