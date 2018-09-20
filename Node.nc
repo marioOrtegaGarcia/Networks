@@ -142,11 +142,11 @@ implementation{
             size = call NeighborList.size();
             foundMatch = 0;
             for (index = 0; index < size ; index++) {
-              if(NeighborList.get(index) == recievedMsg->src)
+              if(call NeighborList.get(index) == recievedMsg->src)
                 foundMatch = 1;
             }
             if (!foundMatch) {
-              NeighborList.pushback(recievedMsg->src);
+              call NeighborList.pushback(recievedMsg->src);
             }
 
             //     (Recieving obviously)
