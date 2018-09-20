@@ -74,7 +74,7 @@ implementation{
 
    event void Timer.fired() {
 
-    makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PINGNEIGHBOR, 256, sendPa, PACKET_MAX_PAYLOAD_SIZE);
+    makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PINGNEIGHBOR, 256, sendPackage->payload, PACKET_MAX_PAYLOAD_SIZE);
     call Sender.send(sendPackage, AM_BROADCAST_ADDR);
   }
 
@@ -260,7 +260,7 @@ implementation{
 
       nodeSeq++;
       dbg(GENERAL_CHANNEL, "PING SEQUENCE: %d\n", nodeSeq);
-      makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING2, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
+      makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
       logPack(&sendPackage);
       updatePack(&sendPackage);
       call Sender.send(sendPackage, AM_BROADCAST_ADDR);
