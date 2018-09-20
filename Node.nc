@@ -85,9 +85,12 @@ implementation{
      //fire ping
       pack* temp;
 
-     makePack(&temp, TOS_NODE_ID, TOS_NODE_ID, MAX_TTL, PROTOCOL_PINGNEIGHBOR, nodeSeq, (uint8_t*)temp->payload, sizeof(pack));
+
+     makePack(&temp, TOS_NODE_ID, TOS_NODE_ID, MAX_TTL, PROTOCOL_PINGNEIGHBOR, nodeSeq, (uint8_t*)"hi", sizeof(pack));
      call Sender.send(sendPackage, AM_BROADCAST_ADDR);
      //log neighbors in list
+
+
 
    }
 
