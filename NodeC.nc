@@ -20,6 +20,7 @@ implementation {
     components new AMReceiverC(AM_PACK) as GeneralReceive;
     components new ListC(pack, 64) as PackLogsC;
     components new ListC(uint32_t, 64) as NeighborListC;
+
     //components new TimerMilliC() as NodeTimerC;
 
     //  This is where we are Wiring our whole program.
