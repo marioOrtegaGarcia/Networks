@@ -102,7 +102,7 @@ implementation{
          }
 
        //  Pings to us in 2 Cases: Ping & pingReply when pinging back to me
-      if (recievedMsg->dest == TOS_NODE_ID) {
+      else if (recievedMsg->dest == TOS_NODE_ID) {
 
         // Ping to US
         if (recievedMsg->protocol == PROTOCOL_PING) {
@@ -238,7 +238,7 @@ implementation{
       dbg(GENERAL_CHANNEL, "PING SEQUENCE: %d\n", nodeSeq);
       makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
       logPack(&sendPackage);
-      updatePack(sendPackage);
+      updatePack(&sendPackage);
       call Sender.send(sendPackage, AM_BROADCAST_ADDR);
 
    }
@@ -282,7 +282,7 @@ implementation{
       call PackLogs.popfront();
      }
      //logPack(payload);
-     temp = &payload;
+     temp = payload;
      call PackLogs.pushback(temp);
      dbg(FLOODING_CHANNEL, "UPDATING PACKET ------------------------>>>> SRC: %d SEQ: %d\n", payload->src, payload->seq);
 
