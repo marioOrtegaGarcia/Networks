@@ -125,9 +125,6 @@ implementation{
 
        //  Pings to us in 2 Cases: Ping & pingReply when pinging back to me
       else if (recievedMsg->dest == TOS_NODE_ID) {
-        if (recievedMsg->TTL == MAX_TTL) {
-          discoverNeighbors();
-        }
 
         // Ping to US
         if (recievedMsg->protocol == PROTOCOL_PING) {
@@ -157,20 +154,24 @@ implementation{
 
         // Neighbor Discovery
       } else if (recievedMsg->protocol == PROTOCOL_PINGNEIGHBOR) {
+
         size = call NeighborList.size();
         foundMatch = 0;
         for (index = 0; index < size ; index++) {
           if(call NeighborList.get(index) == recievedMsg->src)
             foundMatch = 1;
         }
+
         if (!foundMatch) {
           call NeighborList.pushback(recievedMsg->src);
           dbg(NEIGHBOR_CHANNEL, "Neighbors Discovered: %d\n", call NeighborList.get(index) );
         }
+
       //  dbg(GENERAL_CHANNEL, "Neighbors Discovered: \n");
         for(index = 0; index < call NeighborList.size(); index++){
           dbg(NEIGHBOR_CHANNEL, "%d -Neighbors-> %d\n", TOS_NODE_ID,call NeighborList.get(index));
         }
+
         dbg(NEIGHBOR_CHANNEL, "\n");
 
         //     (Recieving obviously)
@@ -179,17 +180,21 @@ implementation{
       } else {// Relay
 
         dbg(GENERAL_CHANNEL, " Relaying Package for:  %d\n", recievedMsg->src);
-        //    new packet w/ TTL - 1
+
+        // Forward and logging package
         if(recievedMsg->TTL > 0) recievedMsg->TTL -=  1;
         makePack(&sendPackage, recievedMsg->src, recievedMsg->dest, recievedMsg->TTL, recievedMsg->protocol, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
         updatePack(&sendPackage);
-        //    If it's not for us then we just rellay the message to all out neighbors
+        //    not for us to Relay
         call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+
         return msg;
       }
+
         dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
         return msg;
      }
+     // This prints when len != size of packet
      dbg(GENERAL_CHANNEL, "Corrupt Packet Type %d\n", len);
      return msg;
 }
@@ -206,7 +211,6 @@ implementation{
       logPack(&sendPackage);
       updatePack(&sendPackage);
       call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-
    }
 
    //  This are functions we are going to be implementing in the future.
