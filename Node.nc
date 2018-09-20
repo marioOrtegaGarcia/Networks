@@ -122,7 +122,7 @@ implementation{
      // If the Pack is Corrupt we dont want it
      if (len == sizeof(pack)) {
        recievedMsg =(pack*) payload;
-
+       logPack(recievedMsg);
        if (recievedMsg->TTL == 0) {
         dbg(GENERAL_CHANNEL, "Package Dead\n");
         return msg;
@@ -335,7 +335,7 @@ implementation{
      pack temp;
      int i;
 
-     dbg(FLOODING_CHANNEL, "payload: %s, hash Key: %d, hashed Value : %d\n", payload->payload, payload->src, payload->seq);
+     dbg(FLOODING_CHANNEL, "payload: %s, Src: %d, Seq: %d\n", payload->payload, payload->src, payload->seq);
 
 
      if(!call PackLogs.isEmpty()){
