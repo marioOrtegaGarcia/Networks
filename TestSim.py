@@ -144,10 +144,10 @@ def main():
 
 
     s.runTime(20);
-    s.ping(1, 2, "Hello, World");
-    s.runTime(10);
-    s.ping(6, 3, "Hi!");
-    s.runTime(20);
+    #s.ping(1, 2, "Hello, World");
+    #s.runTime(10);
+    #s.ping(6, 3, "Hi!");
+    #s.runTime(20);
     s.ping(3, 8, "Ka-Chao!");
     s.runTime(60);
 
