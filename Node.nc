@@ -151,7 +151,7 @@ implementation{
            nodeSeq++;
            dbg(GENERAL_CHANNEL, "PING SEQUENCE: %d", nodeSeq);
            makePack(&sendPackage, recievedMsg->dest, recievedMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)recievedMsg->payload, len);
-           updatePack(recievedMsg);
+
            updatePack(&sendPackage);
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
 
@@ -161,14 +161,15 @@ implementation{
        // Not my Message
        } else {
          //Forward to printNeighbors
-         if (recievedMsg->TTL > 0) recievedMsg->TTL -= /*(nx_uint8_t)*/ 1;
+         recievedMsg->TTL -=  1;
+         updatePack(recievedMsg);
+
          makePack(&sendPackage, recievedMsg->src, recievedMsg->dest, recievedMsg->TTL, recievedMsg->protocol, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
+
          call Sender.send(sendPackage, AM_BROADCAST_ADDR);
          //Ping Reply?
          //Log Pack
          logPack(recievedMsg);
-         updatePack(recievedMsg);
-         updatePack(&sendPackage);
        }
 
      } // End of Ping Protocol
@@ -178,7 +179,7 @@ implementation{
        //package is mine
          if (recievedMsg->dest == TOS_NODE_ID) {
            dbg(FLOODING_CHANNEL, "MADE IT!!!!!!!!!!!!!!!!!!!!!!\n");
-           ////////////////updatePack(recievedMsg);
+
            updatePack(&recievedMsg);
            return msg;
          } else {
