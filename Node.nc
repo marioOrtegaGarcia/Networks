@@ -150,8 +150,8 @@ implementation{
            //  Package Log
            logPack(recievedMsg);
            logPack(&sendPackage);
-           //updatePack(&sendPackage);
            updatePack(recievedMsg);
+           updatePack(&sendPackage);
 
        // Not my Message
        } else {
@@ -162,7 +162,7 @@ implementation{
          //Ping Reply?
          //Log Pack
          //logPack(recievedMsg);
-         ////////////////updatePack(recievedMsg);
+         updatePack(recievedMsg);
          updatePack(&sendPackage);
        }
 
@@ -197,10 +197,12 @@ implementation{
       dbg(GENERAL_CHANNEL, "PING EVENT \n");
 
       nodeSeq++;
+      dbg(GENERAL_CHANNEL, )
       makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
       //logPack(&sendPackage);
 
       call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+      updatePack(&sendPackage);
    }
 
    //  This are functions we are going to be implementing in the future.
