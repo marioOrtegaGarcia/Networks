@@ -60,6 +60,7 @@ implementation{
    void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
    void updatePack(pack* payload);
    bool hasSeen(pack* payload);
+   void discoverNeighbors();
    //void savePack(pack* payload);
 
    event void Boot.booted(){
@@ -73,11 +74,21 @@ implementation{
    }
 
    event void Timer.fired() {
-     int c = 0;
-     if ((c % 9) == 0) {
-       dbg(GENERAL_CHANNEL, "Timer Fired!!\n");
-       c++;
-     }
+     discoverNeighbors();
+
+
+
+   }
+
+   void discoverNeighbors(){
+
+     //fire ping
+      pack* temp;
+
+     makePack(&temp, TOS_NODE_ID, TOS_NODE_ID, MAX_TTL, PROTOCOL_PINGNEIGHBOR, nodeSeq, (uint8_t*)temp->payload, sizeof(pack));
+     call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+     //log neighbors in list
+
    }
 
    //  This function makes sure all the Radios are turned on
