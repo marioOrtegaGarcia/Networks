@@ -92,13 +92,14 @@ implementation{
 
        pack* recievedMsg =(pack*) payload;
 
+       if (recievedMsg->TTL == 0) {
+        dbg(GENERAL_CHANNEL, "Package Dead\n");
+        return msg;
        //  Debugs for when Pack is being cut off
-       if (hasSeen(recievedMsg)) {
-         dbg(GENERAL_CHANNEL, "Package Seen B4 <--> SRC: %d SEQ: %d\n", recievedMsg->src, recievedMsg->seq);
-         return msg;
-       } else if (recievedMsg->TTL == 0) {
-         dbg(GENERAL_CHANNEL, "Package Dead\n");
-         return msg;
+      } else if (hasSeen(recievedMsg)) {
+           dbg(GENERAL_CHANNEL, "Package Seen B4 <--> SRC: %d SEQ: %d\n", recievedMsg->src, recievedMsg->seq);
+           return msg;
+         }
        }
 
        //  Pings to us in 2 Cases: Ping & pingReply when pinging back to me
@@ -288,14 +289,17 @@ implementation{
    bool hasSeen(pack* payload) {
      uint32_t seq = payload->seq;
      uint32_t srcKey = payload->src;
-     dbg(FLOODING_CHANNEL, "payload: %d, seq: %d, hashed balue : %d", payload->src, payload->seq, call PackLogs.get(srcKey));
-     
-     if(call PackLogs.isEmpty())
-      return 0;
-    else if(call PackLogs.contains(srcKey) && call PackLogs.get(srcKey) < seq)
-      return 0;
-      else return 1;
+     dbg(FLOODING_CHANNEL, "payload: %d, seq: %d, hashed value : %d", payload->src, payload->seq, call PackLogs.get(srcKey));
 
+     /*
+     if(call PackLogs.isEmpty()) {
+       return 0;
+     }
+    else if(call PackLogs.contains(srcKey) && call PackLogs.get(srcKey) < seq) {
+      return 0;
+    }
+      else return 1;
+      */
 /*
      if(! call PackLogs.isEmpty()) {
        if(call PackLogs.contains(srcKey)) {
