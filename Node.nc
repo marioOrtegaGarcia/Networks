@@ -275,13 +275,13 @@ implementation{
      uint32_t seq = payload.seq;
 
      //if packet log isnt empty and contains the src key
-    if(call PackLogs.size() == MAX_SIZE){
+    if(call PackLogs.size() == payload.MAX_SIZE){
       //remove old key value pair and insert new one
 
       call PackLogs.popfront();
      }
      //logPack(payload);
-     call PackLogs.insert(payload);
+     call PackLogs.pushback(payload);
      dbg(FLOODING_CHANNEL, "UPDATING PACKET ------------------------>>>> SRC: %d SEQ: %d\n", payload->src, payload->seq);
 
    }
@@ -291,8 +291,9 @@ implementation{
      dbg(FLOODING_CHANNEL, "payload: %s, hash Key: %d, hashed Value : %d\n", payload.payload, payload.src, payload.seq);
 
      pack temp;
+     int i;
      if(!call PackLogs.isEmpty()){
-      for (int i = 0; i < call PackLogs.size(); i++) {
+      for (i = 0; i < call PackLogs.size(); i++) {
         temp = call PackLogs->get(i);
        if (temp.src == payload.src && temp.seq <= payload.seq) {
          return 1;
