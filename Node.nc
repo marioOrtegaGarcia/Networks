@@ -28,6 +28,8 @@ module Node{
    uses interface List <pack> as PackLogs;
 
    uses interface List <uint32_t> as NeighborList;
+
+   uses interface Timer<TMilli> as Timer;
 }
 /* Pseudo Code from Lab TA
 *  First Part of Project
@@ -133,6 +135,7 @@ implementation{
           if (recievedMsg->protocol == PROTOCOL_PINGNEIGHBOR) {
             size = call NeighborList.size();
             for (index = 0; index < size ; index++) {
+              if(NeighborList.get(index) == recievedMsg->src)
                 call NeighborList.pushback(recievedMsg->src);
             }
 
