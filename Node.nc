@@ -135,7 +135,7 @@ implementation{
       } else {
 
         dbg(GENERAL_CHANNEL, " Relaying Package for:  %d", recievedMsg->src)
-        recievedMsg->TTL -=  1;
+        if(recievedMsg->TTL > 0) recievedMsg->TTL -=  1;
         updatePack(recievedMsg);
         makePack(&sendPackage, recievedMsg->src, recievedMsg->dest, recievedMsg->TTL, recievedMsg->protocol, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
 
