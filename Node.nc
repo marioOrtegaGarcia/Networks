@@ -117,6 +117,7 @@ implementation{
            //    Reply with a Ping pingReply packet
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
           //dbg(GENERAL_CHANNEL, "PING SEQUENCE: %d", nodeSeq);
+          return msg;
 
           //  Ping Reply to US
         } else if (recievedMsg->protocol == PROTOCOL_PINGREPLY) {
@@ -133,7 +134,7 @@ implementation{
           //     PingBack with our ID
         }
 
-        // Rellay
+        // Relay
       } else {
 
         dbg(GENERAL_CHANNEL, " Relaying Package for:  %d\n", recievedMsg->src);
