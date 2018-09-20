@@ -288,13 +288,14 @@ implementation{
    bool hasSeen(pack* payload) {
      uint32_t seq = payload->seq;
      uint32_t srcKey = payload->src;
-
+     dbg(FLOODING_CHANNEL, "payload: %d, seq: %d, hashed balue : %d", payload->src, payload->seq, call PackLogs.get(srcKey));
+     
      if(call PackLogs.isEmpty())
       return 0;
     else if(call PackLogs.contains(srcKey) && call PackLogs.get(srcKey) < seq)
       return 0;
       else return 1;
-      dbg(FLOODING_CHANNEL, "payload: %d, seq: %d, hashed balue : %d", payload->src, payload->seq, call PackLogs.get(srcKey));
+
 /*
      if(! call PackLogs.isEmpty()) {
        if(call PackLogs.contains(srcKey)) {
