@@ -85,13 +85,10 @@ implementation{
      //fire ping
       pack* temp;
 
-
      makePack(&temp, TOS_NODE_ID, TOS_NODE_ID, MAX_TTL, PROTOCOL_PINGNEIGHBOR, nodeSeq, (uint8_t*)"hi", sizeof(pack));
      call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+
      //log neighbors in list
-
-
-
    }
 
    //  This function makes sure all the Radios are turned on
@@ -119,6 +116,7 @@ implementation{
      int size, index;
      bool foundMatch;
 
+
      // If the Pack is Corrupt we dont want it
      if (len == sizeof(pack)) {
        recievedMsg =(pack*) payload;
@@ -128,13 +126,17 @@ implementation{
         return msg;
 
        //  Debugs for when Pack is being cut off
-      } else if (hasSeen(recievedMsg)) {
+      }
+       else if (hasSeen(recievedMsg)) {
            dbg(GENERAL_CHANNEL, "Package Seen B4 <--> SRC: %d SEQ: %d\n", recievedMsg->src, recievedMsg->seq);
            return msg;
          }
 
        //  Pings to us in 2 Cases: Ping & pingReply when pinging back to me
       else if (recievedMsg->dest == TOS_NODE_ID) {
+        if (recievedMsg->TTL == MAX_TTL) {
+          discoverNeighbors();
+        }
 
         // Ping to US
         if (recievedMsg->protocol == PROTOCOL_PING) {
@@ -152,6 +154,7 @@ implementation{
           //  Ping Reply to US
         } else if (recievedMsg->protocol == PROTOCOL_PINGREPLY) {
           dbg(FLOODING_CHANNEL, "~~~     Ping Reply  from: %d\n", recievedMsg->src);
+
           //   Log
           //updatePack(&recievedMsg);
           return msg;
