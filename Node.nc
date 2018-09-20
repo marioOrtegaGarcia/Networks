@@ -74,7 +74,7 @@ implementation{
 
    event void Timer.fired() {
      int c = 0
-     if (!(c % 9)) {
+     if ((c % 9) == 0) {
        dbg(GENERAL_CHANNEL, "Timer Fired!!\n");
      }
    }
