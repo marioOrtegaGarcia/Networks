@@ -93,7 +93,7 @@ implementation{
        pack* recievedMsg =(pack*) payload;
 
        //  Debugs for when Pack is being cut off
-       if (this->hasSeen(recievedMsg)) {
+       if (hasSeen(recievedMsg)) {
          dbg(GENERAL_CHANNEL, "Package Seen B4 <--> SRC: %d SEQ: %d\n", recievedMsg->src, recievedMsg->seq);
          return msg;
        } else if (recievedMsg->TTL == 0) {
