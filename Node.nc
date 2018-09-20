@@ -65,7 +65,7 @@ implementation{
    event void Boot.booted(){
      //  Booting/Starting our lowest networking layer exposed in TinyOS which is also called active messages (AM)
       call AMControl.start();
-      call Timer.startPeriodicAt(100, 6000);
+      call Timer.startPeriodicAt(100, 20000);
       //start timer
       //  We need to initiate the node Timer first
       //call NodeTimerC.startOneShot(1000);
@@ -100,10 +100,6 @@ implementation{
      pack* recievedMsg;
      int size, index;
      bool foundMatch;
-
-     if (call Timer.isRunning()) {
-       dbg(GENERAL_CHANNEL, "Timer RANnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n");
-     }
 
      // If the Pack is Corrupt we dont want it
      if (len == sizeof(pack)) {
