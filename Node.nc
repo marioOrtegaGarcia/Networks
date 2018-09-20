@@ -65,6 +65,8 @@ implementation{
 
    event void Boot.booted(){
      //  Booting/Starting our lowest networking layer exposed in TinyOS which is also called active messages (AM)
+     uint32_t t0, dt;
+
       call AMControl.start();
       t0 = call Random.rand32() % 2500;
       dt = 20000 + (call Random.rand32() % 10000);
@@ -77,7 +79,7 @@ implementation{
    }
 
    event void Timer.fired() {
-     //discoverNeighbors();
+
    }
 
    void discoverNeighbors(){
@@ -117,22 +119,20 @@ implementation{
      int size, index;
      bool foundMatch;
 
-
      // If the Pack is Corrupt we dont want it
      if (len == sizeof(pack)) {
        recievedMsg =(pack*) payload;
        logPack(recievedMsg);
-       if (recievedMsg->TTL == MAX_TTL) {
-         makePack(&sendPackage, TOS_NODE_ID, recievedMsg->src, recievedMsg->TTL, PROTOCOL_PINGNEIGHBOR, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
-       }
+       if (recievedMsg->TTL == MAX_TTL || Timer.isRunning()) {
+         makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PINGNEIGHBOR, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
+     }
 
        if (recievedMsg->TTL == 0) {
         dbg(GENERAL_CHANNEL, "Package Dead\n");
         return msg;
 
        //  Debugs for when Pack is being cut off
-      }
-       else if (hasSeen(recievedMsg)) {
+      } else if (hasSeen(recievedMsg)) {
            dbg(GENERAL_CHANNEL, "Package Seen B4 <--> SRC: %d SEQ: %d\n", recievedMsg->src, recievedMsg->seq);
            return msg;
          }
@@ -180,6 +180,11 @@ implementation{
         if (!foundMatch) {
           call NeighborList.pushback(recievedMsg->src);
         }
+        dbg(GENERAL_CHANNEL, "Neighbors Discovered: ");
+        for(index = 0; index < call neighborDiscovered.size(); index++){
+          dbg(GENERAL_CHANNEL, "%d, ", neighborDiscovered.get(index));
+        }
+        dbg(GENERAL_CHANNEL, "\n");
 
         //     (Recieving obviously)
         //     Save sender under list of neighbors
