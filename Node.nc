@@ -26,6 +26,8 @@ module Node{
    uses interface CommandHandler;
 
    uses interface List <pack> as PackLogs;
+
+   uses interface List <uint32_t> as NeighborList;
 }
 /* Pseudo Code from Lab TA
 *  First Part of Project
@@ -87,6 +89,7 @@ implementation{
      //  We need to send to everyone, and just check with this function if it's meant for us.
    event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len){
      pack* recievedMsg;
+     int size, index;
      // If the Pack is Corrupt we dont want it
      if (len == sizeof(pack)) {
        recievedMsg =(pack*) payload;
@@ -127,9 +130,17 @@ implementation{
           // Neighbor Discovery
         } else {//Need to add Neighbor Discovery Here
 
-          //     (Recieving obviously)
-          //     Save sender under list of neighbors
-          //     PingBack with our ID
+          if (recievedMsg->protocol == PROTOCOL_PINGNEIGHBOR) {
+            int size = call NeighborList.size();
+            for (index = 0; index < size : index++) {
+                call NeighborList.pushback(recievedMsg->src);
+            }
+
+            //     (Recieving obviously)
+            //     Save sender under list of neighbors
+            //     PingBack with our ID
+          }
+
         }
 
         // Relay
