@@ -72,17 +72,14 @@ implementation{
       dbg(GENERAL_CHANNEL, "Booted\n");
    }
 
-   event void Timer.fired() {
-
-    makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PINGNEIGHBOR, 256, sendPackage->payload, PACKET_MAX_PAYLOAD_SIZE);
-    call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-  }
+   event void Timer.fired() {}
 
    //  This function makes sure all the Radios are turned on
    event void AMControl.startDone(error_t err){
       if(err == SUCCESS){
          dbg(GENERAL_CHANNEL, "Radio On\n");
          //  Maybe timer for neighbor discovery
+         
       }else{
          //Retry until successful
 
