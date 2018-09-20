@@ -289,10 +289,17 @@ implementation{
      uint32_t seq = payload->seq;
      uint32_t srcKey = payload->src;
 
-
+     if(call PackLogs.isEmpty())
+      return 0;
+    else if(call PackLogs.contains(srcKey) && PackLogs.get(srcKey) < seq)
+      return 0;
+      else return 1;
+      dbg(FLOODING_CHANNEL, "payload: %d, seq: %d, hashed balue : %d", payload->src, payload->seq,(call PackLogs.get(srcKey));
+/*
      if(! call PackLogs.isEmpty()) {
        if(call PackLogs.contains(srcKey)) {
           if((call PackLogs.get(srcKey)) <= seq) {
+            dbg(FLOODING_CHANNEL, "payload: %d, seq: %d, hashed balue : %d", payload->src, payload->seq,(call PackLogs.get(srcKey));
             return 1;
           }
         }
@@ -300,4 +307,5 @@ implementation{
       //otherwise we havent seen the packet before
       else return 0;
    }
+   */
 }
