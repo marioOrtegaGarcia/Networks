@@ -29,6 +29,8 @@ module Node{
 
    uses interface List <uint32_t> as NeighborList;
 
+   uses interface Random as Random;
+
    uses interface Timer<TMilli> as Timer;
 }
 /* Pseudo Code from Lab TA
