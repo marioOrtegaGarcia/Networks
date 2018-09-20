@@ -81,52 +81,63 @@ implementation{
    //  **Might have to implement this one later
    event void AMControl.stopDone(error_t err){}
 
-     //check packets to see if they have passed through this node beofore
-     void updatePack(pack* payload) {
 
-       uint32_t src = payload->src;
-       uint32_t seq = payload->seq;
-
-       //if packet log isnt empty and contains the src key
-      if(hasSeen(payload)){
-        //remove old key value pair and insert new one
-
-        call PackLogs.remove(src);
-       }
-       //logPack(payload);
-       call PackLogs.insert(src, seq);
-       dbg(FLOODING_CHANNEL, "UPDATING PACKET ------------------------>>>> SRC: %d SEQ: %d\n", payload->src, payload->seq);
-
-     }
-
-     bool hasSeen(pack* payload) {
-       uint32_t seq = payload->seq;
-       uint32_t srcKey = payload->src;
-
-
-       if(! call PackLogs.isEmpty()) {
-         if(call PackLogs.contains(srcKey)) {
-            if((call PackLogs.get(srcKey)) <= seq) {
-              return 1;
-            }
-          }
-        }
-        //otherwise we havent seen the packet before
-        else return 0;
-     }
 
      //  type message_t contains our AM pack
      //  We need to send to everyone, and just check with this function if it's meant for us.
    event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len){
-     pack* recievedMsg =(pack*) payload;
-     //  Know if it's a ping/pingReply
-     //  Check to see if i've received it or not, check list
-     //  Checking if its for self first, if it is let sender know I got it
-     //  If not, then forward the message to AMBroadcast
-     //
-     //dbg(GENERAL_CHANNEL, "Packet Received\n");
-     //pack* recievedMsg;
-     //recievedMsg=(pack*) payload;
+     // If the Pack is Corrupt we dont want it
+     if (len == sizeof(pack)) {
+
+       pack* recievedMsg =(pack*) payload;
+
+       //  Debugs for when Pack is being cut off
+       if (this->hasSeen(recievedMsg)) {
+         dbg(GENERAL_CHANNEL, "Package Seen B4 <--> SRC: %d SEQ: %d\n", recievedMsg->src, recievedMsg->seq);
+         return msg;
+       } else if (recievedMsg->TTL == 0) {
+         dbg(GENERAL_CHANNEL, "Package Dead\n");
+         return msg;
+       }
+
+       //  Pings to us in 2 Cases: Ping & pingReply when pinging back to me
+       if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->) {
+         
+       }
+
+
+       //  Check Protocol Number and if it's for us
+       //    Log the message
+       //    Make new packet w/ TTL - 1 and
+       //    Reply with a Ping pingReply packet
+
+       //  Ping Reply to us
+       //  Check if its for us
+       //   Log
+
+       // Neighbor Discovery
+       //     (Recieving obviously)
+       //     Save sender under list of neighbors
+       //     PingBack with our ID
+       //
+       //
+       //
+
+
+       // Rellay
+         //    If it's not for us then we just rellay the message to all out neighbors
+         //    new packet w/ TTL - 1
+
+
+
+     }
+
+
+
+
+
+
+
 
      // Take out Packs that are corrupted or dead or that we have seen
      if (len !=sizeof(pack)) {
@@ -184,6 +195,7 @@ implementation{
 
            updatePack(&recievedMsg);
            return msg;
+           //
          } else {
            if (!hasSeen(recievedMsg)) {
              if(recievedMsg->TTL > 0) recievedMsg->TTL -= /*(nx_uint8_t)*/ 1;
@@ -195,6 +207,10 @@ implementation{
            }
          }
      } // End of Ping Reply Protocol
+     // For neighbor discovery
+     if () {
+
+     }
 
     return msg;
    }
@@ -237,5 +253,38 @@ implementation{
       Package->seq = seq;
       Package->protocol = protocol;
       memcpy(Package->payload, payload, length);
+   }
+   //check packets to see if they have passed through this node beofore
+   void updatePack(pack* payload) {
+
+     uint32_t src = payload->src;
+     uint32_t seq = payload->seq;
+
+     //if packet log isnt empty and contains the src key
+    if(hasSeen(payload)){
+      //remove old key value pair and insert new one
+
+      call PackLogs.remove(src);
+     }
+     //logPack(payload);
+     call PackLogs.insert(src, seq);
+     dbg(FLOODING_CHANNEL, "UPDATING PACKET ------------------------>>>> SRC: %d SEQ: %d\n", payload->src, payload->seq);
+
+   }
+
+   bool hasSeen(pack* payload) {
+     uint32_t seq = payload->seq;
+     uint32_t srcKey = payload->src;
+
+
+     if(! call PackLogs.isEmpty()) {
+       if(call PackLogs.contains(srcKey)) {
+          if((call PackLogs.get(srcKey)) <= seq) {
+            return 1;
+          }
+        }
+      }
+      //otherwise we havent seen the packet before
+      else return 0;
    }
 }
