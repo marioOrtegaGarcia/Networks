@@ -88,7 +88,7 @@ implementation{
        uint32_t seq = payload->seq;
 
        //if packet log isnt empty and contains the src key
-      if(!hasSeen(payload)){
+      if(hasSeen(payload)){
         //remove old key value pair and insert new one
 
         call PackLogs.remove(src);
@@ -145,14 +145,13 @@ implementation{
            nodeSeq++;
            dbg(GENERAL_CHANNEL, "PING SEQUENCE: %d", nodeSeq);
            makePack(&sendPackage, recievedMsg->dest, recievedMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)recievedMsg->payload, len);
+           updatePack(recievedMsg);
+           updatePack(&sendPackage);
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
 
            //  Package Log
-           logPack(recievedMsg);
+           //logPack(recievedMsg);
            logPack(&sendPackage);
-           updatePack(recievedMsg);
-           //updatePack(&sendPackage);
-
        // Not my Message
        } else {
          //Forward to printNeighbors
