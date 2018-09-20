@@ -66,7 +66,10 @@ implementation{
    event void Boot.booted(){
      //  Booting/Starting our lowest networking layer exposed in TinyOS which is also called active messages (AM)
       call AMControl.start();
-      call Timer.startPeriodicAt(10, 20000);
+      t0 = call Random.rand32() % 2500;
+      dt = 20000 + (call Random.rand32() % 10000);
+
+      call Timer.startPeriodicAt(t0, dt);
       //start timer
       //  We need to initiate the node Timer first
       //call NodeTimerC.startOneShot(1000);

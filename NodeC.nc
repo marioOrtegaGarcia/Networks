@@ -33,6 +33,9 @@ implementation {
     Node.NeighborList -> NeighborListC;
     Node.Timer -> TimerC;
 
+    components RandomC as Random;
+    Node.Random -> Random;
+
     //NodeTimerC.
 
     components ActiveMessageC;
