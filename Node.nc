@@ -48,7 +48,6 @@ implementation{
    pack sendPackage;
    // Increases each time the node sends something.
    uint16_t nodeSeq = 0;
-   int index = 0;
 
    //  Here we can lis all the neighbors for this mote
   // We getting an error with neighbors
@@ -112,7 +111,7 @@ implementation{
           //    Make Ping pingReply packet reset TTL & increase nodeSeq
            nodeSeq++;
            makePack(&sendPackage, recievedMsg->dest, recievedMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)recievedMsg->payload, len);
-           updatePack(sendPackage);
+           updatePack(&sendPackage);
            //    Reply with a Ping pingReply packet
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
           //dbg(GENERAL_CHANNEL, "PING SEQUENCE: %d", nodeSeq);
@@ -140,7 +139,7 @@ implementation{
         //    new packet w/ TTL - 1
         if(recievedMsg->TTL > 0) recievedMsg->TTL -=  1;
         makePack(&sendPackage, recievedMsg->src, recievedMsg->dest, recievedMsg->TTL, recievedMsg->protocol, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
-        updatePack(sendPackage);
+        updatePack(&sendPackage);
         //    If it's not for us then we just rellay the message to all out neighbors
         call Sender.send(sendPackage, AM_BROADCAST_ADDR);
         return msg;
