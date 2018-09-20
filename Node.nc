@@ -29,7 +29,7 @@ module Node{
 
    uses interface List <uint32_t> as NeighborList;
 
-   //uses interface Timer<TMilli> as Timer;
+   uses interface Timer<TMilli> as Timer;
 }
 /* Pseudo Code from Lab TA
 *  First Part of Project
@@ -65,7 +65,7 @@ implementation{
    event void Boot.booted(){
      //  Booting/Starting our lowest networking layer exposed in TinyOS which is also called active messages (AM)
       call AMControl.start();
-      call Timer.startPeriodicAt(1000, 6000);
+      call Timer.startPeriodicAt(100, 100);
       //start timer
       //  We need to initiate the node Timer first
       //call NodeTimerC.startOneShot(1000);
