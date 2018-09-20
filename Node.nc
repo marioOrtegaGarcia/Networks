@@ -29,7 +29,7 @@ module Node{
 
    uses interface List <uint32_t> as NeighborList;
 
-   uses interface Timer<TMilli> as Timer;
+   //uses interface Timer<TMilli> as Timer;
 }
 /* Pseudo Code from Lab TA
 *  First Part of Project
@@ -71,6 +71,7 @@ implementation{
       //call NodeTimerC.startOneShot(1000);
       dbg(GENERAL_CHANNEL, "Booted\n");
    }
+
    event void Timer.fired() {
 
     makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PINGNEIGHBOR, 256, sendPa, PACKET_MAX_PAYLOAD_SIZE);
@@ -134,6 +135,10 @@ implementation{
           dbg(FLOODING_CHANNEL, "~~~     Ping Reply  from: %d\n", recievedMsg->src);
           //   Log
           //updatePack(&recievedMsg);
+          return msg;
+        } else {
+          //Do Something
+          dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
           return msg;
         }
 
