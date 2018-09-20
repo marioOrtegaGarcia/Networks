@@ -73,10 +73,9 @@ implementation{
    }
 
    event void Timer.fired() {
-     bool lit = 0;
-     if (lit = 0) {
-        dbg(GENERAL_CHANNEL, "Timer has begun!!\n");
-        lit != lit;
+     int c = 0
+     if (!(c % 9)) {
+       dbg(GENERAL_CHANNEL, "Timer Fired!!\n");
      }
    }
 
