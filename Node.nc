@@ -148,7 +148,7 @@ implementation{
            updatePack(recievedMsg);
 
            //  Reply w/ pingReply
-           nodeSeq++;
+           //nodeSeq++;
            dbg(GENERAL_CHANNEL, "PING SEQUENCE: %d", nodeSeq);
            makePack(&sendPackage, recievedMsg->dest, recievedMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)recievedMsg->payload, len);
 
