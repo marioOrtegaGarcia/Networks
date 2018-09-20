@@ -72,7 +72,9 @@ implementation{
       dbg(GENERAL_CHANNEL, "Booted\n");
    }
 
-   event void Timer.fired() {}
+   event void Timer.fired() {
+     dbg(GENERAL_CHANNEL, "Timer has begun!!");
+   }
 
    //  This function makes sure all the Radios are turned on
    event void AMControl.startDone(error_t err){
