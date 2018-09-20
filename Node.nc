@@ -72,7 +72,7 @@ implementation{
       dbg(GENERAL_CHANNEL, "Booted\n");
    }
    event void Timer.fired() {
-    makePack(&sendPackage, TOS_NODE_ID, 0, 1, PROTOCOL_PINGNEIGHBOR, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
+    makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PINGNEIGHBOR, 256, payload, PACKET_MAX_PAYLOAD_SIZE);
     call Sender.send(sendPackage, AM_BROADCAST_ADDR);
   }
 
