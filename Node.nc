@@ -73,7 +73,7 @@ implementation{
    }
    event void Timer.fired() {
 
-    makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PINGNEIGHBOR, 256, PACKET_MAX_PAYLOAD_SIZE, PACKET_MAX_PAYLOAD_SIZE);
+    makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PINGNEIGHBOR, 256, sendPa, PACKET_MAX_PAYLOAD_SIZE);
     call Sender.send(sendPackage, AM_BROADCAST_ADDR);
   }
 
@@ -135,30 +135,24 @@ implementation{
           //   Log
           //updatePack(&recievedMsg);
           return msg;
-
-          // Neighbor Discovery
-        } else {//Need to add Neighbor Discovery Here
-
-          if (recievedMsg->protocol == PROTOCOL_PINGNEIGHBOR) {
-            size = call NeighborList.size();
-            foundMatch = 0;
-            for (index = 0; index < size ; index++) {
-              if(call NeighborList.get(index) == recievedMsg->src)
-                foundMatch = 1;
-            }
-            if (!foundMatch) {
-              call NeighborList.pushback(recievedMsg->src);
-            }
-
-            //     (Recieving obviously)
-            //     Save sender under list of neighbors
-            //     PingBack with our ID
-          }
-
         }
 
-        // Relay
-      } else {
+        // Neighbor Discovery
+      } else if (recievedMsg->protocol == PROTOCOL_PINGNEIGHBOR) {
+        size = call NeighborList.size();
+        foundMatch = 0;
+        for (index = 0; index < size ; index++) {
+          if(call NeighborList.get(index) == recievedMsg->src)
+            foundMatch = 1;
+        }
+        if (!foundMatch) {
+          call NeighborList.pushback(recievedMsg->src);
+        }
+
+        //     (Recieving obviously)
+        //     Save sender under list of neighbors
+        //     PingBack with our ID
+      } else {// Relay
 
         dbg(GENERAL_CHANNEL, " Relaying Package for:  %d\n", recievedMsg->src);
         //    new packet w/ TTL - 1
@@ -261,7 +255,7 @@ implementation{
 
       nodeSeq++;
       dbg(GENERAL_CHANNEL, "PING SEQUENCE: %d\n", nodeSeq);
-      makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
+      makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING2, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
       logPack(&sendPackage);
       updatePack(&sendPackage);
       call Sender.send(sendPackage, AM_BROADCAST_ADDR);
