@@ -297,7 +297,7 @@ implementation{
 
      if(!call PackLogs.isEmpty()){
       for (i = 0; i < call PackLogs.size(); i++) {
-        temp = call PackLogs->get(i);
+        temp = call PackLogs.get(i);
        if (temp.src == payload->src && temp.seq <= payload->seq) {
          return 1;
        }
