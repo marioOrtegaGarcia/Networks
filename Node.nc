@@ -101,7 +101,7 @@ implementation{
            dbg(GENERAL_CHANNEL, "Package Seen B4 <--> SRC: %d SEQ: %d\n", recievedMsg->src, recievedMsg->seq);
            return msg;
          }
-       }
+
 
        //  Pings to us in 2 Cases: Ping & pingReply when pinging back to me
       if (recievedMsg->dest == TOS_NODE_ID) {
@@ -149,7 +149,7 @@ implementation{
         dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
         return msg;
      }
-
+}
 
 /*()
      // Take out Packs that are corrupted or dead or that we have seen
@@ -269,33 +269,35 @@ implementation{
       memcpy(Package->payload, payload, length);
    }
    //check packets to see if they have passed through this node beofore
-   void updatePack(pack payload) {
+   void updatePack(pack* payload) {
 
-     uint32_t src = payload.src;
-     uint32_t seq = payload.seq;
+     uint32_t src = payload->src;
+     uint32_t seq = payload->seq;
+     pack temp;
 
      //if packet log isnt empty and contains the src key
-    if(call PackLogs.size() == payload.MAX_SIZE){
+    if(call PackLogs.size() == payload->MAX_SIZE){
       //remove old key value pair and insert new one
 
       call PackLogs.popfront();
      }
      //logPack(payload);
-     call PackLogs.pushback(payload);
+     temp = &payload;
+     call PackLogs.pushback(temp);
      dbg(FLOODING_CHANNEL, "UPDATING PACKET ------------------------>>>> SRC: %d SEQ: %d\n", payload->src, payload->seq);
 
    }
 
-   bool hasSeen(pack payload) {
+   bool hasSeen(pack* payload) {
 
-     dbg(FLOODING_CHANNEL, "payload: %s, hash Key: %d, hashed Value : %d\n", payload.payload, payload.src, payload.seq);
+     dbg(FLOODING_CHANNEL, "payload: %s, hash Key: %d, hashed Value : %d\n", payload->payload, payload->src, payload->seq);
 
      pack temp;
      int i;
      if(!call PackLogs.isEmpty()){
       for (i = 0; i < call PackLogs.size(); i++) {
         temp = call PackLogs->get(i);
-       if (temp.src == payload.src && temp.seq <= payload.seq) {
+       if (temp.src == payload->src && temp.seq <= payload->seq) {
          return 1;
        }
       }
