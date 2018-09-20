@@ -275,7 +275,7 @@ implementation{
      uint32_t seq = payload->seq;
 
      //if packet log isnt empty and contains the src key
-    if(hasSeen(payload)){
+    if(!hasSeen(payload)){
       //remove old key value pair and insert new one
 
       call PackLogs.remove(src);
@@ -289,7 +289,7 @@ implementation{
    bool hasSeen(pack* payload) {
      uint32_t seq = payload->seq;
      uint32_t srcKey = payload->src;
-     dbg(FLOODING_CHANNEL, "payload: %d, seq: %d, hashed value : %d\n", payload->src, payload->seq, call PackLogs.get(srcKey));
+     dbg(FLOODING_CHANNEL, "payload: %s, hash Key: %d, hashed Value : %d\n", payload->payload, payload->src, payload->seq);
 
      if(call PackLogs.isEmpty()) {
        return 0;
