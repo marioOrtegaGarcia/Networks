@@ -136,7 +136,7 @@ implementation{
         // Rellay
       } else {
 
-        dbg(GENERAL_CHANNEL, " Relaying Package for:  %d", recievedMsg->src);
+        dbg(GENERAL_CHANNEL, " Relaying Package for:  %d\n", recievedMsg->src);
         //    new packet w/ TTL - 1
         if(recievedMsg->TTL > 0) recievedMsg->TTL -=  1;
         updatePack(recievedMsg);
@@ -288,7 +288,6 @@ implementation{
      uint32_t seq = payload->seq;
      uint32_t srcKey = payload->src;
      dbg(FLOODING_CHANNEL, "payload: %d, seq: %d, hashed value : %d\n", payload->src, payload->seq, call PackLogs.get(srcKey));
-}
 
      if(call PackLogs.isEmpty()) {
        return 0;
@@ -297,6 +296,8 @@ implementation{
       return 0;
     }
       else return 1;
+}
+
 
 /*
      if(! call PackLogs.isEmpty()) {
