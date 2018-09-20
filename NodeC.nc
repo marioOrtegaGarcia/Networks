@@ -18,7 +18,7 @@ implementation {
     components MainC;
     components Node;
     components new AMReceiverC(AM_PACK) as GeneralReceive;
-    components new HashmapC(uint32_t, 32) as PackLogsC;
+    components new ListC(pack) as PackLogsC;
     //components new TimerMilliC() as NodeTimerC;
 
     //  This is where we are Wiring our whole program.

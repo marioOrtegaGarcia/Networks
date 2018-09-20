@@ -25,7 +25,7 @@ module Node{
 
    uses interface CommandHandler;
 
-   uses interface Hashmap <uint32_t> as PackLogs;
+   uses interface List <pack> as PackLogs;
 }
 /* Pseudo Code from Lab TA
 *  First Part of Project
@@ -55,8 +55,8 @@ implementation{
 
    // Prototypes
    void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
-   void updatePack(pack* payload);
-   bool hasSeen(pack* payload);
+   void updatePack(pack payload);
+   bool hasSeen(pack payload);
    //void savePack(pack* payload);
 
    event void Boot.booted(){
@@ -97,7 +97,7 @@ implementation{
         return msg;
 
        //  Debugs for when Pack is being cut off
-      } else if (hasSeen(recievedMsg)) {
+      } else if (hasSeen(&recievedMsg)) {
            dbg(GENERAL_CHANNEL, "Package Seen B4 <--> SRC: %d SEQ: %d\n", recievedMsg->src, recievedMsg->seq);
            return msg;
          }
@@ -113,7 +113,7 @@ implementation{
           //    Make Ping pingReply packet reset TTL & increase nodeSeq
            nodeSeq++;
            makePack(&sendPackage, recievedMsg->dest, recievedMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)recievedMsg->payload, len);
-           updatePack(&sendPackage);
+           updatePack(sendPackage);
            //    Reply with a Ping pingReply packet
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
           //dbg(GENERAL_CHANNEL, "PING SEQUENCE: %d", nodeSeq);
@@ -140,8 +140,8 @@ implementation{
         dbg(GENERAL_CHANNEL, " Relaying Package for:  %d\n", recievedMsg->src);
         //    new packet w/ TTL - 1
         if(recievedMsg->TTL > 0) recievedMsg->TTL -=  1;
-        updatePack(recievedMsg);
         makePack(&sendPackage, recievedMsg->src, recievedMsg->dest, recievedMsg->TTL, recievedMsg->protocol, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
+        updatePack(sendPackage);
         //    If it's not for us then we just rellay the message to all out neighbors
         call Sender.send(sendPackage, AM_BROADCAST_ADDR);
         return msg;
@@ -238,7 +238,7 @@ implementation{
       dbg(GENERAL_CHANNEL, "PING SEQUENCE: %d\n", nodeSeq);
       makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
       logPack(&sendPackage);
-      updatePack(&sendPackage);
+      updatePack(sendPackage);
       call Sender.send(sendPackage, AM_BROADCAST_ADDR);
 
    }
@@ -269,35 +269,37 @@ implementation{
       memcpy(Package->payload, payload, length);
    }
    //check packets to see if they have passed through this node beofore
-   void updatePack(pack* payload) {
+   void updatePack(pack payload) {
 
-     uint32_t src = payload->src;
-     uint32_t seq = payload->seq;
+     uint32_t src = payload.src;
+     uint32_t seq = payload.seq;
 
      //if packet log isnt empty and contains the src key
-    if(!hasSeen(payload)){
+    if(call PackLogs.size() == MAX_SIZE){
       //remove old key value pair and insert new one
 
-      call PackLogs.remove(src);
+      call PackLogs.popfront();
      }
      //logPack(payload);
-     call PackLogs.insert(src, seq);
+     call PackLogs.insert(payload);
      dbg(FLOODING_CHANNEL, "UPDATING PACKET ------------------------>>>> SRC: %d SEQ: %d\n", payload->src, payload->seq);
 
    }
 
-   bool hasSeen(pack* payload) {
-     uint32_t seq = payload->seq;
-     uint32_t srcKey = payload->src;
-     dbg(FLOODING_CHANNEL, "payload: %s, hash Key: %d, hashed Value : %d\n", payload->payload, payload->src, payload->seq);
+   bool hasSeen(pack payload) {
 
-     if(call PackLogs.isEmpty()) {
-       return 0;
-     }
-    else if(call PackLogs.contains(srcKey) && call PackLogs.get(srcKey) < seq) {
-      return 0;
+     dbg(FLOODING_CHANNEL, "payload: %s, hash Key: %d, hashed Value : %d\n", payload.payload, payload.src, payload.seq);
+
+     pack temp;
+     if(!call PackLogs.isEmpty()){
+      for (int i = 0; i < call PackLogs.size(); i++) {
+        temp = call PackLogs->get(i);
+       if (temp.src == payload.src && temp.seq <= payload.seq) {
+         return 1;
+       }
+      }
     }
-      else return 1;
+    return 0;
 }
 
 
