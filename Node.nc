@@ -65,7 +65,7 @@ implementation{
    event void Boot.booted(){
      //  Booting/Starting our lowest networking layer exposed in TinyOS which is also called active messages (AM)
       call AMControl.start();
-      call Timer.startPeriodic( 1000 );
+      call Timer.startPeriodicAt(1000, 6000);
       //start timer
       //  We need to initiate the node Timer first
       //call NodeTimerC.startOneShot(1000);
@@ -79,7 +79,7 @@ implementation{
       if(err == SUCCESS){
          dbg(GENERAL_CHANNEL, "Radio On\n");
          //  Maybe timer for neighbor discovery
-         
+
       }else{
          //Retry until successful
 
