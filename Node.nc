@@ -144,6 +144,7 @@ implementation{
 
            //  Reply w/ pingReply
            nodeSeq++;
+           //dbg(GENERAL_CHANNEL, "PING SEQUENCE: %d", nodeSeq)
            makePack(&sendPackage, recievedMsg->dest, recievedMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)recievedMsg->payload, len);
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
 
@@ -197,7 +198,7 @@ implementation{
       dbg(GENERAL_CHANNEL, "PING EVENT \n");
 
       nodeSeq++;
-      dbg(GENERAL_CHANNEL, )
+      //dbg(GENERAL_CHANNEL, "PING SEQUENCE: %d", nodeSeq)
       makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
       //logPack(&sendPackage);
 
