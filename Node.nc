@@ -87,10 +87,10 @@ implementation{
      //  type message_t contains our AM pack
      //  We need to send to everyone, and just check with this function if it's meant for us.
    event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len){
+     pack* recievedMsg;
      // If the Pack is Corrupt we dont want it
      if (len == sizeof(pack)) {
-
-       pack* recievedMsg =(pack*) payload;
+       recievedMsg =(pack*) payload;
 
        if (recievedMsg->TTL == 0) {
         dbg(GENERAL_CHANNEL, "Package Dead\n");
