@@ -135,18 +135,15 @@ implementation{
       } else {
 
         dbg(GENERAL_CHANNEL, " Relaying Package for:  %d", recievedMsg->src)
+        //    new packet w/ TTL - 1
         if(recievedMsg->TTL > 0) recievedMsg->TTL -=  1;
         updatePack(recievedMsg);
         makePack(&sendPackage, recievedMsg->src, recievedMsg->dest, recievedMsg->TTL, recievedMsg->protocol, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
-
+        //    If it's not for us then we just rellay the message to all out neighbors
         call Sender.send(sendPackage, AM_BROADCAST_ADDR);
       }
-
-
-
-
-         //    If it's not for us then we just rellay the message to all out neighbors
-         //    new packet w/ TTL - 1
+        dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
+        return msg;
 
 
 
