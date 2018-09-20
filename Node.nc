@@ -135,7 +135,7 @@ implementation{
      }
 
      //  Ping Protocol
-     if (recievedMsg->protocol == PROTOCOL_PING) {
+    else if (recievedMsg->protocol == PROTOCOL_PING) {
        // My Message
        if (recievedMsg->dest == TOS_NODE_ID) {
            //  Recieve myMessage
