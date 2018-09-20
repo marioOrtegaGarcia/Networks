@@ -277,7 +277,7 @@ implementation{
      pack temp;
 
      //if packet log isnt empty and contains the src key
-    if(call PackLogs.size() == payload->MAX_SIZE){
+    if(call PackLogs.size() == 64){
       //remove old key value pair and insert new one
 
       call PackLogs.popfront();
