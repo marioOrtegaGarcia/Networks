@@ -132,7 +132,7 @@ implementation{
 
           if (recievedMsg->protocol == PROTOCOL_PINGNEIGHBOR) {
             size = call NeighborList.size();
-            for (index = 0; index < size : index++) {
+            for (index = 0; index < size ; index++) {
                 call NeighborList.pushback(recievedMsg->src);
             }
 
