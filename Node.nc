@@ -74,7 +74,7 @@ implementation{
    }
 
    event void Timer.fired() {
-     discoverNeighbors();
+     //discoverNeighbors();
 
 
 
