@@ -75,19 +75,17 @@ implementation{
 
    event void Timer.fired() {
      //discoverNeighbors();
-
-
-
    }
 
    void discoverNeighbors(){
 
-     //fire ping
+
+/*
       pack* temp;
 
      makePack(&temp, TOS_NODE_ID, TOS_NODE_ID, MAX_TTL, PROTOCOL_PINGNEIGHBOR, nodeSeq, (uint8_t*)"hi", sizeof(pack));
      call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-
+*/
      //log neighbors in list
    }
 
@@ -121,6 +119,10 @@ implementation{
      if (len == sizeof(pack)) {
        recievedMsg =(pack*) payload;
        logPack(recievedMsg);
+       if (recievedMsg->TTL == MAX_TTL) {
+         makePack(&sendPackage, TOS_NODE_ID, recievedMsg->src, recievedMsg->TTL, PROTOCOL_PINGNEIGHBOR, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
+       }
+
        if (recievedMsg->TTL == 0) {
         dbg(GENERAL_CHANNEL, "Package Dead\n");
         return msg;
