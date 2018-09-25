@@ -62,7 +62,7 @@ implementation{
    void updatePack(pack* payload);
    bool hasSeen(pack* payload);
 
-   event void Boot.booted(){#FF2600
+   event void Boot.booted(){
      //  Booting/Starting our lowest networking layer exposed in TinyOS which is also called active messages (AM)
      uint32_t t0, dt;
 
