@@ -77,7 +77,12 @@ implementation{
       dbg(GENERAL_CHANNEL, "Booted\n");
    }
 
-   event void Timer.fired() {}//Were using run timer sice this function is fired over a hundread times
+   event void Timer.fired() {
+
+     //ping protocol for neighbor
+     //makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, recievedMsg->seq, call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+
+     }//Were using run timer sice this function is fired over a hundread times
 
    //  This function makes sure all the Radios are turned on
    event void AMControl.startDone(error_t err){
@@ -211,7 +216,9 @@ implementation{
    }
 
    //  This are functions we are going to be implementing in the future.
-   event void CommandHandler.printNeighbors(){}
+   event void CommandHandler.printNeighbors(){
+     //give me neigbors of 2
+   }
 
    event void CommandHandler.printRouteTable(){}
 
