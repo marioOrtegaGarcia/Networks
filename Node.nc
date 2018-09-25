@@ -62,7 +62,7 @@ implementation{
    void updatePack(pack* payload);
    bool hasSeen(pack* payload);
 
-   event void Boot.booted(){
+   event void Boot.booted(){#FF2600
      //  Booting/Starting our lowest networking layer exposed in TinyOS which is also called active messages (AM)
      uint32_t t0, dt;
 
@@ -108,6 +108,7 @@ implementation{
      if (len == sizeof(pack)) {
        recievedMsg =(pack*) payload;
        logPack(recievedMsg);
+       // Neighbor Discovery
        if (recievedMsg->TTL == MAX_TTL || recievedMsg->dest == AM_BROADCAST_ADDR || call Timer.isRunning()) {
          makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PINGNEIGHBOR, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
          call Sender.send(sendPackage, AM_BROADCAST_ADDR);
@@ -152,7 +153,7 @@ implementation{
           return msg;
         }
 
-        // Neighbor Discovery
+        // Logic for when reciveved Discovery through ping protocol
       } else if (recievedMsg->protocol == PROTOCOL_PINGNEIGHBOR) {
 
         size = call NeighborList.size();
