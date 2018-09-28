@@ -88,18 +88,12 @@ implementation{
    event void AMControl.startDone(error_t err){
       if(err == SUCCESS){
          dbg(GENERAL_CHANNEL, "Radio On\n");
-         //  Maybe timer for neighbor discovery
-
       }else{
-         //Retry until successful
-
          call AMControl.start();
       }
    }
-   //  **Might have to implement this one later
+
    event void AMControl.stopDone(error_t err){}
-
-
 
      //  type message_t contains our AM pack
      //  We need to send to everyone, and just check with this function if it's meant for us.
