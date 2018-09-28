@@ -173,9 +173,7 @@ implementation{
           dbg(NEIGHBOR_CHANNEL, "Neighbors Discovered: %d\n", call NeighborList.get(index) );
         }
 
-        for(index = 0; index < call NeighborList.size(); index++){
-          dbg(NEIGHBOR_CHANNEL, "%d -Neighbors-> %d\n", TOS_NODE_ID,call NeighborList.get(index));
-        }
+        call this.printNeighbors();
         //     (Recieving obviously)
         //     Save sender under list of neighbors
         //     PingBack with our ID
@@ -218,6 +216,12 @@ implementation{
    //  This are functions we are going to be implementing in the future.
    event void CommandHandler.printNeighbors(){
      //give me neigbors of 2
+     int index = 0
+     for(index = 0; index < call NeighborList.size(); index++){
+       dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID,call NeighborList.get(index));
+     }
+
+
    }
 
    event void CommandHandler.printRouteTable(){}
