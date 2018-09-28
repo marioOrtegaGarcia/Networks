@@ -81,7 +81,7 @@ implementation{
      uint8_t* tempPayload = NULL;
      //ping protocol for neighbor
      //makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, recievedMsg->seq, call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-     makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, ++seq, tempPayload, PACKET_MAX_PAYLOAD_SIZE);
+     makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, ++nodeSeq, tempPayload, PACKET_MAX_PAYLOAD_SIZE);
      //send new neighbor discovery ping
      call Sender.send(sendPackage, AM_BROADCAST_ADDR)
 
