@@ -163,8 +163,8 @@ implementation{
 
          // Neighbor Discovery: Timer
          if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == AM_BROADCAST_ADDR && recievedMsg->TTL == 1) {
+           addNeighbor(recieveMsg);
            updatePack(recievedMsg);
-           addNeighbor();
            // Log as neighbor
            return msg;
          }
@@ -258,15 +258,9 @@ implementation{
     return 0;
   }
 
-  void addNeighbor() {
+  void addNeighbor(pack* Neighbor) {
     size = call NeighborList.size();
-    foundMatch = 0;
-    for (index = 0; index < size ; index++) {
-      if(call NeighborList.get(index) == recievedMsg->src)
-      foundMatch = 1;
-    }
-
-    if (!foundMatch) {
+    if (!hasSeen(Neighbor)) {
       call NeighborList.pushback(recievedMsg->src);
       dbg(NEIGHBOR_CHANNEL, "Neighbors Discovered: %d\n", call NeighborList.get(index) );
     }
