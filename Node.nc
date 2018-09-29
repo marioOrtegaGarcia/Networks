@@ -15,7 +15,7 @@
 
 module Node{
 
-    //  This is the other part of Wiring
+    //  Wiring from .nc File
    uses interface Boot;
 
    uses interface SplitControl as AMControl;
@@ -61,6 +61,7 @@ implementation{
    void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
    void updatePack(pack* payload);
    bool hasSeen(pack* payload);
+   void addNeighbor();
 
    event void Boot.booted(){
      //  Booting/Starting our lowest networking layer exposed in TinyOS which is also called active messages (AM)
@@ -83,7 +84,7 @@ implementation{
      //makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, recievedMsg->seq, call Sender.send(sendPackage, AM_BROADCAST_ADDR);
      makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, ++nodeSeq, tempPayload, PACKET_MAX_PAYLOAD_SIZE);
      //send new neighbor discovery ping
-     call Sender.send(sendPackage, AM_BROADCAST_ADDR)
+     call Sender.send(sendPackage, AM_FLOODING)
 
      }//Were using run timer sice this function is fired over a hundread times
 
@@ -96,117 +97,94 @@ implementation{
       }
    }
 
-   event void AMControl.stopDone(error_t err){}
+   event void AMControl.stopDone(error_t err){
+   }
 
-     //  type message_t contains our AM pack
-     //  We need to send to everyone, and just check with this function if it's meant for us.
+   //  type message_t contains our AM pack
+   //  We need to send to everyone, and just check with this function if it's meant for us.
    event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len){
 
      pack* recievedMsg;
      int size, index;
      bool foundMatch;
 
-     // If the Pack is Corrupt we dont want it
-     if (len == sizeof(pack)) {
-       recievedMsg =(pack*) payload;
-       logPack(recievedMsg);
-       // Neighbor Discovery
-       if (recievedMsg->TTL == MAX_TTL || recievedMsg->dest == AM_BROADCAST_ADDR || call Timer.isRunning()) {
-         makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PINGNEIGHBOR, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
-         call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-     }
+     if (len = sizeof(pack)) {
 
-       if (recievedMsg->TTL == 0) {
-        dbg(GENERAL_CHANNEL, "Package Dead\n");
-        return msg;
+         // Saving Payload
+         recievedMsg = (pack *) payload;
+         logPack(recievedMsg);
 
-       //  Debugs for when Pack is being cut off
-      } else if (hasSeen(recievedMsg)) {
-           dbg(GENERAL_CHANNEL, "Package Seen B4 <--> SRC: %d SEQ: %d\n", recievedMsg->src, recievedMsg->seq);
+         // Dead Packet: Timed out
+         if (recievedMsg->TTL == 0) {
+           dbg(GENERAL_CHANNEL, "Package(%d,%d) Dead of old age\n", recievedMsg->src, recievedMsg->seq);
            return msg;
          }
 
-       //  Pings to us in 2 Cases: Ping & pingReply when pinging back to me
-      else if (recievedMsg->dest == TOS_NODE_ID) {
+         // Old Packet: Has been seen
+         if (this.hasSeen(reciveved)) {
+           dbg(GENERAL_CHANNEL, "Package(%d,%d) Seen\n", recievedMsg->src, recievedMsg->seq);
+           return msg;
+         }
 
-        // Ping to US
-        if (recievedMsg->protocol == PROTOCOL_PING) {
-          //    Log the message
-          dbg(FLOODING_CHANNEL, "!!!    Received Package Payload: %s  Src: %d  !!!!\n", recievedMsg->payload, recievedMsg->dest);
-          //    Make Ping pingReply packet reset TTL & increase nodeSeq
+         // Relaying Packet: Not for us
+         if (recievedMsg->dest != TOS_NODE_ID ||
+             recievedMsg->dest != AM_BROADCAST_ADDR) {
+           dbg(GENERAL_CHANNEL, " Package(%d,%d) Relay\n", recievedMsg->src);
+
+           // Forward and logging package
+           recievedMsg->TTL--;
+           makePack(&sendPackage, recievedMsg->src, recievedMsg->dest, recievedMsg->TTL, recievedMsg->protocol, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
+           updatePack(&sendPackage);
+           call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+           return msg;
+         }
+
+         // Ping to me
+         if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == TOS_NODE_ID) {
+           dbg(FLOODING_CHANNEL, "Package(%d,%d) Ping: %s\n", recievedMsg->src, recievedMsg->dest,  recievedMsg->payload);
+           updatePack(&sendPackage);
+
+           // Sending Ping Reply
            nodeSeq++;
            makePack(&sendPackage, recievedMsg->dest, recievedMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)recievedMsg->payload, len);
            updatePack(&sendPackage);
-           //    Reply with a Ping pingReply packet
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-          //dbg(GENERAL_CHANNEL, "PING SEQUENCE: %d", nodeSeq);
-          return msg;
+           return msg;
+         }
 
-          //  Ping Reply to US
-        } else if (recievedMsg->protocol == PROTOCOL_PINGREPLY) {
-          dbg(FLOODING_CHANNEL, "~~~     Ping Reply  from: %d\n", recievedMsg->src);
+         // Ping Reply to me
+         if (recievedMsg->protocol == PROTOCOL_PINGREPLY && recievedMsg->dest == TOS_NODE_ID) {
+           dbg(FLOODING_CHANNEL, "Package(%d,%d) Ping Reply\n");
+           updatePack(&sendPackage);
+           return msg;
+         }
 
-          //   Log
-          //updatePack(&recievedMsg);
-          return msg;
-        } else {
-          //Do Something
-          dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
-          return msg;
-        }
+         // Neighbor Discovery: Timer
+         if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == AM_FLOODING && recievedMsg->TTL == 1) {
+           updatePack(&recievedMsg);
+           addNeighbor();
+           // Log as neighbor
+           return msg;
+         }
 
-        // Logic for when reciveved Discovery through ping protocol
-      } else if (recievedMsg->protocol == PROTOCOL_PINGNEIGHBOR) {
-
-        size = call NeighborList.size();
-        foundMatch = 0;
-        for (index = 0; index < size ; index++) {
-          if(call NeighborList.get(index) == recievedMsg->src)
-            foundMatch = 1;
-        }
-
-        if (!foundMatch) {
-          call NeighborList.pushback(recievedMsg->src);
-          dbg(NEIGHBOR_CHANNEL, "Neighbors Discovered: %d\n", call NeighborList.get(index) );
-        }
-
-        //     (Recieving obviously)
-        //     Save sender under list of neighbors
-        //     PingBack with our ID
-      } else {// Relay
-
-        dbg(GENERAL_CHANNEL, " Relaying Package for:  %d\n", recievedMsg->src);
-
-        // Forward and logging package
-        if(recievedMsg->TTL > 0) recievedMsg->TTL -=  1;
-        makePack(&sendPackage, recievedMsg->src, recievedMsg->dest, recievedMsg->TTL, recievedMsg->protocol, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
-        updatePack(&sendPackage);
-        //    not for us to Relay
-        call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-
-        return msg;
-      }
-
-        dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
-        return msg;
-     }
-     // This prints when len != size of packet
-     dbg(GENERAL_CHANNEL, "Corrupt Packet Type %d\n", len);
-     return msg;
-}
-
+         dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
+         return msg;
+         }// End of Currupt if statement
+         dbg(GENERAL_CHANNEL, "Package(%d,%d) Currrupted", recievedMsg->src, recievedMsg->dest);
+         return msg;
+       }
 
    // This is how we send a message to one another
    event void CommandHandler.ping(uint16_t destination, uint8_t *payload){
 
-      dbg(GENERAL_CHANNEL, "PING EVENT \n");
+     dbg(GENERAL_CHANNEL, "PING EVENT \n");
 
-      nodeSeq++;
-      dbg(GENERAL_CHANNEL, "PING SEQUENCE: %d\n", nodeSeq);
-      makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
-      logPack(&sendPackage);
-      updatePack(&sendPackage);
-      call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+     nodeSeq++;
+     dbg(GENERAL_CHANNEL, "PING SEQUENCE: %d\n", nodeSeq);
+     makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
+     logPack(&sendPackage);
+     updatePack(&sendPackage);
+     call Sender.send(sendPackage, AM_BROADCAST_ADDR);
    }
 
    //  This are functions we are going to be implementing in the future.
@@ -215,8 +193,6 @@ implementation{
      for(index = 0; index < call NeighborList.size(); index++){
        dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID,call NeighborList.get(index));
      }
-
-
    }
 
    event void CommandHandler.printRouteTable(){}
@@ -233,14 +209,14 @@ implementation{
 
    event void CommandHandler.setAppClient(){}
 
-   void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t protocol, uint16_t seq, uint8_t* payload, uint8_t length){
+     void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t protocol, uint16_t seq, uint8_t* payload, uint8_t length){
       Package->src = src;
       Package->dest = dest;
       Package->TTL = TTL;
       Package->seq = seq;
       Package->protocol = protocol;
       memcpy(Package->payload, payload, length);
-   }
+    }
    //check packets to see if they have passed through this node beofore
    void updatePack(pack* payload) {
 
@@ -251,7 +227,6 @@ implementation{
      //if packet log isnt empty and contains the src key
     if(call PackLogs.size() == 64){
       //remove old key value pair and insert new one
-
       call PackLogs.popfront();
      }
      //logPack(payload);
@@ -277,20 +252,22 @@ implementation{
       }
     }
     return 0;
-}
+  }
 
+  void addNeighbor() {
 
-/*
-     if(! call PackLogs.isEmpty()) {
-       if(call PackLogs.contains(srcKey)) {
-          if((call PackLogs.get(srcKey)) <= seq) {
-            dbg(FLOODING_CHANNEL, "payload: %d, seq: %d, hashed balue : %d", payload->src, payload->seq,(call PackLogs.get(srcKey));
-            return 1;
-          }
-        }
-      }
-      //otherwise we havent seen the packet before
-      else return 0;
-   }
-   */
+  size = call NeighborList.size();
+  foundMatch = 0;
+
+  for (index = 0; index < size ; index++) {
+    if(call NeighborList.get(index) == recievedMsg->src)
+      foundMatch = 1;
+  }
+
+  if (!foundMatch) {
+    call NeighborList.pushback(recievedMsg->src);
+    dbg(NEIGHBOR_CHANNEL, "Neighbors Discovered: %d\n", call NeighborList.get(index) );
+  }
+  }
+
 }
