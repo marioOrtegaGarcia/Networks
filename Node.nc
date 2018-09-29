@@ -110,10 +110,10 @@ implementation{
      /* , index; */
      bool foundMatch;
 
+     recievedMsg = (pack *)payload;
      if (len == sizeof(pack)) {
          // Saving Payload
-         recievedMsg = (pack *)payload;
-         recievedMsg = (pack *)payload;
+         /* recievedMsg = (pack *)payload; */
          logPack(recievedMsg);
 
          // Dead Packet: Timed out
