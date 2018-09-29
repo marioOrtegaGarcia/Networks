@@ -104,14 +104,14 @@ implementation{
    //  type message_t contains our AM pack
    //  We need to send to everyone, and just check with this function if it's meant for us.
    event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
-     pack* recievedMsg;
 
+     pack* recievedMsg;
      int size, index;
      bool foundMatch;
 
      if (len == sizeof(pack)) {
-
          // Saving Payload
+         recievedMsg = (pack *)payload;
          recievedMsg = (pack *)payload;
          logPack(recievedMsg);
 
@@ -171,6 +171,7 @@ implementation{
          dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
          return msg;
          }// End of Currupt if statement
+
          dbg(GENERAL_CHANNEL, "Package(%d,%d) Currrupted", recievedMsg->src, recievedMsg->dest);
          return msg;
        }
@@ -191,7 +192,7 @@ implementation{
    //  This are functions we are going to be implementing in the future.
    event void CommandHandler.printNeighbors(){
      //give me neigbors of 2
-     for(index = 0; index < (int)(call NeighborList.size()); index++){
+     for(index = 0; index < (int)(call NeighborList.size()); index++) {
        dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, call NeighborList.get(index));
      }
    }
