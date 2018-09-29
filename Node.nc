@@ -261,8 +261,10 @@ implementation{
   void addNeighbor() {
     size = call NeighborList.size();
     foundMatch = 0;
+    nx_uint16_t indexSource;
     for (index = 0; index < size ; index++) {
-      if(call NeighborList.get(index) == recievedMsg->src) {
+      indexSource = call NeighborList.get(index);
+      if(indexSource == recievedMsg->src) {
           foundMatch = 1;
       }
     }
