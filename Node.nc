@@ -258,19 +258,17 @@ implementation{
   }
 
   void addNeighbor() {
-
-  size = call NeighborList.size();
-  foundMatch = 0;
-
-  for (index = 0; index < size ; index++) {
-    if(call NeighborList.get(index) == recievedMsg->src)
+    size = call NeighborList.size();
+    foundMatch = 0;
+    for (index = 0; index < size ; index++) {
+      if(call NeighborList.get(index) == recievedMsg->src)
       foundMatch = 1;
-  }
+    }
 
-  if (!foundMatch) {
-    call NeighborList.pushback(recievedMsg->src);
-    dbg(NEIGHBOR_CHANNEL, "Neighbors Discovered: %d\n", call NeighborList.get(index) );
-  }
+    if (!foundMatch) {
+      call NeighborList.pushback(recievedMsg->src);
+      dbg(NEIGHBOR_CHANNEL, "Neighbors Discovered: %d\n", call NeighborList.get(index) );
+    }
   }
 
 }
