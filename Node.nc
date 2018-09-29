@@ -104,11 +104,9 @@ implementation{
    //  type message_t contains our AM pack
    //  We need to send to everyone, and just check with this function if it's meant for us.
    event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
-
-     /* pack* recievedMsg; */
+     pack* recievedMsg;
      int size;
-     /* , index; */
-     pack* recievedMsg = (pack *)payload;
+     recieveMsg = (pack *)payload;
      bool foundMatch = hasSeen(recieveMsg);
 
      if (len == sizeof(pack)) {
