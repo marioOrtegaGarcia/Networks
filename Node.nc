@@ -104,15 +104,15 @@ implementation{
    //  type message_t contains our AM pack
    //  We need to send to everyone, and just check with this function if it's meant for us.
    event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
-
      pack* recievedMsg;
+
      int size, index;
      bool foundMatch;
 
      if (len == sizeof(pack)) {
 
          // Saving Payload
-         recievedMsg = (pack *) payload;
+         recievedMsg = (pack *)payload;
          logPack(recievedMsg);
 
          // Dead Packet: Timed out
