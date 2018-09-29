@@ -122,7 +122,7 @@ implementation{
          }
 
          // Old Packet: Has been seen
-         if (this.hasSeen(reciveved)) {
+         if (hasSeen(reciveved)) {
            dbg(GENERAL_CHANNEL, "Package(%d,%d) Seen\n", recievedMsg->src, recievedMsg->seq);
            return msg;
          }
