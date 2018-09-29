@@ -262,8 +262,9 @@ implementation{
     size = call NeighborList.size();
     foundMatch = 0;
     for (index = 0; index < size ; index++) {
-      if(call NeighborList.get(index) == recievedMsg->src)
-      foundMatch = 1;
+      if(call NeighborList.get(index) == recievedMsg->src) {
+          foundMatch = 1;
+      }
     }
 
     if (!foundMatch) {
