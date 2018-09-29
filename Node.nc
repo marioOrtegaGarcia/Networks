@@ -192,8 +192,8 @@ implementation{
    //  This are functions we are going to be implementing in the future.
    event void CommandHandler.printNeighbors(){
      //give me neigbors of 2
-     for(index = 0; index < (int)(call NeighborList.size()); index++) {
-       dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, call NeighborList.get(index));
+     for(index = 0; index < (call NeighborList.size()); index++) {
+       dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, call NeighborList.get((int)index));
      }
    }
 
