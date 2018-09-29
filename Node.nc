@@ -123,7 +123,7 @@ implementation{
          }
 
          // Old Packet: Has been seen
-         if (hasSeen(recivevedMsg)) {
+         if ((bool)hasSeen(recivevedMsg)) {
            dbg(GENERAL_CHANNEL, "Package(%d,%d) Seen\n", recievedMsg->src, recievedMsg->seq);
            return msg;
          }
