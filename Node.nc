@@ -105,12 +105,12 @@ implementation{
    //  We need to send to everyone, and just check with this function if it's meant for us.
    event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
 
-     pack* recievedMsg;
+     /* pack* recievedMsg; */
      int size;
      /* , index; */
-     bool foundMatch;
+     pack* recievedMsg = (pack *)payload;
+     bool foundMatch = hasSeen(recieveMsg);
 
-     recievedMsg = (pack *)payload;
      if (len == sizeof(pack)) {
          // Saving Payload
          /* recievedMsg = (pack *)payload; */
@@ -123,7 +123,7 @@ implementation{
          }
 
          // Old Packet: Has been seen
-         if ((bool)hasSeen(recivevedMsg)) {
+         if (foundMatch) {
            dbg(GENERAL_CHANNEL, "Package(%d,%d) Seen\n", recievedMsg->src, recievedMsg->seq);
            return msg;
          }
@@ -164,7 +164,7 @@ implementation{
          // Neighbor Discovery: Timer
          if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == AM_BROADCAST_ADDR && recievedMsg->TTL == 1) {
            pack* recievedMsg = (pack *)payload;
-           
+
            addNeighbor(recieveMsg);
            updatePack(recievedMsg);
            // Log as neighbor
@@ -243,7 +243,7 @@ implementation{
    }
 
    bool hasSeen(pack* payload) {
-     pack temp;
+     pack stored;
      int i;
 
      dbg(FLOODING_CHANNEL, "payload: %s, Src: %d, Seq: %d\n", payload->payload, payload->src, payload->seq);
@@ -251,8 +251,8 @@ implementation{
 
      if(!call PackLogs.isEmpty()){
       for (i = 0; i < call PackLogs.size(); i++) {
-        temp = call PackLogs.get(i);
-       if (temp.src == payload->src && temp.seq <= payload->seq) {
+        stored = call PackLogs.get(i);
+       if (stored.src == payload->src && stored.seq <= payload->seq) {
          return 1;
        }
       }
