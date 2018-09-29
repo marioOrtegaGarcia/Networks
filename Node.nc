@@ -260,7 +260,7 @@ implementation{
   }
 
   void addNeighbor(pack* Neighbor) {
-    size = call NeighborList.size();
+    int size = call NeighborList.size();
     if (!hasSeen(Neighbor)) {
       call NeighborList.pushback(Neighbor->src);
       dbg(NEIGHBOR_CHANNEL, "Neighbors Discovered: %d\n", Neighbor->src);
