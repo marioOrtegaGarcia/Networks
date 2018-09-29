@@ -62,7 +62,7 @@ implementation{
    void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
    void updatePack(pack* payload);
    bool hasSeen(pack* payload);
-   void addNeighbor();
+   void addNeighbor(pack* Neighbor);
 
    event void Boot.booted(){
      //  Booting/Starting our lowest networking layer exposed in TinyOS which is also called active messages (AM)
