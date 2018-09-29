@@ -162,7 +162,7 @@ implementation{
 
          // Neighbor Discovery: Timer
          if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == AM_FLOODING && recievedMsg->TTL == 1) {
-           updatePack(&recievedMsg);
+           updatePack(recievedMsg);
            addNeighbor();
            // Log as neighbor
            return msg;
