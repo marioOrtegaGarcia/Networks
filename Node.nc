@@ -85,7 +85,7 @@ implementation{
      //makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, recievedMsg->seq, call Sender.send(sendPackage, AM_BROADCAST_ADDR);
      makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, ++nodeSeq, tempPayload, PACKET_MAX_PAYLOAD_SIZE);
      //send new neighbor discovery ping
-     call Sender.send(sendPackage, AM_FLOODING);
+     call Sender.send(sendPackage, AM_BROADCAST_ADDR);
 
      }//Were using run timer sice this function is fired over a hundread times
 
@@ -162,7 +162,7 @@ implementation{
          }
 
          // Neighbor Discovery: Timer
-         if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == AM_FLOODING && recievedMsg->TTL == 1) {
+         if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == AM_BROADCAST_ADDR && recievedMsg->TTL == 1) {
            updatePack(recievedMsg);
            addNeighbor();
            // Log as neighbor
@@ -261,18 +261,17 @@ implementation{
   void addNeighbor() {
     size = call NeighborList.size();
     foundMatch = 0;
-    nx_uint16_t indexSource;
     for (index = 0; index < size ; index++) {
-      indexSource = call NeighborList.get(index);
-      if(indexSource == recievedMsg->src) {
-          foundMatch = 1;
-      }
+      if(call NeighborList.get(index) == recievedMsg->src)
+      foundMatch = 1;
     }
 
     if (!foundMatch) {
       call NeighborList.pushback(recievedMsg->src);
       dbg(NEIGHBOR_CHANNEL, "Neighbors Discovered: %d\n", call NeighborList.get(index) );
     }
+
+
   }
 
 }
