@@ -263,7 +263,7 @@ implementation{
     size = call NeighborList.size();
     if (!hasSeen(Neighbor)) {
       call NeighborList.pushback(recievedMsg->src);
-      dbg(NEIGHBOR_CHANNEL, "Neighbors Discovered: %d\n", call NeighborList.get(index) );
+      dbg(NEIGHBOR_CHANNEL, "Neighbors Discovered: %d\n", Neighbor->src);
     }
 
 
