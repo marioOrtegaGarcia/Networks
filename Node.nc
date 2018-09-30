@@ -283,6 +283,7 @@ implementation{
 //sends message to all known neighbors in neighbor list; if list is empty,
 //forwards to everyone within range using AM_BROADCAST_ADDR
   void forwardToNeighbors(){
+    dbg(NEIGHBOR_CHANNEL, "\tTrynna Forward To Neighbors\n");
     int i, size;
     if(!call NeighborList.isEmpty()){
 
