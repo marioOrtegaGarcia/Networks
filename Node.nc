@@ -79,11 +79,11 @@ implementation{
       //start timer
       //  We need to initiate the node Timer first
       //call NodeTimerC.startOneShot(1000);
-      dbg(GENERAL_CHANNEL, "Booted\n");
+      dbg(GENERAL_CHANNEL, "\tBooted\n");
    }
 
    event void Timer.fired() {
-       dbg(GENERAL_CHANNEL, "Timer Fired!\n");
+       dbg(GENERAL_CHANNEL, "\tTimer Fired!\n");
        //fix this please
      //uint8_t* tempPayload;
      //*tempPayload = 0;
@@ -101,7 +101,7 @@ implementation{
    //  This function makes sure all the Radios are turned on
    event void AMControl.startDone(error_t err){
       if(err == SUCCESS){
-         dbg(GENERAL_CHANNEL, "Radio On\n");
+         dbg(GENERAL_CHANNEL, "\tRadio On\n");
       }else{
          call AMControl.start();
       }
@@ -127,19 +127,19 @@ implementation{
 
          // Dead Packet: Timed out
          if (recievedMsg->TTL == 0) {
-           dbg(GENERAL_CHANNEL, "Package(%d,%d) Dead of old age\n", recievedMsg->src, recievedMsg->dest);
+           dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Dead of old age\n", recievedMsg->src, recievedMsg->dest);
            return msg;
          }
 
          // Old Packet: Has been seen
          if (foundMatch) {
-           dbg(GENERAL_CHANNEL, "Package(%d,%d) Seen Before\n", recievedMsg->src, recievedMsg->dest);
+           dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Seen Before\n", recievedMsg->src, recievedMsg->dest);
            return msg;
          }
 
          // Relaying Packet: Not for us
          if (recievedMsg->dest != TOS_NODE_ID && recievedMsg->dest != AM_BROADCAST_ADDR) {
-           dbg(GENERAL_CHANNEL, " Package(%d,%d) Relay\n", recievedMsg->src, recievedMsg->dest);
+           dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Relay\n", recievedMsg->src, recievedMsg->dest);
 
            // Forward and logging package
            recievedMsg->TTL--;
@@ -161,7 +161,7 @@ implementation{
 
          // Ping to me
          if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == TOS_NODE_ID) {
-           dbg(FLOODING_CHANNEL, "Package(%d,%d) ------------------------->>>>Ping: %s\n", recievedMsg->src, recievedMsg->dest,  recievedMsg->payload);
+           dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) ------------------------->>>>Ping: %s\n", recievedMsg->src, recievedMsg->dest,  recievedMsg->payload);
            updatePack(&sendPackage);
 
            // Sending Ping Reply
@@ -174,7 +174,7 @@ implementation{
 
          // Ping Reply to me
          if (recievedMsg->protocol == PROTOCOL_PINGREPLY && recievedMsg->dest == TOS_NODE_ID) {
-           dbg(FLOODING_CHANNEL, "Package(%d,%d) Ping Reply\n", recievedMsg->src, recievedMsg->dest);
+           dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) Ping Reply\n", recievedMsg->src, recievedMsg->dest);
            updatePack(&sendPackage);
            return msg;
          }
@@ -189,21 +189,21 @@ implementation{
            return msg;
          }
 
-         dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
+         dbg(GENERAL_CHANNEL, "\tUnknown Packet Type %d\n", len);
          return msg;
          }// End of Currupt if statement
 
-         dbg(GENERAL_CHANNEL, "Package(%d,%d) Currrupted", recievedMsg->src, recievedMsg->dest);
+         dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Currrupted", recievedMsg->src, recievedMsg->dest);
          return msg;
        }
 
    // This is how we send a message to one another
    event void CommandHandler.ping(uint16_t destination, uint8_t *payload){
 
-     dbg(GENERAL_CHANNEL, "PING EVENT \n");
+     dbg(GENERAL_CHANNEL, "\tPING EVENT \n");
 
      nodeSeq++;
-     dbg(GENERAL_CHANNEL, "PING SEQUENCE: %d\n", nodeSeq);
+     dbg(GENERAL_CHANNEL, "\tPING SEQUENCE: %d\n", nodeSeq);
      makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
      logPack(&sendPackage);
      updatePack(&sendPackage);
@@ -258,7 +258,7 @@ implementation{
      //logPack(payload);
      makePack(&loggedPack, payload->src, payload->dest, payload->TTL, payload->protocol, payload->seq, (uint8_t*)payload->payload, sizeof(pack));
      call PackLogs.pushback(loggedPack);
-     dbg(FLOODING_CHANNEL, "Package(%d,%d) Updated Seen Packs List\n", payload->src, payload->dest);
+     dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) Updated Seen Packs List\n", payload->src, payload->dest);
 
    }
 
@@ -266,7 +266,7 @@ implementation{
      pack stored;
      int i;
 
-     dbg(FLOODING_CHANNEL, "Package(%d,%d) S_Checking Message:%s\n", payload->src, payload->dest, payload->payload);
+     dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) S_Checking Message:%s\n", payload->src, payload->dest, payload->payload);
 
 
      if(!call PackLogs.isEmpty()){
@@ -284,7 +284,7 @@ implementation{
     int size = call NeighborList.size();
     if (!hasSeen(Neighbor)) {
       call NeighborList.pushback(Neighbor->src);
-      dbg(NEIGHBOR_CHANNEL, "Neighbors Discovered: %d\n", Neighbor->src);
+      dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor->src);
     }
   }
 
