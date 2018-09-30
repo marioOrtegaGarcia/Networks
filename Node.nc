@@ -85,17 +85,17 @@ implementation{
    event void Timer.fired() {
        dbg(GENERAL_CHANNEL, "\tTimer Fired!\n");
        //fix this please
-     uint8_t* tempPayload;
-     *tempPayload = 0;
+     //uint8_t* tempPayload;
+     //*tempPayload = 0;
      //*tempPayload = 0;
      //ping protocol for neighbor
      //makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, recievedMsg->seq, call Sender.send(sendPackage, AM_BROADCAST_ADDR);
      nodeSeq += 1;
 
-     makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, nodeSeq, tempPayload, PACKET_MAX_PAYLOAD_SIZE);
+     //makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, nodeSeq, tempPayload, PACKET_MAX_PAYLOAD_SIZE);
      //send new neighbor discovery ping
-     call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-
+     //call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+     findNeighbors();
 
 
 
@@ -259,7 +259,7 @@ implementation{
       call PackLogs.popfront();
      }
      //logPack(payload);
-     makePack(&loggedPack, payload->src, payload->dest, payload->TTL, payload->protocol, payload->seq, (uint8_t*)payload->payload, sizeof(pack));
+     makePack(&loggedPack, payload->src, payload->dest, payload->TTL, payload->protocol, payload->seq, (uint8_t*) payload->payload, sizeof(pack));
      call PackLogs.pushback(loggedPack);
      dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) Updated Seen Packs List\n", payload->src, payload->dest);
 
@@ -326,4 +326,10 @@ implementation{
     }
     return 0;
   }
+
+  void findNeighbors() {
+    makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, nodeSeq, "If you see this you are my Neighbor", PACKET_MAX_PAYLOAD_SIZE);
+    call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+  }
+
 }
