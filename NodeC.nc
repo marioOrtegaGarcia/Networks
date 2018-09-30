@@ -53,7 +53,7 @@ implementation {
     Node.Random -> Random;
 
     //Node.Timer -> TimerC;
-    Node.Timer -> TimerC
+    Node.Timer -> TimerC;
 
     components CommandHandlerC;
     Node.CommandHandler -> CommandHandlerC;
