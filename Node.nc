@@ -81,6 +81,8 @@ implementation{
    }
 
    event void Timer.fired() {
+     dbg(GENERAL_CHANNEL, "Timer Fired!\n");
+
      uint8_t* tempPayload = NULL;
      //ping protocol for neighbor
      //makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, recievedMsg->seq, call Sender.send(sendPackage, AM_BROADCAST_ADDR);
