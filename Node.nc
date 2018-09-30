@@ -107,7 +107,7 @@ implementation{
      pack* recievedMsg;
      /* int size; */
      recieveMsg = (pack *)payload;
-     bool foundMatch = hasSeen(recieveMsg);
+     bool v = hasSeen(recieveMsg);
 
      if (len == sizeof(pack)) {
          // Saving Payload
@@ -121,7 +121,7 @@ implementation{
          }
 
          // Old Packet: Has been seen
-         if (foundMtch) {
+         if (foundMatch) {
            dbg(GENERAL_CHANNEL, "Package(%d,%d) Seen\n", recievedMsg->src, recievedMsg->seq);
            return msg;
          }
