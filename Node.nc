@@ -64,6 +64,7 @@ implementation{
    void updatePack(pack* payload);
    bool hasSeen(pack* payload);
    void addNeighbor(pack* Neighbor);
+   void forwardToNeighbors();
 
    event void Boot.booted(){
      //  Booting/Starting our lowest networking layer exposed in TinyOS which is also called active messages (AM)
@@ -83,9 +84,9 @@ implementation{
    event void Timer.fired() {
        dbg(GENERAL_CHANNEL, "Timer Fired!\n");
        //fix this please
-     //uint8_t* tempPayload;
-     //*tempPayload = 0;
-     //ping protocol for neighbor
+     uint8_t* tempPayload;
+     *tempPayload = 0;
+     ping protocol for neighbor
      //makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, recievedMsg->seq, call Sender.send(sendPackage, AM_BROADCAST_ADDR);
      //makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, ++nodeSeq, 0, PACKET_MAX_PAYLOAD_SIZE);
      //send new neighbor discovery ping
@@ -118,7 +119,7 @@ implementation{
         foundMatch  = (bool)hasSeen(recievedMsg);
          // Saving Payload
          /* recievedMsg = (pack *)payload; */
-         //logPack(recievedMsg);
+         /* logPack(recievedMsg); */
 
          // Dead Packet: Timed out
          if (recievedMsg->TTL == 0) {
@@ -146,7 +147,11 @@ implementation{
            * rather than AM_BROADCAST_ADDR after we implement
            * neighbor discovery
            */
-           forwardToNeighbors(&recievedMsg);
+           if (destIsNeighbor()){
+             call Sender.send(sendPackage, recievedMsg->dest);
+           } else {
+             forwardToNeighbors();
+           }
          }
 
          // Ping to me
@@ -297,6 +302,18 @@ implementation{
     else {
       call Sender.send(sendPackage, AM_BROADCAST_ADDR);
     }
+  }
+
+  bool destIsNeighbor() {
+    int i, size;
+
+    if(!call NeighborList.isEmpty()) {
+      size = call NeighborList.size();
+      for(i = 0; i < size; i++)
+        if(call NeighborList.get(i) == sendPackage->dest)
+          return 1;
+    }
+    return 0;
   }
 
 }
