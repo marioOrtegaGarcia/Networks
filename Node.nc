@@ -243,7 +243,7 @@ implementation{
      //logPack(payload);
      makePack(&temp, payload->src, payload->dest, payload->TTL, payload->protocol, payload->seq, (uint8_t*)payload->payload, sizeof(pack));
      call PackLogs.pushback(temp);
-     dbg(FLOODING_CHANNEL, "UPDATING PACKET ------------------------>>>> SRC: %d SEQ: %d\n", payload->src, payload->seq);
+     dbg(FLOODING_CHANNEL, "Package(%d,%d) Logged\n", payload->src, payload->seq);
 
    }
 
