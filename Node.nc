@@ -12,7 +12,8 @@
 #include "includes/CommandMsg.h"
 #include "includes/sendInfo.h"
 #include "includes/channels.h"
-#include "includes/am_types.h"
+// Tried using this am types header to add a flood address but not sure if it didn't work cause it wasn't compiling due code errors
+//#include "includes/am_types.h"
 
 module Node{
 
@@ -122,13 +123,13 @@ implementation{
          }
 
          // Old Packet: Has been seen
-         if (foundMatch) {
+         /* if (foundMatch) {
            dbg(GENERAL_CHANNEL, "Package(%d,%d) Seen\n", recievedMsg->src, recievedMsg->seq);
            return msg;
-         }
+         } */
 
          // Relaying Packet: Not for us
-         if (recievedMsg->dest != TOS_NODE_ID ||
+         /* if (recievedMsg->dest != TOS_NODE_ID ||
              recievedMsg->dest != AM_BROADCAST_ADDR) {
            dbg(GENERAL_CHANNEL, " Package(%d,%d) Relay\n", recievedMsg->src);
 
@@ -138,10 +139,10 @@ implementation{
            updatePack(&sendPackage);
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
            return msg;
-         }
+         } */
 
          // Ping to me
-         if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == TOS_NODE_ID) {
+         /* if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == TOS_NODE_ID) {
            dbg(FLOODING_CHANNEL, "Package(%d,%d) Ping: %s\n", recievedMsg->src, recievedMsg->dest,  recievedMsg->payload);
            updatePack(&sendPackage);
 
@@ -151,24 +152,24 @@ implementation{
            updatePack(&sendPackage);
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
            return msg;
-         }
+         } */
 
          // Ping Reply to me
-         if (recievedMsg->protocol == PROTOCOL_PINGREPLY && recievedMsg->dest == TOS_NODE_ID) {
+         /* if (recievedMsg->protocol == PROTOCOL_PINGREPLY && recievedMsg->dest == TOS_NODE_ID) {
            dbg(FLOODING_CHANNEL, "Package(%d,%d) Ping Reply\n");
            updatePack(&sendPackage);
            return msg;
-         }
+         } */
 
          // Neighbor Discovery: Timer
-         if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == AM_BROADCAST_ADDR && recievedMsg->TTL == 1) {
+         /* if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == AM_BROADCAST_ADDR && recievedMsg->TTL == 1) {
            //recievedMsg = (pack *)payload;
 
            addNeighbor(recievedMsg);
            updatePack(recievedMsg);
            // Log as neighbor
            return msg;
-         }
+         } */
 
          dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
          return msg;
@@ -265,8 +266,6 @@ implementation{
       call NeighborList.pushback(Neighbor->src);
       dbg(NEIGHBOR_CHANNEL, "Neighbors Discovered: %d\n", Neighbor->src);
     }
-
-
   }
 
 }
