@@ -65,6 +65,7 @@ implementation{
    bool hasSeen(pack* payload);
    void addNeighbor(pack* Neighbor);
    void forwardToNeighbors();
+   bool destIsNeighbor();
 
    event void Boot.booted(){
      //  Booting/Starting our lowest networking layer exposed in TinyOS which is also called active messages (AM)
@@ -152,6 +153,7 @@ implementation{
            } else {
              forwardToNeighbors();
            }
+           return msg;
          }
 
          // Ping to me
@@ -296,7 +298,6 @@ implementation{
         *Figure out how to exclude original sender
         */
         call Sender.send(sendPackage, call NeighborList.get(i));
-        return msg;
       }
     }
     else {
