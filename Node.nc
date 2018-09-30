@@ -126,13 +126,13 @@ implementation{
          }
 
          // Old Packet: Has been seen
-         /* if (foundMatch) {
+         if (foundMatch) {
            dbg(GENERAL_CHANNEL, "Package(%d,%d) Seen\n", recievedMsg->src, recievedMsg->seq);
            return msg;
-         } */
+         }
 
          // Relaying Packet: Not for us
-         /* if (recievedMsg->dest != TOS_NODE_ID ||
+         if (recievedMsg->dest != TOS_NODE_ID ||
              recievedMsg->dest != AM_BROADCAST_ADDR) {
            dbg(GENERAL_CHANNEL, " Package(%d,%d) Relay\n", recievedMsg->src);
 
@@ -142,7 +142,7 @@ implementation{
            updatePack(&sendPackage);
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
            return msg;
-         } */
+         }
 
          // Ping to me
          /* if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == TOS_NODE_ID) {
