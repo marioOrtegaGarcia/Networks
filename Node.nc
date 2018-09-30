@@ -127,19 +127,19 @@ implementation{
 
          // Dead Packet: Timed out
          if (recievedMsg->TTL == 0) {
-           dbg(GENERAL_CHANNEL, "Package(%d,%d) Dead of old age\n", recievedMsg->src, recievedMsg->seq);
+           dbg(GENERAL_CHANNEL, "Package(%d,%d) Dead of old age\n", recievedMsg->src, recievedMsg->dest);
            return msg;
          }
 
          // Old Packet: Has been seen
          if (foundMatch) {
-           dbg(GENERAL_CHANNEL, "Package(%d,%d) Seen Before\n", recievedMsg->src, recievedMsg->seq);
+           dbg(GENERAL_CHANNEL, "Package(%d,%d) Seen Before\n", recievedMsg->src, recievedMsg->dest);
            return msg;
          }
 
          // Relaying Packet: Not for us
          if (recievedMsg->dest != TOS_NODE_ID && recievedMsg->dest != AM_BROADCAST_ADDR) {
-           dbg(GENERAL_CHANNEL, " Package(%d,%d) Relay\n", recievedMsg->src, recievedMsg->seq);
+           dbg(GENERAL_CHANNEL, " Package(%d,%d) Relay\n", recievedMsg->src, recievedMsg->dest);
 
            // Forward and logging package
            recievedMsg->TTL--;
@@ -161,7 +161,7 @@ implementation{
 
          // Ping to me
          if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == TOS_NODE_ID) {
-           dbg(FLOODING_CHANNEL, "Package(%d,%d) ------------------------->>>>Ping: %s\n", recievedMsg->src, recievedMsg->seq,  recievedMsg->payload);
+           dbg(FLOODING_CHANNEL, "Package(%d,%d) ------------------------->>>>Ping: %s\n", recievedMsg->src, recievedMsg->dest,  recievedMsg->payload);
            updatePack(&sendPackage);
 
            // Sending Ping Reply
@@ -174,7 +174,7 @@ implementation{
 
          // Ping Reply to me
          if (recievedMsg->protocol == PROTOCOL_PINGREPLY && recievedMsg->dest == TOS_NODE_ID) {
-           dbg(FLOODING_CHANNEL, "Package(%d,%d) Ping Reply\n", recievedMsg->src, recievedMsg->seq);
+           dbg(FLOODING_CHANNEL, "Package(%d,%d) Ping Reply\n", recievedMsg->src, recievedMsg->dest);
            updatePack(&sendPackage);
            return msg;
          }
@@ -193,7 +193,7 @@ implementation{
          return msg;
          }// End of Currupt if statement
 
-         dbg(GENERAL_CHANNEL, "Package(%d,%d) Currrupted", recievedMsg->src, recievedMsg->seq);
+         dbg(GENERAL_CHANNEL, "Package(%d,%d) Currrupted", recievedMsg->src, recievedMsg->dest);
          return msg;
        }
 
