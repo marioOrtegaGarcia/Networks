@@ -106,8 +106,6 @@ implementation{
    //  We need to send to everyone, and just check with this function if it's meant for us.
    event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
      pack* recievedMsg;
-     //bool foundMatch;
-     /* int size; */
      recievedMsg = (pack *)payload;
 
 
@@ -129,30 +127,10 @@ implementation{
            return msg;
          }
 
-         // Relaying Packet: Not for us
-         if (recievedMsg->dest != TOS_NODE_ID && recievedMsg->dest != AM_BROADCAST_ADDR) {
-           dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Relay\n", recievedMsg->src, recievedMsg->dest);
 
-           // Forward and logging package
-           recievedMsg->TTL--;
-           makePack(&sendPackage, recievedMsg->src, recievedMsg->dest, recievedMsg->TTL, recievedMsg->protocol, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
-           updatePack(&sendPackage);
-
-           /**********FOR LATER**************
-           * Need to use node-specific neighbors for destination
-           * rather than AM_BROADCAST_ADDR after we implement
-           * neighbor discovery
-           */
-           if (destIsNeighbor(recievedMsg)){
-             call Sender.send(sendPackage, recievedMsg->dest);
-           } else {
-             forwardToNeighbors();
-           }
-           return msg;
-         }
 
          // Ping to me
-         else if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == TOS_NODE_ID) {
+         if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == TOS_NODE_ID) {
            dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) ------------------------->>>>Ping: %s\n", recievedMsg->src, recievedMsg->dest,  recievedMsg->payload);
            updatePack(&sendPackage);
 
@@ -176,8 +154,30 @@ implementation{
            //recievedMsg = (pack *)payload;
           dbg(GENERAL_CHANNEL, "\tNeighbor Discovery Ping Recieved\n");
            addNeighbor(recievedMsg);
-           updatePack(recievedMsg);
+           //updatePack(recievedMsg);
            // Log as neighbor
+           return msg;
+         }
+
+         // Relaying Packet: Not for us
+         else if (recievedMsg->dest != TOS_NODE_ID && recievedMsg->dest != AM_BROADCAST_ADDR) {
+           dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Relay\n", recievedMsg->src, recievedMsg->dest);
+
+           // Forward and logging package
+           recievedMsg->TTL--;
+           makePack(&sendPackage, recievedMsg->src, recievedMsg->dest, recievedMsg->TTL, recievedMsg->protocol, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
+           updatePack(&sendPackage);
+
+           /**********FOR LATER**************
+           * Need to use node-specific neighbors for destination
+           * rather than AM_BROADCAST_ADDR after we implement
+           * neighbor discovery
+           */
+           if (destIsNeighbor(recievedMsg)){
+             call Sender.send(sendPackage, recievedMsg->dest);
+           } else {
+             forwardToNeighbors();
+           }
            return msg;
          }
 
