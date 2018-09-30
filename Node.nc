@@ -81,7 +81,7 @@ implementation{
    }
 
    event void Timer.fired() {
-     dbg(GENERAL_CHANNEL, "Timer Fired!\n");
+       dbg(GENERAL_CHANNEL, "Timer Fired!\n");
 
      uint8_t* tempPayload = NULL;
      //ping protocol for neighbor
@@ -198,8 +198,10 @@ implementation{
    event void CommandHandler.printNeighbors(){
      //give me neigbors of 2
      int i;
-     for(i = 0; i < (call NeighborList.size()); i++) {
-       dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, call NeighborList.get((int)i));
+     if(call NeighborList.size() !=  0){
+       for(i = 0; i < (call NeighborList.size()); i++) {
+         dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, call  NeighborList.get((int)i));
+       }
      }
    }
 
