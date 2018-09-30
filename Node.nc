@@ -66,6 +66,7 @@ implementation{
    void addNeighbor(pack* Neighbor);
    void forwardToNeighbors();
    bool destIsNeighbor(pack* recievedMsg);
+   void findNeighbors();
 
    event void Boot.booted(){
      //  Booting/Starting our lowest networking layer exposed in TinyOS which is also called active messages (AM)
@@ -90,7 +91,6 @@ implementation{
      //*tempPayload = 0;
      //ping protocol for neighbor
      //makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, recievedMsg->seq, call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-     nodeSeq += 1;
 
      //makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, nodeSeq, tempPayload, PACKET_MAX_PAYLOAD_SIZE);
      //send new neighbor discovery ping
@@ -328,6 +328,7 @@ implementation{
   }
 
   void findNeighbors() {
+    nodeSeq++;
     makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, nodeSeq, "If you see this you are my Neighbor", PACKET_MAX_PAYLOAD_SIZE);
     call Sender.send(sendPackage, AM_BROADCAST_ADDR);
   }
