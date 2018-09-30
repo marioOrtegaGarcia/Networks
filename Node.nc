@@ -205,10 +205,10 @@ implementation{
      if(call NeighborList.size() !=  0){
        for(i = 0; i < (call NeighborList.size()); i++) {
          dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, call  NeighborList.get((int)i));
-       } else {
-         dbg(NEIGHBOR_CHANNEL, "No Neighbors\n");
        }
-     }
+      } else {
+        dbg(NEIGHBOR_CHANNEL, "No Neighbors\n");
+      }
    }
 
    event void CommandHandler.printRouteTable(){}
