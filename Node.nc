@@ -132,13 +132,19 @@ implementation{
          }
 
          // Relaying Packet: Not for us
-         if (recievedMsT_ADDR) {
+         if (recievedMsg->dest != TOS_NODE_ID) {
            dbg(GENERAL_CHANNEL, " Package(%d,%d) Relay\n", recievedMsg->src), recievedMsg->seq;
 
            // Forward and logging package
            recievedMsg->TTL--;
            makePack(&sendPackage, recievedMsg->src, recievedMsg->dest, recievedMsg->TTL, recievedMsg->protocol, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
            updatePack(&sendPackage);
+
+           /**********FOR LATER**************
+           * Need to use node-specific neighbors for destination
+           * rather than AM_BROADCAST_ADDR after we implement
+           * neighbor discovery
+           */
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
            return msg;
          }
