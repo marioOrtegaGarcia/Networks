@@ -105,9 +105,10 @@ implementation{
    //  We need to send to everyone, and just check with this function if it's meant for us.
    event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
      pack* recievedMsg;
+     bool foundMatch;
      /* int size; */
      recievedMsg = (pack *)payload;
-     bool foundMatch = (bool)hasSeen(recievedMsg);
+     foundMatch  = (bool)hasSeen(recievedMsg);
 
      if (len == sizeof(pack)) {
          // Saving Payload
