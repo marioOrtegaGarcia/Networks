@@ -16,7 +16,6 @@
 //#include "includes/am_types.h"
 
 module Node{
-
     //  Wiring from .nc File
    uses interface Boot;
 
@@ -28,7 +27,6 @@ module Node{
    uses interface CommandHandler;
 
    uses interface List <pack> as PackLogs;
-
    uses interface List <uint32_t> as NeighborList;
 
    uses interface Random as Random;
@@ -201,6 +199,8 @@ implementation{
      if(call NeighborList.size() !=  0){
        for(i = 0; i < (call NeighborList.size()); i++) {
          dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, call  NeighborList.get((int)i));
+       } else {
+         dbg(NEIGHBOR_CHANNEL, "No Neighbors\n");
        }
      }
    }
