@@ -124,7 +124,7 @@ implementation{
          }
 
          // Old Packet: Has been seen
-         if (foundMatch) {
+         else if (foundMatch) {
            dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Seen Before\n", recievedMsg->src, recievedMsg->dest);
            return msg;
          }
@@ -152,7 +152,7 @@ implementation{
          }
 
          // Ping to me
-         if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == TOS_NODE_ID) {
+         else if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == TOS_NODE_ID) {
            dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) ------------------------->>>>Ping: %s\n", recievedMsg->src, recievedMsg->dest,  recievedMsg->payload);
            updatePack(&sendPackage);
 
@@ -165,14 +165,14 @@ implementation{
          }
 
          // Ping Reply to me
-         if (recievedMsg->protocol == PROTOCOL_PINGREPLY && recievedMsg->dest == TOS_NODE_ID) {
+         else if (recievedMsg->protocol == PROTOCOL_PINGREPLY && recievedMsg->dest == TOS_NODE_ID) {
            dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) Ping Reply\n", recievedMsg->src, recievedMsg->dest);
            updatePack(&sendPackage);
            return msg;
          }
 
          // Neighbor Discovery: Timer
-         if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == AM_BROADCAST_ADDR && recievedMsg->TTL == 1) {
+         else if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == AM_BROADCAST_ADDR && recievedMsg->TTL == 1) {
            //recievedMsg = (pack *)payload;
           dbg(GENERAL_CHANNEL, "\tNeighbor Discovery Ping Recieved\n");
            addNeighbor(recievedMsg);
