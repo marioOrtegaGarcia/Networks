@@ -107,7 +107,7 @@ implementation{
      pack* recievedMsg;
      /* int size; */
      recieveMsg = (pack *)payload;
-     bool v = hasSeen(recieveMsg);
+     bool foundMatch = hasSeen(recieveMsg);
 
      if (len == sizeof(pack)) {
          // Saving Payload
