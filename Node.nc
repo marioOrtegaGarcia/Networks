@@ -91,7 +91,10 @@ implementation{
      //makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, recievedMsg->seq, call Sender.send(sendPackage, AM_BROADCAST_ADDR);
      //makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, ++nodeSeq, 0, PACKET_MAX_PAYLOAD_SIZE);
      //send new neighbor discovery ping
-     call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+     //call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+
+
+
 
      }//Were using run timer sice this function is fired over a hundread times
 
@@ -130,13 +133,13 @@ implementation{
 
          // Old Packet: Has been seen
          if (foundMatch) {
-           dbg(GENERAL_CHANNEL, "Package(%d,%d) Seen\n", recievedMsg->src, recievedMsg->seq);
+           dbg(GENERAL_CHANNEL, "Package(%d,%d) Seen Before\n", recievedMsg->src, recievedMsg->seq);
            return msg;
          }
 
          // Relaying Packet: Not for us
          if (recievedMsg->dest != TOS_NODE_ID && recievedMsg->dest != AM_BROADCAST_ADDR) {
-           dbg(GENERAL_CHANNEL, " Package(%d,%d) Relay\n", recievedMsg->src), recievedMsg->seq;
+           dbg(GENERAL_CHANNEL, " Package(%d,%d) Relay\n", recievedMsg->src, recievedMsg->seq);
 
            // Forward and logging package
            recievedMsg->TTL--;
@@ -263,7 +266,7 @@ implementation{
      pack stored;
      int i;
 
-     dbg(FLOODING_CHANNEL, "Package(%d,%d) Seen Message:%s\n", payload->src, payload->seq, payload->payload);
+     dbg(FLOODING_CHANNEL, "Package(%d,%d) S_Checking Message:%s\n", payload->src, payload->seq, payload->payload);
 
 
      if(!call PackLogs.isEmpty()){
