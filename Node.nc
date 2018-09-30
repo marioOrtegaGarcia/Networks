@@ -82,7 +82,7 @@ implementation{
 
    event void Timer.fired() {
        dbg(GENERAL_CHANNEL, "Timer Fired!\n");
-
+       //fix this please
      //uint8_t* tempPayload;
      //*tempPayload = 0;
      //ping protocol for neighbor
