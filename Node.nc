@@ -307,14 +307,15 @@ implementation{
 
   bool destIsNeighbor() {
     int i, size;
+    int loggedNeighbor;
 
     if(!call NeighborList.isEmpty()) {
       size = call NeighborList.size();
-      for(i = 0; i < size; i++)
-        if(call NeighborList.get(i) == sendPackage->dest)
+      for(i = 0; i < size; i++){
+        loggedNeighbor = call NeighborList.get(i)
+        if( loggedNeighbor == sendPackage->dest)
           return 1;
-    }
-    return 0;
+      }
   }
-
+  return 0;
 }
