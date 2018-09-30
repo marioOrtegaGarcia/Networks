@@ -145,7 +145,7 @@ implementation{
          }
 
          // Ping to me
-         /* if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == TOS_NODE_ID) {
+         if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == TOS_NODE_ID) {
            dbg(FLOODING_CHANNEL, "Package(%d,%d) Ping: %s\n", recievedMsg->src, recievedMsg->dest,  recievedMsg->payload);
            updatePack(&sendPackage);
 
@@ -155,24 +155,24 @@ implementation{
            updatePack(&sendPackage);
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
            return msg;
-         } */
+         }
 
          // Ping Reply to me
-         /* if (recievedMsg->protocol == PROTOCOL_PINGREPLY && recievedMsg->dest == TOS_NODE_ID) {
+         if (recievedMsg->protocol == PROTOCOL_PINGREPLY && recievedMsg->dest == TOS_NODE_ID) {
            dbg(FLOODING_CHANNEL, "Package(%d,%d) Ping Reply\n");
            updatePack(&sendPackage);
            return msg;
-         } */
+         }
 
          // Neighbor Discovery: Timer
-         /* if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == AM_BROADCAST_ADDR && recievedMsg->TTL == 1) {
+         if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == AM_BROADCAST_ADDR && recievedMsg->TTL == 1) {
            //recievedMsg = (pack *)payload;
 
            addNeighbor(recievedMsg);
            updatePack(recievedMsg);
            // Log as neighbor
            return msg;
-         } */
+         }
 
          dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
          return msg;
