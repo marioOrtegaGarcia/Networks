@@ -69,12 +69,13 @@ implementation{
    void findNeighbors();
 
    event void Boot.booted(){
+     uint32_t t0, dt;
      //  Booting/Starting our lowest networking layer exposed in TinyOS which is also called active messages (AM)
       call AMControl.start();
 
       // t0 Timer start time
       // dt Timer interval
-      uint32_t t0, dt;
+
       t0 = call Random.rand32() % 2500;
       dt = 25000 + (call Random.rand32() % 10000);
       call Timer.startPeriodicAt(t0, dt);
