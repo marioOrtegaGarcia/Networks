@@ -162,7 +162,7 @@ implementation{
 
          // Neighbor Discovery: Timer
          if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == AM_BROADCAST_ADDR && recievedMsg->TTL == 1) {
-          recievedMsg = (pack *)payload;
+           //recievedMsg = (pack *)payload;
 
            addNeighbor(recieveMsg);
            updatePack(recievedMsg);
