@@ -161,7 +161,7 @@ implementation{
 
          // Ping to me
          if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == TOS_NODE_ID) {
-           dbg(FLOODING_CHANNEL, "Package(%d,%d) Ping: %s\n", recievedMsg->src, recievedMsg->seq,  recievedMsg->payload);
+           dbg(FLOODING_CHANNEL, "Package(%d,%d) ------------------------->>>>Ping: %s\n", recievedMsg->src, recievedMsg->seq,  recievedMsg->payload);
            updatePack(&sendPackage);
 
            // Sending Ping Reply
