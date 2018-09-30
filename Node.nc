@@ -70,36 +70,24 @@ implementation{
 
    event void Boot.booted(){
      //  Booting/Starting our lowest networking layer exposed in TinyOS which is also called active messages (AM)
-     uint32_t t0, dt;
-
       call AMControl.start();
+
+      // t0 Timer start time
+      // dt Timer interval
+      uint32_t t0, dt;
       t0 = call Random.rand32() % 2500;
       dt = 25000 + (call Random.rand32() % 10000);
-
       call Timer.startPeriodicAt(t0, dt);
-      //start timer
-      //  We need to initiate the node Timer first
-      //call NodeTimerC.startOneShot(1000);
+
       dbg(GENERAL_CHANNEL, "\tBooted\n");
    }
 
    event void Timer.fired() {
-       dbg(GENERAL_CHANNEL, "\tTimer Fired!\n");
-       //fix this please
-     //uint8_t* tempPayload;
-     //*tempPayload = 0;
-     //*tempPayload = 0;
-     //ping protocol for neighbor
-     //makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, recievedMsg->seq, call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+     //dbg(GENERAL_CHANNEL, "\tTimer Fired!\n");
 
-     //makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, nodeSeq, tempPayload, PACKET_MAX_PAYLOAD_SIZE);
-     //send new neighbor discovery ping
-     //call Sender.send(sendPackage, AM_BROADCAST_ADDR);
      findNeighbors();
-
-
-
-     }//Were using run timer sice this function is fired over a hundread times
+     call CommandHandler.printNeighbors();
+  }//Were using run timer sice this function is fired over a hundread times
 
    //  This function makes sure all the Radios are turned on
    event void AMControl.startDone(error_t err){
@@ -185,7 +173,7 @@ implementation{
          // Neighbor Discovery: Timer
          if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == AM_BROADCAST_ADDR && recievedMsg->TTL == 1) {
            //recievedMsg = (pack *)payload;
-          dbg(GENERAL_CHANNEL, "Neighbor Discovery Ping Recieved\n");
+          dbg(GENERAL_CHANNEL, "\tNeighbor Discovery Ping Recieved\n");
            addNeighbor(recievedMsg);
            updatePack(recievedMsg);
            // Log as neighbor
