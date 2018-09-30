@@ -16,6 +16,7 @@
 //#include "includes/am_types.h"
 
 module Node{
+
     //  Wiring from .nc File
    uses interface Boot;
 
@@ -27,6 +28,7 @@ module Node{
    uses interface CommandHandler;
 
    uses interface List <pack> as PackLogs;
+
    uses interface List <uint32_t> as NeighborList;
 
    uses interface Random as Random;
@@ -110,9 +112,10 @@ implementation{
      bool foundMatch;
      /* int size; */
      recievedMsg = (pack *)payload;
-     foundMatch  = (bool)hasSeen(recievedMsg);
+
 
      if (len == sizeof(pack)) {
+        foundMatch  = (bool)hasSeen(recievedMsg);
          // Saving Payload
          /* recievedMsg = (pack *)payload; */
          logPack(recievedMsg);
@@ -130,7 +133,7 @@ implementation{
          }
 
          // Relaying Packet: Not for us
-         if (recievedMsg->dest != TOS_NODE_ID) {
+         if (recievedMsg->dest != TOS_NODE_ID && recievedMsg->dest != AM_BROADCAST_ADDR) {
            dbg(GENERAL_CHANNEL, " Package(%d,%d) Relay\n", recievedMsg->src), recievedMsg->seq;
 
            // Forward and logging package
@@ -143,8 +146,7 @@ implementation{
            * rather than AM_BROADCAST_ADDR after we implement
            * neighbor discovery
            */
-           call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-           return msg;
+           forwardToNeighbors(&recievedMsg);
          }
 
          // Ping to me
@@ -206,9 +208,7 @@ implementation{
        for(i = 0; i < (call NeighborList.size()); i++) {
          dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, call  NeighborList.get((int)i));
        }
-      } else {
-        dbg(NEIGHBOR_CHANNEL, "No Neighbors\n");
-      }
+     }
    }
 
    event void CommandHandler.printRouteTable(){}
@@ -238,7 +238,7 @@ implementation{
 
      uint32_t src = payload->src;
      uint32_t seq = payload->seq;
-     pack temp;
+     pack loggedPack;
 
      //if packet log isnt empty and contains the src key
     if(call PackLogs.size() == 64){
@@ -246,9 +246,9 @@ implementation{
       call PackLogs.popfront();
      }
      //logPack(payload);
-     makePack(&temp, payload->src, payload->dest, payload->TTL, payload->protocol, payload->seq, (uint8_t*)payload->payload, sizeof(pack));
-     call PackLogs.pushback(temp);
-     dbg(FLOODING_CHANNEL, "Package(%d,%d) Updated Neighbors List\n", payload->src, payload->seq);
+     makePack(&loggedPack, payload->src, payload->dest, payload->TTL, payload->protocol, payload->seq, (uint8_t*)payload->payload, sizeof(pack));
+     call PackLogs.pushback(loggedPack);
+     dbg(FLOODING_CHANNEL, "Package(%d,%d) Updated Seen Packs List\n", payload->src, payload->seq);
 
    }
 
@@ -275,6 +275,27 @@ implementation{
     if (!hasSeen(Neighbor)) {
       call NeighborList.pushback(Neighbor->src);
       dbg(NEIGHBOR_CHANNEL, "Neighbors Discovered: %d\n", Neighbor->src);
+    }
+  }
+
+//sends message to all known neighbors in neighbor list; if list is empty,
+//forwards to everyone within range using AM_BROADCAST_ADDR
+  void forwardToNeighbors(){
+    int i, size;
+    if(!call NeighborList.isEmpty()){
+
+      size = call NeighborList.size();
+
+      for(i = 0; i < size; i++){
+        /**********FOR LATER************
+        *Figure out how to exclude original sender
+        */
+        call Sender.send(sendPackage, call NeighborList.get(i));
+        return msg;
+      }
+    }
+    else {
+      call Sender.send(sendPackage, AM_BROADCAST_ADDR);
     }
   }
 
