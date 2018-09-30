@@ -251,7 +251,7 @@ implementation{
      pack stored;
      int i;
 
-     dbg(FLOODING_CHANNEL, "payload: %s, Src: %d, Seq: %d\n", payload->payload, payload->src, payload->seq);
+     dbg(FLOODING_CHANNEL, "Package(%d,%d) Seen Message:%s\n", payload->src, payload->seq, payload->payload);
 
 
      if(!call PackLogs.isEmpty()){
