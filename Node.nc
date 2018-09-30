@@ -65,7 +65,7 @@ implementation{
    bool hasSeen(pack* payload);
    void addNeighbor(pack* Neighbor);
    void forwardToNeighbors();
-   bool destIsNeighbor();
+   bool destIsNeighbor(pack* recievedMsg);
 
    event void Boot.booted(){
      //  Booting/Starting our lowest networking layer exposed in TinyOS which is also called active messages (AM)
@@ -148,7 +148,7 @@ implementation{
            * rather than AM_BROADCAST_ADDR after we implement
            * neighbor discovery
            */
-           if (destIsNeighbor()){
+           if (destIsNeighbor(recievedMsg)){
              call Sender.send(sendPackage, recievedMsg->dest);
            } else {
              forwardToNeighbors();
@@ -305,10 +305,10 @@ implementation{
     }
   }
 
-  bool destIsNeighbor() {
+  bool destIsNeighbor(pack* recievedMsg) {
     int i, size;
     int loggedNeighbor;
-    int destination = sendPackage->dest;
+    int destination = recievedMsg->dest;
 
     if(!call NeighborList.isEmpty()) {
       size = call NeighborList.size();
