@@ -86,7 +86,7 @@ implementation{
      //dbg(GENERAL_CHANNEL, "\tTimer Fired!\n");
 
      findNeighbors();
-    CommandHandler.printNeighbors();
+    CommandHandler.printNeighbors;
   }//Were using run timer sice this function is fired over a hundread times
 
    //  This function makes sure all the Radios are turned on
