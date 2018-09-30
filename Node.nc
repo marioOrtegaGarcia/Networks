@@ -87,7 +87,6 @@ implementation{
      //dbg(GENERAL_CHANNEL, "\tTimer Fired!\n");
 
      findNeighbors();
-    CommandHandler.printNeighbors;
   }//Were using run timer sice this function is fired over a hundread times
 
    //  This function makes sure all the Radios are turned on
@@ -210,6 +209,8 @@ implementation{
        for(i = 0; i < (call NeighborList.size()); i++) {
          dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, call  NeighborList.get((int)i));
        }
+     } else {
+       dbg(NEIGHBOR_CHANNEL, "\tNeighbors List Empty\n");
      }
    }
 
