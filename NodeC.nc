@@ -31,8 +31,8 @@ implementation {
      * Testing timer format from online Presentation
      * We need to initiate unique timers so the right node fires.
     */
-    components TimerC;
-    //components new TimerMilliC() as TimerC;
+    //components TimerC;
+    components new TimerMilliC() as TimerC;
 
     // Wiring interfaces
     //<usr.interface -> dev.interface>;
