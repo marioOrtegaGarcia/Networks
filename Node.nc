@@ -106,13 +106,13 @@ implementation{
    //  We need to send to everyone, and just check with this function if it's meant for us.
    event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
      pack* recievedMsg;
-     bool foundMatch;
+     //bool foundMatch;
      /* int size; */
      recievedMsg = (pack *)payload;
 
 
      if (len == sizeof(pack)) {
-        foundMatch  = (bool)hasSeen(recievedMsg);
+        //foundMatch  = (bool)hasSeen(recievedMsg);
          // Saving Payload
          /* recievedMsg = (pack *)payload; */
          /* logPack(recievedMsg); */
@@ -124,7 +124,7 @@ implementation{
          }
 
          // Old Packet: Has been seen
-         else if (foundMatch) {
+         else if (hasSeen(recievedMsg)) {
            dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Seen Before\n", recievedMsg->src, recievedMsg->dest);
            return msg;
          }
