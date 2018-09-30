@@ -118,7 +118,7 @@ implementation{
         foundMatch  = (bool)hasSeen(recievedMsg);
          // Saving Payload
          /* recievedMsg = (pack *)payload; */
-         logPack(recievedMsg);
+         //logPack(recievedMsg);
 
          // Dead Packet: Timed out
          if (recievedMsg->TTL == 0) {
