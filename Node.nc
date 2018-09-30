@@ -258,7 +258,7 @@ implementation{
      //logPack(payload);
      makePack(&loggedPack, payload->src, payload->dest, payload->TTL, payload->protocol, payload->seq, (uint8_t*)payload->payload, sizeof(pack));
      call PackLogs.pushback(loggedPack);
-     dbg(FLOODING_CHANNEL, "Package(%d,%d) Updated Seen Packs List\n", payload->src, payload->seq);
+     dbg(FLOODING_CHANNEL, "Package(%d,%d) Updated Seen Packs List\n", payload->src, payload->dest);
 
    }
 
@@ -266,7 +266,7 @@ implementation{
      pack stored;
      int i;
 
-     dbg(FLOODING_CHANNEL, "Package(%d,%d) S_Checking Message:%s\n", payload->src, payload->seq, payload->payload);
+     dbg(FLOODING_CHANNEL, "Package(%d,%d) S_Checking Message:%s\n", payload->src, payload->dest, payload->payload);
 
 
      if(!call PackLogs.isEmpty()){
