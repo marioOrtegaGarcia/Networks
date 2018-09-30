@@ -81,7 +81,10 @@ implementation{
    }
 
    event void Timer.fired() {
-     uint8_t* tempPayload = NULL;
+       dbg(GENERAL_CHANNEL, "Timer Fired!\n");
+
+     uint8_t* tempPayload;
+     *tempPayload = 0;
      //ping protocol for neighbor
      //makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, recievedMsg->seq, call Sender.send(sendPackage, AM_BROADCAST_ADDR);
      makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, ++nodeSeq, tempPayload, PACKET_MAX_PAYLOAD_SIZE);
@@ -196,8 +199,10 @@ implementation{
    event void CommandHandler.printNeighbors(){
      //give me neigbors of 2
      int i;
-     for(i = 0; i < (call NeighborList.size()); i++) {
-       dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, call NeighborList.get((int)i));
+     if(call NeighborList.size() !=  0){
+       for(i = 0; i < (call NeighborList.size()); i++) {
+         dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, call  NeighborList.get((int)i));
+       }
      }
    }
 
