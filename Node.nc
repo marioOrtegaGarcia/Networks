@@ -106,8 +106,8 @@ implementation{
    event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
      pack* recievedMsg;
      /* int size; */
-     recieveMsg = (pack *)payload;
-     bool foundMatch = (bool)hasSeen(recieveMsg);
+     recievedMsg = (pack *)payload;
+     bool foundMatch = (bool)hasSeen(recievedMsg);
 
      if (len == sizeof(pack)) {
          // Saving Payload
