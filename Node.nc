@@ -308,13 +308,14 @@ implementation{
   bool destIsNeighbor() {
     int i, size;
     int loggedNeighbor;
+    int destination = sendPackage->dest;
 
     if(!call NeighborList.isEmpty()) {
       size = call NeighborList.size();
       for(i = 0; i < size; i++){
         loggedNeighbor = call NeighborList.get(i);
-        if( loggedNeighbor == sendPackage->dest)
-        return 1;
+        if( loggedNeighbor == destination)
+          return 1;
       }
     }
     return 0;
