@@ -87,7 +87,6 @@ implementation{
      //dbg(GENERAL_CHANNEL, "\tTimer Fired!\n");
 
      findNeighbors();
-     signal CommandHandler.printNeighbors();
   }//Were using run timer sice this function is fired over a hundread times
 
    //  This function makes sure all the Radios are turned on
@@ -137,6 +136,9 @@ implementation{
            makePack(&sendPackage, recievedMsg->dest, recievedMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)recievedMsg->payload, len);
            updatePack(&sendPackage);
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+
+
+           signal CommandHandler.printNeighbors();
            return msg;
          }
 
