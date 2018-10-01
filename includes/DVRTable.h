@@ -3,9 +3,9 @@
 
 enum {
   //maximum node id value
-  MAX_NODE_ID = 255;
+  MAX_NODE_ID = 255,
   //maximum # of hops before considered "infinity"
-  MAX_COST = 16;
+  MAX_COST = 16
 };
 
 typedef nx_struct DVRtable{
