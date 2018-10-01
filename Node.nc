@@ -208,6 +208,9 @@ implementation{
      if(call NeighborList.size() !=  0){
        for(i = 0; i < (call NeighborList.size()); i++) {
          dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, call  NeighborList.get((int)i));
+          uint16_t Neighbor = call Neighbors.get(i);
+          dbg(NEIGHBOR_CHANNEL,"Neighboring Node: %s\n", Neighbor);
+
        }
      } else {
        dbg(NEIGHBOR_CHANNEL, "\tNeighbors List Empty\n");
