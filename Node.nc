@@ -55,6 +55,7 @@ implementation{
 
    pack sendPackage;
    uint16_t nodeSeq = 0;
+   uint16_t discoveryCount = 0;
 
    //  Here we can lis all the neighbors for this mote
   // We getting an error with neighbors
@@ -86,7 +87,9 @@ implementation{
 
    event void Timer.fired() {
      //dbg(GENERAL_CHANNEL, "\tTimer Fired!\n");
-     clearNeighbors();
+     ++discoveryCount;
+     if((discoveryCount % 3) == 0)
+      clearNeighbors();
      scanNeighbors();
   }//Were using run timer sice this function is fired over a hundread times
 
