@@ -286,7 +286,7 @@ implementation{
 
     if (!hasSeen(Neighbor)) {
       call NeighborList.insert(Neighbor->src, MAX_AGE);
-      dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor->src);
+      //dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor->src);
     }
   }
 
@@ -295,7 +295,7 @@ implementation{
   void relayToNeighbors() {
     int i, size;
     uint32_t *key;
-    //dbg(NEIGHBOR_CHANNEL, "\tTrynna Forward To Neighbors\n");
+    dbg(NEIGHBOR_CHANNEL, "\tTrynna Forward To Neighbors\n");
 
     if(!call NeighborList.isEmpty()) {
       size = call NeighborList.size();
@@ -317,6 +317,8 @@ implementation{
     int i, size, loggedNeighbor;
     int destination = recievedMsg->dest;
     uint32_t *key;
+
+    dbg(NEIGHBOR_CHANNEL, "\tTrynna Forward To DESTINATION\n");
 
     if(!call NeighborList.isEmpty()) {
       size = call NeighborList.size();
