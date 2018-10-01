@@ -286,7 +286,7 @@ implementation{
 
     if (!hasSeen(Neighbor)) {
       call NeighborList.insert(Neighbor->src, MAX_AGE);
-      //dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor->src);
+      dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor->src);
     }
   }
 
