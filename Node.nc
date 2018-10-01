@@ -56,13 +56,8 @@ implementation{
 
    pack sendPackage;
    uint16_t nodeSeq = 0;
-<<<<<<< HEAD
-   //change this to adjust time before node is dropped out of neighborlist
-   uint8_t MAX_AGE = 3;
-=======
    uint16_t discoveryCount = 0;
    //DVRTable table;
->>>>>>> 1226f04c326424eaf01745e41229cd1e5204bb92
 
    //  Here we can lis all the neighbors for this mote
   // We getting an error with neighbors
