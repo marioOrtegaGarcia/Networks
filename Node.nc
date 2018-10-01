@@ -191,17 +191,15 @@ implementation{
        }
 
    // This is how we send a message to one another
-   event void CommandHandler.ping(uint16_t destination, uint8_t *payload){
+   event void CommandHandler.ping(uint16_t destination, uint8_t *payload) {
+     nodeSeq++;
 
      dbg(GENERAL_CHANNEL, "\tPING EVENT \n");
-
-     nodeSeq++;
      dbg(GENERAL_CHANNEL, "\tPING SEQUENCE: %d\n", nodeSeq);
      makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
      logPack(&sendPackage);
      logPacket(&sendPackage);
      call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-
    }
 
    //  This are functions we are going to be implementing in the future.
@@ -256,13 +254,12 @@ implementation{
      call PackLogs.pushback(loggedPack);
 
      if (payload->protocol == PROTOCOL_PING) {
-        dbg(FLOODING_CHANNEL, "\tPing Package(%d,%d) Updated Seen Packs List\n", payload->src, payload->dest);
+        dbg(FLOODING_CHANNEL, "\tPackage(%d,%d)---Ping: Updated Seen Packs List\n", payload->src, payload->dest);
      } else if (payload->protocol == PROTOCOL_PINGREPLY) {
-       dbg(FLOODING_CHANNEL, "\tPing Reply Package(%d,%d) Updated Seen Packs List\n", payload->src, payload->dest);
+       dbg(FLOODING_CHANNEL, "\tPackage(%d,%d)~~~Ping Reply: Updated Seen Packs List\n", payload->src, payload->dest);
      } else {
 
      }
-
    }
 
    bool hasSeen(pack* payload) {
@@ -293,34 +290,30 @@ implementation{
 
 //sends message to all known neighbors in neighbor list; if list is empty,
 //forwards to everyone within range using AM_BROADCAST_ADDR
-  void forwardToNeighbors(){
-      int i, size;
+  void forwardToNeighbors() {
+    int i, size;
     //dbg(NEIGHBOR_CHANNEL, "\tTrynna Forward To Neighbors\n");
 
-    if(!call NeighborList.isEmpty()){
-
+    if(!call NeighborList.isEmpty()) {
       size = call NeighborList.size();
-
-      for(i = 0; i < size; i++){
+      for(i = 0; i < size; i++) {
         /**********FOR LATER************
         *Figure out how to exclude original sender
         */
         call Sender.send(sendPackage, call NeighborList.get(i));
       }
-    }
-    else {
+    } else {
       call Sender.send(sendPackage, AM_BROADCAST_ADDR);
     }
   }
 
   bool destIsNeighbor(pack* recievedMsg) {
-    int i, size;
-    int loggedNeighbor;
+    int i, size, loggedNeighbor;
     int destination = recievedMsg->dest;
 
     if(!call NeighborList.isEmpty()) {
       size = call NeighborList.size();
-      for(i = 0; i < size; i++){
+      for(i = 0; i < size; i++) {
         loggedNeighbor = call NeighborList.get(i);
         if( loggedNeighbor == destination)
           return 1;
@@ -331,7 +324,7 @@ implementation{
 
   void findNeighbors() {
     nodeSeq++;
-    makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, nodeSeq, "If you see this you are my Neighbor", PACKET_MAX_PAYLOAD_SIZE);
+    makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, nodeSeq, "Looking-4-Neighbors", PACKET_MAX_PAYLOAD_SIZE);
     call Sender.send(sendPackage, AM_BROADCAST_ADDR);
   }
 
