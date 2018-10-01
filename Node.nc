@@ -57,7 +57,7 @@ implementation {
         pack sendPackage;
         uint16_t nodeSeq = 0;
         uint16_t discoveryCount = 0;
-        //DVRTable table;
+        DVRTable table;
 
         //  Here we can lis all the neighbors for this mote
         // We getting an error with neighbors
@@ -295,7 +295,7 @@ implementation {
                 int size = call NeighborList.size();
 
                 if (!hasSeen(Neighbor)) {
-                        call NeighborList.insert(Neighbor->src, MAX_AGE);
+                        call NeighborList.insert(Neighbor->src, table->MAX_AGE);
                         //dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor->src);
                 }
         }
