@@ -55,6 +55,8 @@ implementation{
 
    pack sendPackage;
    uint16_t nodeSeq = 0;
+   //change this to adjust time before node is dropped out of neighborlist
+   uint8_t MAX_AGE = 3
 
    //  Here we can lis all the neighbors for this mote
   // We getting an error with neighbors
@@ -280,7 +282,7 @@ implementation{
     int size = call NeighborList.size();
 
     if (!hasSeen(Neighbor)) {
-      call NeighborList.pushback(Neighbor->src);
+      call NeighborList.insert(Neighbor->src, MAX_AGE);
       //dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor->src);
     }
   }
@@ -289,15 +291,19 @@ implementation{
 //forwards to everyone within range using AM_BROADCAST_ADDR
   void relayToNeighbors() {
     int i, size;
+    uint32_t *key;
     //dbg(NEIGHBOR_CHANNEL, "\tTrynna Forward To Neighbors\n");
 
     if(!call NeighborList.isEmpty()) {
       size = call NeighborList.size();
+      *key = NeighborList.getKeys();
       for(i = 0; i < size; i++) {
         /**********FOR LATER************
         *Figure out how to exclude original sender
         */
-        call Sender.send(sendPackage, call NeighborList.get(i));
+
+        call Sender.send(sendPackage, *key);
+        key++;
       }
     } else {
       call Sender.send(sendPackage, AM_BROADCAST_ADDR);
@@ -307,11 +313,14 @@ implementation{
   bool destIsNeighbor(pack* recievedMsg) {
     int i, size, loggedNeighbor;
     int destination = recievedMsg->dest;
+    uint32_t *key;
 
     if(!call NeighborList.isEmpty()) {
       size = call NeighborList.size();
+      *key = NeighborList.getKeys();
       for(i = 0; i < size; i++) {
-        loggedNeighbor = call NeighborList.get(i);
+        loggedNeighbor = *key;
+        key++;
         if( loggedNeighbor == destination)
           return 1;
       }
@@ -325,6 +334,7 @@ implementation{
     call Sender.send(sendPackage, AM_BROADCAST_ADDR);
   }
 
+//why packlogs and not neighborlist
   void clearNeighbors() {
     int size;
     size = call NeighborList.size();
