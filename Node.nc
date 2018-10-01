@@ -126,8 +126,6 @@ implementation{
            return msg;
          }
 
-
-
          // Ping to me
          if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == TOS_NODE_ID) {
            dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) -------------------------------------------------->>>>Ping: %s\n", recievedMsg->src, recievedMsg->dest,  recievedMsg->payload);
