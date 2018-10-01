@@ -61,7 +61,7 @@ implementation{
 
    // Prototypes
    void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
-   void updatePack(pack* payload);
+   void logPacket(pack* payload);
    bool hasSeen(pack* payload);
    void addNeighbor(pack* Neighbor);
    void forwardToNeighbors();
@@ -129,12 +129,12 @@ implementation{
          // Ping to me
          if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == TOS_NODE_ID) {
            dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) -------------------------------------------------->>>>Ping: %s\n", recievedMsg->src, recievedMsg->dest,  recievedMsg->payload);
-           updatePack(&sendPackage);
+           logPacket(&sendPackage);
 
            // Sending Ping Reply
            nodeSeq++;
            makePack(&sendPackage, recievedMsg->dest, recievedMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)recievedMsg->payload, len);
-           updatePack(&sendPackage);
+           logPacket(&sendPackage);
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
 
 
@@ -145,7 +145,7 @@ implementation{
          // Ping Reply to me
          else if (recievedMsg->protocol == PROTOCOL_PINGREPLY && recievedMsg->dest == TOS_NODE_ID) {
            dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) -------------------------------------------------->>>>Ping Reply: %s\n", recievedMsg->src, recievedMsg->dest, recievedMsg->payload);
-           updatePack(&sendPackage);
+           logPacket(&sendPackage);
            return msg;
          }
 
@@ -154,7 +154,7 @@ implementation{
            //recievedMsg = (pack *)payload;
           //dbg(GENERAL_CHANNEL, "\tNeighbor Discovery Ping Recieved\n");
            addNeighbor(recievedMsg);
-           //updatePack(recievedMsg);
+           //logPacket(recievedMsg);
            // Log as neighbor
            return msg;
          }
@@ -166,7 +166,7 @@ implementation{
            // Forward and logging package
            recievedMsg->TTL--;
            makePack(&sendPackage, recievedMsg->src, recievedMsg->dest, recievedMsg->TTL, recievedMsg->protocol, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
-           updatePack(&sendPackage);
+           logPacket(&sendPackage);
 
            /**********FOR LATER**************
            * Need to use node-specific neighbors for destination
@@ -198,7 +198,7 @@ implementation{
      dbg(GENERAL_CHANNEL, "\tPING SEQUENCE: %d\n", nodeSeq);
      makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
      logPack(&sendPackage);
-     updatePack(&sendPackage);
+     logPacket(&sendPackage);
      call Sender.send(sendPackage, AM_BROADCAST_ADDR);
 
    }
@@ -239,7 +239,7 @@ implementation{
       memcpy(Package->payload, payload, length);
     }
    //check packets to see if they have passed through this node beofore
-   void updatePack(pack* payload) {
+   void logPacket(pack* payload) {
 
      uint32_t src = payload->src;
      uint32_t seq = payload->seq;
@@ -253,6 +253,7 @@ implementation{
      //logPack(payload);
      makePack(&loggedPack, payload->src, payload->dest, payload->TTL, payload->protocol, payload->seq, (uint8_t*) payload->payload, sizeof(pack));
      call PackLogs.pushback(loggedPack);
+
      if (payload->protocol == PROTOCOL_PING) {
         dbg(FLOODING_CHANNEL, "\tPing Package(%d,%d) Updated Seen Packs List\n", payload->src, payload->dest);
      } else if (payload->protocol == PROTOCOL_PINGREPLY) {
