@@ -117,7 +117,7 @@ implementation{
 
          // Dead Packet: Timed out
          if (recievedMsg->TTL == 0) {
-           dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Dead of old age\n", recievedMsg->src, recievedMsg->dest);
+           //dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Dead of old age\n", recievedMsg->src, recievedMsg->dest);
            return msg;
          }
 
