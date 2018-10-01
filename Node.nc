@@ -66,7 +66,7 @@ implementation{
    void addNeighbor(pack* Neighbor);
    void relayToNeighbors();
    bool destIsNeighbor(pack* recievedMsg);
-   void findNeighbors();
+   void scanNeighbors();
    void clearNeighbors();
 
    event void Boot.booted(){
@@ -87,7 +87,7 @@ implementation{
    event void Timer.fired() {
      //dbg(GENERAL_CHANNEL, "\tTimer Fired!\n");
      clearNeighbors();
-     findNeighbors();
+     scanNeighbors();
   }//Were using run timer sice this function is fired over a hundread times
 
    //  This function makes sure all the Radios are turned on
@@ -138,7 +138,6 @@ implementation{
            logPacket(&sendPackage);
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
 
-
            //signal CommandHandler.printNeighbors();
            return msg;
          }
@@ -152,11 +151,10 @@ implementation{
 
          // Neighbor Discovery: Timer
          else if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == AM_BROADCAST_ADDR && recievedMsg->TTL == 1) {
-           //recievedMsg = (pack *)payload;
           //dbg(GENERAL_CHANNEL, "\tNeighbor Discovery Ping Recieved\n");
+          // Log as neighbor
            addNeighbor(recievedMsg);
            //logPacket(recievedMsg);
-           // Log as neighbor
            return msg;
          }
 
@@ -169,7 +167,7 @@ implementation{
            makePack(&sendPackage, recievedMsg->src, recievedMsg->dest, recievedMsg->TTL, recievedMsg->protocol, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
            logPacket(&sendPackage);
 
-           /**********FOR LATER**************
+           /**********FOR LATER: Reduce Spamming the network**************
            * Need to use node-specific neighbors for destination
            * rather than AM_BROADCAST_ADDR after we implement
            * neighbor discovery
@@ -181,7 +179,7 @@ implementation{
            }
            return msg;
          }
-
+         // If Packet get here we have not expected it and it will fail
          dbg(GENERAL_CHANNEL, "\tUnknown Packet Type %d\n", len);
          return msg;
          }// End of Currupt if statement
@@ -267,7 +265,6 @@ implementation{
 
      //dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) S_Checking Message:%s\n", payload->src, payload->dest, payload->payload);
 
-
      if(!call PackLogs.isEmpty()){
       for (i = 0; i < call PackLogs.size(); i++) {
         stored = call PackLogs.get(i);
@@ -281,6 +278,7 @@ implementation{
 
   void addNeighbor(pack* Neighbor) {
     int size = call NeighborList.size();
+
     if (!hasSeen(Neighbor)) {
       call NeighborList.pushback(Neighbor->src);
       //dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor->src);
@@ -321,7 +319,7 @@ implementation{
     return 0;
   }
 
-  void findNeighbors() {
+  void scanNeighbors() {
     nodeSeq++;
     makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, nodeSeq, "Looking-4-Neighbors", PACKET_MAX_PAYLOAD_SIZE);
     call Sender.send(sendPackage, AM_BROADCAST_ADDR);
