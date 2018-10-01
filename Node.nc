@@ -210,7 +210,7 @@ implementation {
                 int i;
                 uint16_t *key;
                 if(call NeighborList.size() !=  0) {
-                        *key = call NeighborList.getKeys();
+                        *key = (uint16_t) call NeighborList.getKeys();
                         for(i = 0; i < (call NeighborList.size()); i++) {
                                 dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, *key);
                                 key++;
