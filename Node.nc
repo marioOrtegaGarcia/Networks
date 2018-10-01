@@ -175,6 +175,7 @@ implementation{
            * neighbor discovery
            */
            if (destIsNeighbor(recievedMsg)){
+             dbg(GENERAL_CHANNEL, "\tSending Package Directly Through Destinarion\n\n\n\n\n\n");
              call Sender.send(sendPackage, recievedMsg->dest);
            } else {
              forwardToNeighbors();
