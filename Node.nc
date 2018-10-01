@@ -12,6 +12,7 @@
 #include "includes/CommandMsg.h"
 #include "includes/sendInfo.h"
 #include "includes/channels.h"
+#include "includes/DVRTable.h"
 // Tried using this am types header to add a flood address but not sure if it didn't work cause it wasn't compiling due code errors
 //#include "includes/am_types.h"
 
@@ -55,8 +56,13 @@ implementation{
 
    pack sendPackage;
    uint16_t nodeSeq = 0;
+<<<<<<< HEAD
    //change this to adjust time before node is dropped out of neighborlist
    uint8_t MAX_AGE = 3;
+=======
+   uint16_t discoveryCount = 0;
+   //DVRTable table;
+>>>>>>> 1226f04c326424eaf01745e41229cd1e5204bb92
 
    //  Here we can lis all the neighbors for this mote
   // We getting an error with neighbors
@@ -88,7 +94,9 @@ implementation{
 
    event void Timer.fired() {
      //dbg(GENERAL_CHANNEL, "\tTimer Fired!\n");
-     clearNeighbors();
+     ++discoveryCount;
+     if((discoveryCount % 3) == 0)
+      clearNeighbors();
      scanNeighbors();
   }//Were using run timer sice this function is fired over a hundread times
 
