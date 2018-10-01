@@ -79,7 +79,7 @@ implementation{
       // t0 Timer start time
       // dt Timer interval
 
-      t0 = call Random.rand32() % 2500;
+      t0 = 500 + call Random.rand32() % 2000;
       dt = 25000 + (call Random.rand32() % 10000);
       call Timer.startPeriodicAt(t0, dt);
 
