@@ -1,0 +1,24 @@
+Pseudo Code
+
+Boot.booted(){
+    - Set our start and end position for timers t0[0.5,2.5]
+    - Set timer frequency dt[25,35]
+    - Start timer
+}
+Timer.fired(){
+    - Reset Neighbors
+    - Scan for new ones
+}
+
+
+Receive.receive(){
+    - Dead Packages : Corrupt, Timed out, or has been seen
+    - Our Ping: We are the Pings destination
+    - Our Ping reply: We are the Ping replays destination
+    - Neighbor Discovery: Meeting Neighbors
+    - Forwarding: Someone else's message
+}
+
+printNeighbors() {
+  for each neighbor Print self and connection
+}
