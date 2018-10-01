@@ -56,7 +56,7 @@ implementation{
    pack sendPackage;
    uint16_t nodeSeq = 0;
    //change this to adjust time before node is dropped out of neighborlist
-   uint8_t MAX_AGE = 3
+   uint8_t MAX_AGE = 3;
 
    //  Here we can lis all the neighbors for this mote
   // We getting an error with neighbors
