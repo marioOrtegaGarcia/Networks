@@ -67,6 +67,7 @@ implementation{
    void forwardToNeighbors();
    bool destIsNeighbor(pack* recievedMsg);
    void findNeighbors();
+   void clearNeighbors();
 
    event void Boot.booted(){
      uint32_t t0, dt;
