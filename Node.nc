@@ -152,7 +152,7 @@ implementation{
          // Neighbor Discovery: Timer
          else if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == AM_BROADCAST_ADDR && recievedMsg->TTL == 1) {
            //recievedMsg = (pack *)payload;
-          dbg(GENERAL_CHANNEL, "\tNeighbor Discovery Ping Recieved\n");
+          //dbg(GENERAL_CHANNEL, "\tNeighbor Discovery Ping Recieved\n");
            addNeighbor(recievedMsg);
            //updatePack(recievedMsg);
            // Log as neighbor
@@ -161,7 +161,7 @@ implementation{
 
          // Relaying Packet: Not for us
          else if (recievedMsg->dest != TOS_NODE_ID && recievedMsg->dest != AM_BROADCAST_ADDR) {
-           dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Relay\n", recievedMsg->src, recievedMsg->dest);
+           //dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Relay\n", recievedMsg->src, recievedMsg->dest);
 
            // Forward and logging package
            recievedMsg->TTL--;
