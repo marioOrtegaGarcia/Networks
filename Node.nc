@@ -85,7 +85,7 @@ implementation{
 
    event void Timer.fired() {
      //dbg(GENERAL_CHANNEL, "\tTimer Fired!\n");
-
+     clearNeighbors();
      findNeighbors();
   }//Were using run timer sice this function is fired over a hundread times
 
@@ -332,5 +332,15 @@ implementation{
     makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, nodeSeq, "If you see this you are my Neighbor", PACKET_MAX_PAYLOAD_SIZE);
     call Sender.send(sendPackage, AM_BROADCAST_ADDR);
   }
+
+  void clearNeighbors() {
+    int size;
+    size = call NeighborList.size();
+    while (size > 1) {
+      call PackLogs.popfront();
+      size--;
+    }
+  }
+
 
 }
