@@ -197,7 +197,7 @@ implementation{
      logPack(&sendPackage);
      updatePack(&sendPackage);
      call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-
+     signal CommandHandler.printNeighbors();
    }
 
    //  This are functions we are going to be implementing in the future.
