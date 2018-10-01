@@ -272,7 +272,7 @@ implementation {
                 int size = call NeighborList.size();
 
                 if (!hasSeen(Neighbor)) {
-                        call NeighborList.insert(Neighbor->src, table->MAX_AGE);
+                        call NeighborList.insert(Neighbor->src, MAX_AGE);
                         //dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor->src);
                 }
         }
