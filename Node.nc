@@ -43,6 +43,7 @@ implementation {
         uint16_t nodeSeq = 0;
         uint16_t discoveryCount = 0;
         //DVRTable table;
+        uint8_t MAX_AGE = 3;
 
         //  Here we can lis all the neighbors for this mote
         //  We getting an error with neighbors
