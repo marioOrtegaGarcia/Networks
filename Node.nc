@@ -29,7 +29,7 @@ module Node{
 
    uses interface List <pack> as PackLogs;
 
-   uses interface List <uint32_t> as NeighborList;
+   uses interface Hashmap <uint32_t> as NeighborList;
 
    uses interface Random as Random;
 
