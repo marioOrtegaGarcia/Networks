@@ -194,10 +194,9 @@ implementation{
    event void CommandHandler.ping(uint16_t destination, uint8_t *payload) {
      nodeSeq++;
 
-     dbg(GENERAL_CHANNEL, "\tPING EVENT \n");
-     dbg(GENERAL_CHANNEL, "\tPING SEQUENCE: %d\n", nodeSeq);
+     dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Ping Sent\n", TOS_NODE_ID, destination);
      makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
-     logPack(&sendPackage);
+     //logPack(&sendPackage);
      logPacket(&sendPackage);
      call Sender.send(sendPackage, AM_BROADCAST_ADDR);
    }
