@@ -253,13 +253,13 @@ implementation{
      makePack(&loggedPack, payload->src, payload->dest, payload->TTL, payload->protocol, payload->seq, (uint8_t*) payload->payload, sizeof(pack));
      call PackLogs.pushback(loggedPack);
 
-     if (payload->protocol == PROTOCOL_PING) {
+     /* if (payload->protocol == PROTOCOL_PING) {
         dbg(FLOODING_CHANNEL, "\tPackage(%d,%d)---Ping: Updated Seen Packs List\n", payload->src, payload->dest);
      } else if (payload->protocol == PROTOCOL_PINGREPLY) {
        dbg(FLOODING_CHANNEL, "\tPackage(%d,%d)~~~Ping Reply: Updated Seen Packs List\n", payload->src, payload->dest);
      } else {
 
-     }
+     } */
    }
 
    bool hasSeen(pack* payload) {
