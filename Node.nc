@@ -13,7 +13,7 @@
 #include "includes/sendInfo.h"
 #include "includes/channels.h"
 #include "includes/DVRTable.h"
-// Tried using this am types header to add a flood address but not sure if it didn't work cause it wasn't compiling due code errors
+//  Tried using this am types header to add a flood address but not sure if it didn't work cause it wasn't compiling due code errors
 //#include "includes/am_types.h"
 
 module Node {
@@ -36,21 +36,6 @@ module Node {
 
         uses interface Timer<TMilli> as Timer;
 }
-/* Pseudo Code from Lab TA
- *  First Part of Project
- * TOS_NODE_ID current node ID
- * Make Pack again and broadcast again if its not yours
- * When you've seen the package you are supposed to ignore it using the sequence Number
- ***  Ping Reply
- *  Flip source and destination and set it as the ping protocol
- *** Sequence number starts at 0 only increment when you ping
- * TTL is based on number of nodes so we can set it to 20
- * Decrease TTL-- each time you send
- *
- *** Neighbor Discovery
- *** we can make our own protocol from neighbor Discovery
- *
- */
 
 implementation {
 
@@ -60,9 +45,9 @@ implementation {
         DVRTable table;
 
         //  Here we can lis all the neighbors for this mote
-        // We getting an error with neighbors
+        //  We getting an error with neighbors
 
-        // Prototypes
+        //  Prototypes
         void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
         void logPacket(pack* payload);
         bool hasSeen(pack* payload);
@@ -72,14 +57,13 @@ implementation {
         void scanNeighbors();
         void clearNeighbors();
 
+        //  Node boot time calls
         event void Boot.booted(){
                 uint32_t t0, dt;
                 //  Booting/Starting our lowest networking layer exposed in TinyOS which is also called active messages (AM)
                 call AMControl.start();
 
-                // t0 Timer start time
-                // dt Timer interval
-
+                // t0 Timer start time, dt Timer interval time
                 t0 = 500 + call Random.rand32() % 2000;
                 dt = 25000 + (call Random.rand32() % 10000);
                 call Timer.startPeriodicAt(t0, dt);
@@ -87,52 +71,47 @@ implementation {
                 dbg(GENERAL_CHANNEL, "\tBooted\n");
         }
 
+        //  This function is ran after t0 Milliseconds the node is alive, and fires every dt seconds.
         event void Timer.fired() {
-                //dbg(GENERAL_CHANNEL, "\tTimer Fired!\n");
+                // We might wanna remove this since the timer fires fro every 25 seconds to 35 Seconds
                 ++discoveryCount;
                 if((discoveryCount % 3) == 0)
                         clearNeighbors();
                 scanNeighbors();
-        }//Were using run timer sice this function is fired over a hundread times
+                //dbg(GENERAL_CHANNEL, "\tTimer Fired!\n");
+        }
 
-        //  This function makes sure all the Radios are turned on
+        //  Make sure all the Radios are turned on
         event void AMControl.startDone(error_t err){
-                if(err == SUCCESS) {
+                if(err == SUCCESS)
                         dbg(GENERAL_CHANNEL, "\tRadio On\n");
-                }else{
+                else
                         call AMControl.start();
-                }
         }
 
         event void AMControl.stopDone(error_t err){
         }
 
-        //  type message_t contains our AM pack
-        //  We need to send to everyone, and just check with this function if it's meant for us.
+        //  Handles all the Packs we are receiving.
         event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
                 pack* recievedMsg;
                 recievedMsg = (pack *)payload;
 
-
                 if (len == sizeof(pack)) {
-                        //foundMatch  = (bool)hasSeen(recievedMsg);
-                        // Saving Payload
-                        /* recievedMsg = (pack *)payload; */
-                        /* logPack(recievedMsg); */
 
-                        // Dead Packet: Timed out
+                        //  Dead Packet: Timed out
                         if (recievedMsg->TTL == 0) {
                                 //dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Dead of old age\n", recievedMsg->src, recievedMsg->dest);
                                 return msg;
                         }
 
-                        // Old Packet: Has been seen
+                        //  Old Packet: Has been seen
                         else if (hasSeen(recievedMsg)) {
                                 //dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Seen Before\n", recievedMsg->src, recievedMsg->dest);
                                 return msg;
                         }
 
-                        // Ping to me
+                        //  Ping to me
                         if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == TOS_NODE_ID) {
                                 dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) -------------------------------------------------->>>>Ping: %s\n", recievedMsg->src, recievedMsg->dest,  recievedMsg->payload);
                                 logPacket(&sendPackage);
@@ -147,19 +126,18 @@ implementation {
                                 return msg;
                         }
 
-                        // Ping Reply to me
+                        //  Ping Reply to me
                         else if (recievedMsg->protocol == PROTOCOL_PINGREPLY && recievedMsg->dest == TOS_NODE_ID) {
                                 dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) -------------------------------------------------->>>>Ping Reply: %s\n", recievedMsg->src, recievedMsg->dest, recievedMsg->payload);
                                 logPacket(&sendPackage);
                                 return msg;
                         }
 
-                        // Neighbor Discovery: Timer
+                        //  Neighbor Discovery: Timer
                         else if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == AM_BROADCAST_ADDR && recievedMsg->TTL == 1) {
                                 //dbg(GENERAL_CHANNEL, "\tNeighbor Discovery Ping Recieved\n");
                                 // Log as neighbor
                                 addNeighbor(recievedMsg);
-                                //logPacket(recievedMsg);
                                 return msg;
                         }
 
@@ -177,13 +155,13 @@ implementation {
                                  * rather than AM_BROADCAST_ADDR after we implement
                                  * neighbor discovery
                                  */
-                                if (destIsNeighbor(recievedMsg)) {
+                                if (destIsNeighbor(recievedMsg))
                                         call Sender.send(sendPackage, recievedMsg->dest);
-                                } else {
+                                else
                                         relayToNeighbors();
-                                }
                                 return msg;
                         }
+
                         // If Packet get here we have not expected it and it will fail
                         dbg(GENERAL_CHANNEL, "\tUnknown Packet Type %d\n", len);
                         return msg;
@@ -193,7 +171,7 @@ implementation {
                 return msg;
         }
 
-        // This is how we send a message to one another
+        //  This is how we send a Ping to one another
         event void CommandHandler.ping(uint16_t destination, uint8_t *payload) {
                 nodeSeq++;
 
@@ -206,7 +184,6 @@ implementation {
 
         //  This are functions we are going to be implementing in the future.
         event void CommandHandler.printNeighbors(){
-                //give me neigbors of 2
                 int i;
                 uint16_t *key;
                 if(call NeighborList.size() !=  0) {
@@ -249,7 +226,8 @@ implementation {
                 Package->protocol = protocol;
                 memcpy(Package->payload, payload, length);
         }
-        //check packets to see if they have passed through this node beofore
+
+        //  Logging Packets: Knowledge of seen Packets
         void logPacket(pack* payload) {
 
                 uint16_t src = payload->src;
@@ -257,7 +235,7 @@ implementation {
                 pack loggedPack;
 
                 //if packet log isnt empty and contains the src key
-                if(call PackLogs.size() == 64) {
+                if(call PackLogs.size() == PackLogs->HASH_MAX_SIZE) {
                         //remove old key value pair and insert new one
                         call PackLogs.popfront();
                 }
@@ -279,7 +257,6 @@ implementation {
                 int i;
 
                 //dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) S_Checking Message:%s\n", payload->src, payload->dest, payload->payload);
-
                 if(!call PackLogs.isEmpty()) {
                         for (i = 0; i < call PackLogs.size(); i++) {
                                 stored = call PackLogs.get(i);
@@ -300,8 +277,7 @@ implementation {
                 }
         }
 
-//sends message to all known neighbors in neighbor list; if list is empty,
-//forwards to everyone within range using AM_BROADCAST_ADDR
+        //  sends message to all known neighbors in neighbor list; if list is empty, forwards to everyone within range using AM_BROADCAST_ADDR.
         void relayToNeighbors() {
                 int i, size;
                 uint16_t *key;
