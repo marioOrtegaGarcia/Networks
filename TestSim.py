@@ -150,7 +150,8 @@ def main():
     s.runTime(20);
     #s.ping(1, 10, "Ka-Chao!");
     #s.runTime(30);
-    s.neighborDMP(2);
+    s.neighborDMP(6,3);
+
 
 if __name__ == '__main__':
     main()
