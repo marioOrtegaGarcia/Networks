@@ -57,7 +57,7 @@ implementation{
    pack sendPackage;
    uint16_t nodeSeq = 0;
    uint16_t discoveryCount = 0;
-   DVRTable table;
+   dvrtable table;
 
    //  Here we can lis all the neighbors for this mote
   // We getting an error with neighbors
