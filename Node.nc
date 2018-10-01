@@ -138,7 +138,7 @@ implementation{
            call Sender.send(sendPackage, AM_BROADCAST_ADDR);
 
 
-           signal CommandHandler.printNeighbors();
+           //signal CommandHandler.printNeighbors();
            return msg;
          }
 
@@ -261,7 +261,7 @@ implementation{
      pack stored;
      int i;
 
-     dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) S_Checking Message:%s\n", payload->src, payload->dest, payload->payload);
+     //dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) S_Checking Message:%s\n", payload->src, payload->dest, payload->payload);
 
 
      if(!call PackLogs.isEmpty()){
@@ -279,7 +279,7 @@ implementation{
     int size = call NeighborList.size();
     if (!hasSeen(Neighbor)) {
       call NeighborList.pushback(Neighbor->src);
-      dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor->src);
+      //dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor->src);
     }
   }
 
@@ -287,7 +287,7 @@ implementation{
 //forwards to everyone within range using AM_BROADCAST_ADDR
   void forwardToNeighbors(){
       int i, size;
-    dbg(NEIGHBOR_CHANNEL, "\tTrynna Forward To Neighbors\n");
+    //dbg(NEIGHBOR_CHANNEL, "\tTrynna Forward To Neighbors\n");
 
     if(!call NeighborList.isEmpty()){
 
