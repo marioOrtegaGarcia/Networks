@@ -64,7 +64,7 @@ implementation{
    void logPacket(pack* payload);
    bool hasSeen(pack* payload);
    void addNeighbor(pack* Neighbor);
-   void forwardToNeighbors();
+   void relayToNeighbors();
    bool destIsNeighbor(pack* recievedMsg);
    void findNeighbors();
    void clearNeighbors();
@@ -175,10 +175,9 @@ implementation{
            * neighbor discovery
            */
            if (destIsNeighbor(recievedMsg)){
-             dbg(GENERAL_CHANNEL, "\tSending Package Directly Through Destinarion\n\n\n\n\n\n");
              call Sender.send(sendPackage, recievedMsg->dest);
            } else {
-             forwardToNeighbors();
+             relayToNeighbors();
            }
            return msg;
          }
@@ -291,7 +290,7 @@ implementation{
 
 //sends message to all known neighbors in neighbor list; if list is empty,
 //forwards to everyone within range using AM_BROADCAST_ADDR
-  void forwardToNeighbors() {
+  void relayToNeighbors() {
     int i, size;
     //dbg(NEIGHBOR_CHANNEL, "\tTrynna Forward To Neighbors\n");
 
