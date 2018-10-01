@@ -144,8 +144,9 @@ implementation{
          }
 
          // Ping Reply to me
-         else if (recievedMsg->protocol == PROTOCOL_PINGREPLY && recievedMsg->dest == TOS_NODE_ID && !hasSeen(recievedMsg)) {
+         else if (recievedMsg->protocol == PROTOCOL_PINGREPLY && recievedMsg->dest == TOS_NODE_ID) {
            dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) -------------------------------------------------->>>>Ping Reply: %s\n", recievedMsg->src, recievedMsg->dest, recievedMsg->payload);
+           logPack(recievedMsg);
            logPacket(&sendPackage);
            return msg;
          }
