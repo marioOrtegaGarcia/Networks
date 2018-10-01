@@ -151,7 +151,7 @@ implementation{
          // Neighbor Discovery: Timer
          else if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == AM_BROADCAST_ADDR && recievedMsg->TTL == 1) {
            //recievedMsg = (pack *)payload;
-          //dbg(GENERAL_CHANNEL, "\tNeighbor Discovery Ping Recieved\n");
+          dbg(GENERAL_CHANNEL, "\tNeighbor Discovery Ping Recieved\n");
            addNeighbor(recievedMsg);
            //updatePack(recievedMsg);
            // Log as neighbor
@@ -259,7 +259,7 @@ implementation{
      pack stored;
      int i;
 
-     //dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) S_Checking Message:%s\n", payload->src, payload->dest, payload->payload);
+     dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) S_Checking Message:%s\n", payload->src, payload->dest, payload->payload);
 
 
      if(!call PackLogs.isEmpty()){
@@ -277,7 +277,7 @@ implementation{
     int size = call NeighborList.size();
     if (!hasSeen(Neighbor)) {
       call NeighborList.pushback(Neighbor->src);
-      //dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor->src);
+      dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor->src);
     }
   }
 
