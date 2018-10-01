@@ -12,7 +12,7 @@
 #include "includes/CommandMsg.h"
 #include "includes/sendInfo.h"
 #include "includes/channels.h"
-#include "includes/DVRTable.h"
+#include "includes/dvrtable.h"
 // Tried using this am types header to add a flood address but not sure if it didn't work cause it wasn't compiling due code errors
 //#include "includes/am_types.h"
 
