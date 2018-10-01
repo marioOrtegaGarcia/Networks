@@ -26,7 +26,7 @@ implementation {
     components new AMReceiverC(AM_PACK) as GeneralReceive;
 
     components new ListC(pack, 64) as PackLogsC;
-    components new HashmapC(uint32_t, 64) as NeighborListC;
+    components new HashmapC(uint16_t, 64) as NeighborListC;
     /*
      * Testing timer format from online Presentation
      * We need to initiate unique timers so the right node fires.

@@ -208,7 +208,7 @@ implementation{
    event void CommandHandler.printNeighbors(){
      //give me neigbors of 2
      int i;
-     uint32_t *key;
+     uint16_t *key;
      if(call NeighborList.size() !=  0){
        *key = call NeighborList.getKeys();
        for(i = 0; i < (call NeighborList.size()); i++) {
@@ -245,8 +245,8 @@ implementation{
    //check packets to see if they have passed through this node beofore
    void logPacket(pack* payload) {
 
-     uint32_t src = payload->src;
-     uint32_t seq = payload->seq;
+     uint16_t src = payload->src;
+     uint16_t seq = payload->seq;
      pack loggedPack;
 
      //if packet log isnt empty and contains the src key
@@ -297,7 +297,7 @@ implementation{
 //forwards to everyone within range using AM_BROADCAST_ADDR
   void relayToNeighbors() {
     int i, size;
-    uint32_t *key;
+    uint16_t *key;
     dbg(NEIGHBOR_CHANNEL, "\tTrynna Forward To Neighbors\n");
 
     if(!call NeighborList.isEmpty()) {
@@ -319,7 +319,7 @@ implementation{
   bool destIsNeighbor(pack* recievedMsg) {
     int i, size, loggedNeighbor;
     int destination = recievedMsg->dest;
-    uint32_t *key;
+    uint16_t *key;
 
     dbg(NEIGHBOR_CHANNEL, "\tTrynna Forward To DESTINATION\n");
 
