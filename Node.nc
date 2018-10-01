@@ -130,7 +130,7 @@ implementation{
 
          // Ping to me
          if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == TOS_NODE_ID) {
-           dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) ------------------------->>>>Ping: %s\n", recievedMsg->src, recievedMsg->dest,  recievedMsg->payload);
+           dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) -------------------------------------------------->>>>Ping: %s\n", recievedMsg->src, recievedMsg->dest,  recievedMsg->payload);
            updatePack(&sendPackage);
 
            // Sending Ping Reply
@@ -199,7 +199,7 @@ implementation{
      logPack(&sendPackage);
      updatePack(&sendPackage);
      call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-     
+
    }
 
    //  This are functions we are going to be implementing in the future.
