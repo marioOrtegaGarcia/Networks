@@ -296,7 +296,7 @@ implementation{
 
     if(!call NeighborList.isEmpty()) {
       size = call NeighborList.size();
-      *key = NeighborList.getKeys();
+      *key = call NeighborList.getKeys();
       for(i = 0; i < size; i++) {
         /**********FOR LATER************
         *Figure out how to exclude original sender
@@ -317,7 +317,7 @@ implementation{
 
     if(!call NeighborList.isEmpty()) {
       size = call NeighborList.size();
-      *key = NeighborList.getKeys();
+      *key = call NeighborList.getKeys();
       for(i = 0; i < size; i++) {
         loggedNeighbor = *key;
         key++;
