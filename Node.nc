@@ -246,6 +246,7 @@ implementation {
                 pack stored;
                 int i, size;
                 size = call PackLogs.size();
+                dbg(FLOODING_CHANNEL, "\t%i Packets in the list\n", size);
                 dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) S_Checking Message:%s\n", payload->src, payload->dest, payload->payload);
                 if(size > 0) {
                         dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) PackLogs not Empty:%s\n", payload->src, payload->dest, payload->payload);
