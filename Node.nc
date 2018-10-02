@@ -289,7 +289,7 @@ implementation {
                         uint32_t keys[size];
                         // Get Keys returns an array of all the keys in the hash table, therefore we should save all the keys then iterate tr
                         //*key = (uint16_t) call NeighborList.getKeys();
-                        keys = (uint32_t) call NeighborList.getKeys();
+                        keys = call NeighborList.getKeys();
                         for(i = 0; i < size; i++) {
                                 /**********FOR LATER************
                                  * Figure out how to exclude original sender
