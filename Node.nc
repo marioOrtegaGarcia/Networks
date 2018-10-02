@@ -189,7 +189,6 @@ implementation {
                 if(call NeighborList.size() !=  0) {
                         for(i = 0; i < (call NeighborList.size()); i++) {
                                 dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, call  NeighborList.get((int)i));
-                                key++;
                         }
                 } else {
                         dbg(NEIGHBOR_CHANNEL, "\tNeighbors List Empty\n");
@@ -270,7 +269,7 @@ implementation {
         void addNeighbor(pack* Neighbor) {
                 int size = call NeighborList.size();
                 if (!hasSeen(Neighbor)) {
-                        call NeighborList.insert(Neighbor->src);
+                        call NeighborList.pushback(Neighbor->src);
                         //dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor->src);
                 }
         }
