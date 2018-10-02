@@ -295,16 +295,14 @@ implementation {
         bool destIsNeighbor(pack* recievedMsg) {
                 int i, size, loggedNeighbor;
                 int destination = recievedMsg->dest;
-                uint16_t *key;
+
 
                 dbg(NEIGHBOR_CHANNEL, "\tTrynna Forward To DESTINATION\n");
 
                 if(!call NeighborList.isEmpty()) {
                         size = call NeighborList.size();
-                        *key = (uint16_t) call NeighborList.getKeys();
                         for(i = 0; i < size; i++) {
-                                loggedNeighbor = *key;
-                                key++;
+                                loggedNeighbor = call NeighborList.get(i);
                                 if( loggedNeighbor == destination)
                                         return 1;
                         }
