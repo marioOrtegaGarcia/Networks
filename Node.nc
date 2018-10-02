@@ -296,8 +296,7 @@ implementation {
                 int i, size, loggedNeighbor;
                 int destination = recievedMsg->dest;
 
-
-                dbg(NEIGHBOR_CHANNEL, "\tTrynna Forward To DESTINATION\n");
+                //dbg(NEIGHBOR_CHANNEL, "\tTrynna Forward To DESTINATION\n");
 
                 if(!call NeighborList.isEmpty()) {
                         size = call NeighborList.size();
