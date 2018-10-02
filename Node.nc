@@ -97,7 +97,7 @@ implementation {
                 if (len == sizeof(pack)) {
                         //  Dead Packet: Timed out
                         if (recievedMsg->TTL == 0) {
-                                //dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Dead of old age\n", recievedMsg->src, recievedMsg->dest);
+                                dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Dead of old age\n", recievedMsg->src, recievedMsg->dest);
                                 return msg;
                         }
 
@@ -170,7 +170,6 @@ implementation {
 
                 dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Ping Sent\n", TOS_NODE_ID, destination);
                 makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
-
                 logPack(&sendPackage);
                 //logPacket(&sendPackage);
                 call Sender.send(sendPackage, AM_BROADCAST_ADDR);
