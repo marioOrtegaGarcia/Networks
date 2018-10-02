@@ -152,10 +152,7 @@ implementation {
                                  * rather than AM_BROADCAST_ADDR after we implement
                                  * neighbor discovery
                                  */
-                                if (destIsNeighbor(recievedMsg))
-                                        call Sender.send(sendPackage, recievedMsg->dest);
-                                else
-                                        relayToNeighbors();
+                                relayToNeighbors();
                                 return msg;
                         }
 
@@ -272,17 +269,10 @@ implementation {
 
         //  sends message to all known neighbors in neighbor list; if list is empty, forwards to everyone within range using AM_BROADCAST_ADDR.
         void relayToNeighbors() {
-                int i, size;
-                
-                if(!call NeighborList.isEmpty()) {
-                        size = call NeighborList.size();
-                        for(i = 0; i < size; i++) {
-                                /**********FOR LATER************
-                                 * Figure out how to exclude original sender
-                                 */
-                                 dbg(NEIGHBOR_CHANNEL, "\tTrynna Forward To DESTINATION\n");
-                                call Sender.send(sendPackage, call NeighborList.get(i));
-                        }
+
+                if(destIsNeighbor(recievedMsg)) {
+                        dbg(NEIGHBOR_CHANNEL, "\tDeliver Message to Destination\n");
+                        call Sender.send(sendPackage, recievedMsg->dest);
                 } else {
                         dbg(NEIGHBOR_CHANNEL, "\tTrynna Forward To Neighbors\n");
                         call Sender.send(sendPackage, AM_BROADCAST_ADDR);
@@ -290,8 +280,9 @@ implementation {
         }
 
         bool destIsNeighbor(pack* recievedMsg) {
-                int i, size, loggedNeighbor;
-                int destination = recievedMsg->dest;
+                int i, size,
+                uint16_t loggedNeighbor;
+                uint16_t destination = recievedMsg->dest;
 
                 if(!call NeighborList.isEmpty()) {
                         size = call NeighborList.size();
