@@ -281,19 +281,21 @@ implementation {
         //  sends message to all known neighbors in neighbor list; if list is empty, forwards to everyone within range using AM_BROADCAST_ADDR.
         void relayToNeighbors() {
                 int i, size;
-                uint16_t *key;
+                //uint16_t *key;
                 dbg(NEIGHBOR_CHANNEL, "\tTrynna Forward To Neighbors\n");
 
                 if(!call NeighborList.isEmpty()) {
                         size = call NeighborList.size();
-                        *key = (uint16_t) call NeighborList.getKeys();
+                        uint32_t keys[size];
+                        // Get Keys returns an array of all the keys in the hash table, therefore we should save all the keys then iterate tr
+                        //*key = (uint16_t) call NeighborList.getKeys();
+                        keys = (uint32_t) call NeighborList.getKeys();
                         for(i = 0; i < size; i++) {
                                 /**********FOR LATER************
                                  * Figure out how to exclude original sender
                                  */
-
-                                call Sender.send(sendPackage, *key);
-                                key++;
+                                call Sender.send(sendPackage, keys[i]);
+                                //key++;
                         }
                 } else {
                         call Sender.send(sendPackage, AM_BROADCAST_ADDR);
