@@ -279,7 +279,7 @@ implementation {
         }
 
         bool destIsNeighbor(pack* recievedMsg) {
-                int i, size,
+                int i, size;
                 uint16_t loggedNeighbor;
                 uint16_t destination = recievedMsg->dest;
 
