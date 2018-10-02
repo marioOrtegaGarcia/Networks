@@ -170,7 +170,7 @@ implementation {
 
                 dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Ping Sent\n", TOS_NODE_ID, destination);
                 makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL, PROTOCOL_PING, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
-                dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Actually Sent\n", sendPackage->src, sendPackage->dest);
+                dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Actually Sent\n", &sendPackage->src, &sendPackage->dest);
                 //logPack(&sendPackage);
                 //logPacket(&sendPackage);
                 call Sender.send(sendPackage, AM_BROADCAST_ADDR);
