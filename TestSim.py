@@ -149,8 +149,10 @@ def main():
     s.ping(6, 3, "Hi!");
     s.runTime(20);
     s.ping(1, 10, "Ka-Chao!");
-    s.runTime(30);
-    s.neighborDMP(6);
+    s.runTime(10);
+    s.ping(1, 19, "Tralalalala");
+    s.runTime(10);
+    #s.neighborDMP(6);
 
 
 if __name__ == '__main__':
