@@ -229,7 +229,7 @@ implementation {
                         //remove old key value pair and insert new one
                         call PackLogs.popfront();
                 }
-                //logPack(payload);
+                logPack(payload);
                 makePack(&loggedPack, payload->src, payload->dest, payload->TTL, payload->protocol, payload->seq, (uint8_t*) payload->payload, sizeof(pack));
                 call PackLogs.pushback(loggedPack);
 
