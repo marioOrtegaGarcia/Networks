@@ -54,7 +54,7 @@ implementation {
         void relayToNeighbors(pack* recievedMsg);
         bool destIsNeighbor(pack* recievedMsg);
         void scanNeighbors();
-        void clearNeighbors(int mod = 0);
+        void clearNeighbors(int mod);
 
         //  Node boot time calls
         event void Boot.booted(){
@@ -73,7 +73,7 @@ implementation {
         //  This function is ran after t0 Milliseconds the node is alive, and fires every dt seconds.
         event void Timer.fired() {
                 // We might wanna remove this since the timer fires fro every 25 seconds to 35 Seconds
-                clearNeighbors();
+                clearNeighbors(0);
                 scanNeighbors();
                 //dbg(GENERAL_CHANNEL, "\tTimer Fired!\n");
         }
@@ -152,7 +152,7 @@ implementation {
                                  * rather than AM_BROADCAST_ADDR after we implement
                                  * neighbor discovery
                                  */
-                                relayToNeighbors();
+                                relayToNeighbors(&sendPackage);
                                 return msg;
                         }
 
@@ -302,7 +302,7 @@ implementation {
         }
 
 //why packlogs and not neighborlist
-        void clearNeighbors(int mod) {
+        void clearNeighbors(int mod  = 0) {
                 int size;
                 size = call NeighborList.size();
                 while (size > 1) {
