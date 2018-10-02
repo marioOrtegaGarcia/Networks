@@ -248,6 +248,7 @@ implementation {
 
                 dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) S_Checking Message:%s\n", payload->src, payload->dest, payload->payload);
                 if(!call PackLogs.isEmpty()) {
+                        dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) PackLogs not Empty:%s\n", payload->src, payload->dest, payload->payload);
                         for (i = 0; i < call PackLogs.size(); i++) {
                                 stored = call PackLogs.get(i);
                                 if (stored.src == payload->src && stored.seq <= payload->seq) {
@@ -255,7 +256,7 @@ implementation {
                                 }
                         }
                 }
-                dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) NOT Seen Message:%s\n", payload->src, payload->dest, payload->payload);
+
                 return 0;
         }
 
