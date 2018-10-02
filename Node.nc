@@ -315,7 +315,7 @@ implementation {
                 int size;
                 size = call NeighborList.size();
                 while (size > 1) {
-                        call PackLogs.popfront();
+                        call NeighborList.popfront();
                         size--;
                 }
         }
