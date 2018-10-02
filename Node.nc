@@ -51,10 +51,10 @@ implementation {
         void logPacket(pack* payload);
         bool hasSeen(pack* payload);
         void addNeighbor(pack* Neighbor);
-        void relayToNeighbors();
+        void relayToNeighbors(pack* recievedMsg);
         bool destIsNeighbor(pack* recievedMsg);
         void scanNeighbors();
-        void clearNeighbors();
+        void clearNeighbors(int mod = 0);
 
         //  Node boot time calls
         event void Boot.booted(){
@@ -268,8 +268,7 @@ implementation {
         }
 
         //  sends message to all known neighbors in neighbor list; if list is empty, forwards to everyone within range using AM_BROADCAST_ADDR.
-        void relayToNeighbors() {
-
+        void relayToNeighbors(pack* recievedMsg) {
                 if(destIsNeighbor(recievedMsg)) {
                         dbg(NEIGHBOR_CHANNEL, "\tDeliver Message to Destination\n");
                         call Sender.send(sendPackage, recievedMsg->dest);
@@ -295,6 +294,7 @@ implementation {
                 return 0;
         }
 
+        //  Used for neighbor discovery, sends a Ping w/ TTL of 1 to AM_BROADCAST_ADDR.
         void scanNeighbors() {
                 nodeSeq++;
                 makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, nodeSeq, "Looking-4-Neighbors", PACKET_MAX_PAYLOAD_SIZE);
@@ -302,7 +302,7 @@ implementation {
         }
 
 //why packlogs and not neighborlist
-        void clearNeighbors() {
+        void clearNeighbors(int mod) {
                 int size;
                 size = call NeighborList.size();
                 while (size > 1) {
