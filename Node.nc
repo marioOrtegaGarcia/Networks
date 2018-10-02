@@ -252,10 +252,10 @@ implementation {
                                 stored = call PackLogs.get(i);
                                 if (stored.src == payload->src && stored.seq <= payload->seq) {
                                         return 1;
-                                        dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) Seen Message:%s\n", payload->src, payload->dest, payload->payload);
                                 }
                         }
                 }
+                dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) NOT Seen Message:%s\n", payload->src, payload->dest, payload->payload);
                 return 0;
         }
 
