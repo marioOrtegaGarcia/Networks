@@ -254,6 +254,7 @@ implementation {
                                 dbg(FLOODING_CHANNEL, "\t%i th Packet in the list\n", i);
                                 stored = call PackLogs.get(i);
                                 if (stored.src == payload->src && stored.seq <= payload->seq) {
+                                        dbg(FLOODING_CHANNEL, "\t%s\n", stored.payload);
                                         return 1;
                                 }
                         }
