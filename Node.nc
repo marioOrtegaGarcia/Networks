@@ -30,7 +30,7 @@ module Node {
 
         uses interface List <pack> as PackLogs;
 
-        uses interface Hashmap <uint16_t> as NeighborList;
+        uses interface List <uint16_t> as NeighborList;
 
         uses interface Random as Random;
 
@@ -281,23 +281,15 @@ implementation {
         //  sends message to all known neighbors in neighbor list; if list is empty, forwards to everyone within range using AM_BROADCAST_ADDR.
         void relayToNeighbors() {
                 int i, size;
-                size = call NeighborList.size();
-                uint32_t keys[size];
-                //uint16_t *key;
                 dbg(NEIGHBOR_CHANNEL, "\tTrynna Forward To Neighbors\n");
 
                 if(!call NeighborList.isEmpty()) {
-                        //size = call NeighborList.size();
-
-                        // Get Keys returns an array of all the keys in the hash table, therefore we should save all the keys then iterate tr
-                        //*key = (uint16_t) call NeighborList.getKeys();
-                        keys = call NeighborList.getKeys();
+                        size = call NeighborList.size();
                         for(i = 0; i < size; i++) {
                                 /**********FOR LATER************
                                  * Figure out how to exclude original sender
                                  */
-                                call Sender.send(sendPackage, keys[i]);
-                                //key++;
+                                call Sender.send(sendPackage, call NeighborList.get(i));
                         }
                 } else {
                         call Sender.send(sendPackage, AM_BROADCAST_ADDR);
