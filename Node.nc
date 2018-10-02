@@ -41,9 +41,7 @@ implementation {
 
         pack sendPackage;
         uint16_t nodeSeq = 0;
-        uint16_t discoveryCount = 0;
         //DVRTable table;
-        uint8_t MAX_AGE = 3;
 
         //  Here we can lis all the neighbors for this mote
         //  We getting an error with neighbors
@@ -75,9 +73,7 @@ implementation {
         //  This function is ran after t0 Milliseconds the node is alive, and fires every dt seconds.
         event void Timer.fired() {
                 // We might wanna remove this since the timer fires fro every 25 seconds to 35 Seconds
-                ++discoveryCount;
-                if((discoveryCount % 3) == 0)
-                        clearNeighbors();
+                clearNeighbors();
                 scanNeighbors();
                 //dbg(GENERAL_CHANNEL, "\tTimer Fired!\n");
         }
