@@ -236,7 +236,7 @@ implementation {
                 pack loggedPack;
 
                 //if packet log isnt empty and contains the src key
-                if(call PackLogs.size() == PackLogs->MAX_SIZE) {
+                if(call PackLogs.size() == PackLogs.MAX_SIZE) {
                         //remove old key value pair and insert new one
                         call PackLogs.popfront();
                 }
