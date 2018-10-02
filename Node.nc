@@ -95,7 +95,7 @@ implementation {
                 recievedMsg = (pack *)payload;
 
                 if (len == sizeof(pack)) {
-
+                        dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Recieved\n", recievedMsg->src, recievedMsg->dest);
                         //  Dead Packet: Timed out
                         if (recievedMsg->TTL == 0) {
                                 //dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Dead of old age\n", recievedMsg->src, recievedMsg->dest);
