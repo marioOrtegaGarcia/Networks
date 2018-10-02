@@ -244,12 +244,12 @@ implementation {
 
         bool hasSeen(pack* payload) {
                 pack stored;
-                int i;
-
+                int i, size;
+                size = call PackLogs.size();
                 dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) S_Checking Message:%s\n", payload->src, payload->dest, payload->payload);
-                if(!call PackLogs.isEmpty()) {
+                if(size > 0) {
                         dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) PackLogs not Empty:%s\n", payload->src, payload->dest, payload->payload);
-                        for (i = 0; i < call PackLogs.size(); i++) {
+                        for (i = 0; i < size; i++) {
                                 stored = call PackLogs.get(i);
                                 if (stored.src == payload->src && stored.seq <= payload->seq) {
                                         return 1;
