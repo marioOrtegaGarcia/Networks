@@ -150,7 +150,7 @@ def main():
     s.runTime(20);
     s.ping(1, 10, "Ka-Chao!");
     s.runTime(10);
-    s.ping(1, 19, "Tralalalala");
+    s.ping(1, 11, "Tralalalala");
     s.runTime(10);
     #s.neighborDMP(6);
 
