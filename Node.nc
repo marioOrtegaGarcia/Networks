@@ -35,13 +35,15 @@ module Node {
         uses interface Random as Random;
 
         uses interface Timer<TMilli> as Timer;
+
+        uses interface DVRTable as Table;
 }
 
 implementation {
 
         pack sendPackage;
         uint16_t nodeSeq = 0;
-        DVRTable table;
+        //DVRTable table;
 
         //  Here we can lis all the neighbors for this mote
         //  We getting an error with neighbors
