@@ -249,7 +249,7 @@ implementation {
                 //dbg(FLOODING_CHANNEL, "\t%i Packets in the list\n", size);
                 //dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) S_Checking Message:%s\n", payload->src, payload->dest, payload->payload);
                 if(size > 0) {
-                        dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) PackLogs not Empty:%s\n", payload->src, payload->dest, payload->payload);
+                        //dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) PackLogs not Empty:%s\n", payload->src, payload->dest, payload->payload);
                         for (i = 0; i < size; i++) {
                                 //dbg(FLOODING_CHANNEL, "\t%i th Packet in the list\n", i);
                                 stored = call PackLogs.get(i);
