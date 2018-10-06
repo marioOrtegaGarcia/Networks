@@ -1,0 +1,7 @@
+read 3.3.2
+
+*****DVRTable can be added to payload through memcpy()*****
+
+CONDITIONS TO SEND ROUTING UPDATE:
+  * periodic update - every so often
+  * triggered update - when node notices a link failure or a neighbor causes it to change one of its routes. Can detect failure if periodic update is not received for X cycles.
