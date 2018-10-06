@@ -1,7 +1,7 @@
 
 
 generic module DVRTable((typedef t,int h, int n){
-     provides interface DVRTable;
+     provides interface DVRTable<t>;
 }
 
 implementation{
