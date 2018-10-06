@@ -5,8 +5,6 @@ generic module DVRTableC(typedef t){
 }
 
 implementation{
-     const uint8_t MAX_DIST = h;
-
      typedef struct DVRtouple{
         uint8_t dest;
         uint8_t dist;
@@ -14,9 +12,6 @@ implementation{
      }DVRtouple;
 
      DVRtouple table[19];
-
-
-
 
      command void DVRTable.insert(uint8_t dest, uint8_t cost, uint8_t nextHop){
           //input data to a touple
