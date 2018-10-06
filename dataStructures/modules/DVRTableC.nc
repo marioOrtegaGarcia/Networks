@@ -1,20 +1,19 @@
 
 
-generic module DVRTableC(typedef t,int h, int n){
+generic module DVRTableC(typedef t){
      provides interface DVRTable<t>;
 }
 
 implementation{
      const uint8_t MAX_DIST = h;
-     const uint8_t DVR_MAX_SIZE = n;
 
      typedef struct DVRtouple{
-        t dest;
-        t dist;
-        t nextHop;
+        uint8_t dest;
+        uint8_t dist;
+        uint8_t nextHop;
      }DVRtouple;
 
-     DVRtouple table[DVR_MAX_SIZE];
+     DVRtouple table[19];
 
 
 
