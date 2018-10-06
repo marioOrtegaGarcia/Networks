@@ -19,6 +19,7 @@ implementation{
      command void DVRTable.initialize(){
           int i = 0;
           for(i = 0; i < 19; i++){
+                  // TODO POTENTIAL BUG BUG BUG BUG BUG BUG BUG BUG BUG BUG
                   table[i].dest         = (uint8_t)NULL;
                   table[i].cost         = MAX_HOP;
                   table[i].nextHop      = (uint8_t)NULL;
