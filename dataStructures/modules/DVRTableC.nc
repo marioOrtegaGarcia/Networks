@@ -1,20 +1,27 @@
 
 
-generic module DVRTable((typedef t,int h, int n){
+generic module DVRTableC((typedef t,int h, int n){
      provides interface DVRTable<t>;
 }
 
 implementation{
      const uint8_t MAX_DIST = h;
-     const uint8_t MAX_NODE_ID = n;
+     const uint8_t DVR_MAX_SIZE = n;
 
-     typedef nx_struct DVRTable{
-       //Array length 255, each element should directly correspond to a matching nodeid
-       t nodeIDs[MAX_NODE_ID][3];
-     }DVRtable;
+     typedef struct DVRtouple{
+        t dest;
+        t dist;
+        t nextHop;
+     }hashmapEntry;
 
-     command void DVRTable.insert(uint8_t cost, uint8_t dist, uint8_t nextHop){
+     DVRtouple table[DVR_MAX_SIZE];
 
+
+
+
+     command void DVRTable.insert(uint8_t dest, uint8_t cost, uint8_t nextHop){
+          //input data to a touple
+          DVRtouple input = {dest, cost, nextHop};
      }
 
      command void remove(uint8_t dest){
