@@ -18,9 +18,11 @@ implementation{
 
      command void DVRTable.initialize(){
           int i = 0;
-          DVRtouple temp = {NULL, MAX_HOP, NULL};
-          for(i = 0; i < 19; i++)
-                  table[i] = temp;
+          for(i = 0; i < 19; i++){
+                  table[i].dest         = NULL;
+                  table[i].cost         = MAX_HOP;
+                  table[i].nextHop      = NULL;
+          }
      }
 
      command void DVRTable.insert(uint8_t dest, uint8_t cost, uint8_t nextHop){
