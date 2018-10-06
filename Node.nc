@@ -229,14 +229,14 @@ implementation {
                         //remove old key value pair and insert new one
                         call PackLogs.popfront();
                 }
-                logPack(payload);
+                //logPack(payload);
                 makePack(&loggedPack, payload->src, payload->dest, payload->TTL, payload->protocol, payload->seq, (uint8_t*) payload->payload, sizeof(pack));
                 call PackLogs.pushback(loggedPack);
 
                 if (payload->protocol == PROTOCOL_PING) {
-                   dbg(FLOODING_CHANNEL, "\tPackage(%d,%d)---Ping: Updated Seen Packs List\n", payload->src, payload->dest);
+                   //dbg(FLOODING_CHANNEL, "\tPackage(%d,%d)---Ping: Updated Seen Packs List\n", payload->src, payload->dest);
                    } else if (payload->protocol == PROTOCOL_PINGREPLY) {
-                   dbg(FLOODING_CHANNEL, "\tPackage(%d,%d)~~~Ping Reply: Updated Seen Packs List\n", payload->src, payload->dest);
+                   //dbg(FLOODING_CHANNEL, "\tPackage(%d,%d)~~~Ping Reply: Updated Seen Packs List\n", payload->src, payload->dest);
                    } else {
 
                    }
