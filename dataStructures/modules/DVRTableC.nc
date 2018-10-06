@@ -12,7 +12,7 @@ implementation{
         t dest;
         t dist;
         t nextHop;
-     }hashmapEntry;
+     }DVRtouple;
 
      DVRtouple table[DVR_MAX_SIZE];
 
