@@ -41,7 +41,7 @@ implementation {
 
         pack sendPackage;
         uint16_t nodeSeq = 0;
-        //DVRTable table;
+        DVRTable table;
 
         //  Here we can lis all the neighbors for this mote
         //  We getting an error with neighbors
@@ -55,6 +55,7 @@ implementation {
         bool destIsNeighbor(pack* recievedMsg);
         void scanNeighbors();
         void clearNeighbors();
+        void sendTable();
 
         //  Node boot time calls
         event void Boot.booted(){
@@ -313,6 +314,10 @@ implementation {
                         call NeighborList.popfront();
                         size--;
                 }
+        }
+
+        void sendTable() {
+
         }
 
 
