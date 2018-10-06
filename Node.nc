@@ -277,7 +277,7 @@ implementation {
                         dbg(NEIGHBOR_CHANNEL, "\tDeliver Message to Destination\n");
                         call Sender.send(sendPackage, recievedMsg->dest);
                 } else {
-                        dbg(NEIGHBOR_CHANNEL, "\tTrynna Forward To Neighbors\n");
+                        //dbg(NEIGHBOR_CHANNEL, "\tTrynna Forward To Neighbors\n");
                         call Sender.send(sendPackage, AM_BROADCAST_ADDR);
                 }
         }
