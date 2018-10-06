@@ -1,6 +1,6 @@
 
 
-generic module DVRTableC((typedef t,int h, int n){
+generic module DVRTableC(typedef t,int h, int n){
      provides interface DVRTable<t>;
 }
 
