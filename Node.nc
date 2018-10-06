@@ -36,7 +36,7 @@ module Node {
 
         uses interface Timer<TMilli> as Timer;
 
-        uses interface DVRTable as Table;
+        uses interface DVRTableC <uint8_t> as Table;
 }
 
 implementation {
