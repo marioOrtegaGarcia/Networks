@@ -386,7 +386,8 @@ implementation {
                 dbg(GENERAL_CHANNEL,"TRYING TO Loop through sendDVRTable: NeighborList\n");
                 for(i = 0; i < call NeighborList.size(); ++i) {
                         dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MAKING DV PACK\n");
-                        makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
+                        dbg(GENERAL_CHANNEL, "TRYING TO sendDVRTable: sending to neighbor ", call NeighborList.get(i));
+                        makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, (uint8_t*)payload, PACKET_MAX_PAYLOAD_SIZE);
                         dbg(GENERAL_CHANNEL,"sendDVRTable:FINISHED DV PACK\n");
                         call Sender.send(sendPackage, call NeighborList.get(i));
                 }
