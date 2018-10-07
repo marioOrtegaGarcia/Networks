@@ -345,9 +345,9 @@ implementation {
              int i = 0;
              for(i = 0; i < 19; i++){
                      // TODO POTENTIAL BUG BUG BUG BUG BUG BUG BUG BUG BUG BUG
-                     DVTable->table[i]->dest         = 0;
-                     DVTable->table[i]->cost         = MAX_HOP;
-                     DVTable->table[i]->nextHop      = 0;
+                     DVTable->table[i].dest         = 0;
+                     DVTable->table[i].cost         = MAX_HOP;
+                     DVTable->table[i].nextHop      = 0;
              }
         }
 
@@ -356,9 +356,9 @@ implementation {
              int i;
              for(i = 0; i < 19; ++i) {
                   if(table[i]->dest == 0){
-                       DVTable->table[i]->dest = dest;
-                       DVTable->table[i]->cost = cost;
-                       DVTable->table[i]->nextHop = nextHop;
+                       DVTable->table[i].dest = dest;
+                       DVTable->table[i].cost = cost;
+                       DVTable->table[i].nextHop = nextHop;
                   }
              }
         }
@@ -367,9 +367,9 @@ implementation {
              int i;
                 for(i = 0; i < 19; i++) {
                         if(table[i]->dest  == dest) {
-                                DVTable->table[i]->dest = 0;
-                                DVTable->table[i]->cost = MAX_HOP;
-                                DVTable->table[i]->nextHop = 0;
+                                DVTable->table[i].dest = 0;
+                                DVTable->table[i].cost = MAX_HOP;
+                                DVTable->table[i].nextHop = 0;
                         }
                 }
         }
