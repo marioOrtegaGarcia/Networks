@@ -75,7 +75,7 @@ implementation {
                 call AMControl.start();
 
                 // t0 Timer start time, dt Timer interval time
-                t0 = 500 + call Random.rand32() % 2000;
+                t0 = 500 + call Random.rand32() % 1000;
                 dt = 25000 + (call Random.rand32() % 10000);
                 call Timer.startPeriodicAt(t0, dt);
 
@@ -331,6 +331,15 @@ implementation {
 
 
         }
+
+
+
+
+
+
+
+
+
         void initialize(){
              int i = 0;
              for(i = 0; i < 19; i++){
