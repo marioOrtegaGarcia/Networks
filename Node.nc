@@ -36,13 +36,21 @@ module Node {
 
         uses interface Timer<TMilli> as Timer;
 
-        uses interface DVRTableC <uint8_t> as Table;
+        //uses interface DVRTableC <uint8_t> as Table;
 }
 
 implementation {
 
         pack sendPackage;
         uint16_t nodeSeq = 0;
+
+        typedef struct DVRtouple{
+           uint8_t dest;
+           uint8_t cost;
+           uint8_t nextHop;
+        }DVRtouple;
+
+        DVRtouple table[19];
         //DVRTable table;
 
         //  Here we can lis all the neighbors for this mote

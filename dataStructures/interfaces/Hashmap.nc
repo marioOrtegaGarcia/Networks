@@ -4,7 +4,7 @@
  *
  * @author UCM ANDES Lab
  * @date   2013/09/03
- * 
+ *
  */
 
 interface Hashmap<t>{
