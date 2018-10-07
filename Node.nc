@@ -67,7 +67,7 @@ implementation {
         bool destIsNeighbor(pack* recievedMsg);
         void scanNeighbors();
         void clearNeighbors();
-        void sendDVRTable()''
+        void sendDVRTable();
 
         //  Node boot time calls
         event void Boot.booted(){
