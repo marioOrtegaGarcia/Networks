@@ -370,12 +370,12 @@ implementation {
 
         //void *memcpy(void *str1, const void *str2, size_t n)
         void sendDVRTable() {
-                 void* payload;
+                void* payload;
                 int i;
 
                 dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MEMCPY\n");
                 dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: Size of Table is %d\n", sizeof(table));
-                memcpy((void*) payload, (void*)table, sizeof(table)*2);
+                memcpy((void*) payload, (void*)table, sizeof(table));
                 dbg(GENERAL_CHANNEL,"TRYING TO Loop through sendDVRTable: NeighborList\n");
                 for(i = 0; i < call NeighborList.size(); ++i){
                      makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
