@@ -43,6 +43,7 @@ implementation {
 
         pack sendPackage;
         uint16_t nodeSeq = 0;
+        uint8_t MAX_HOP = 18;
 
         typedef struct DVRtouple {
            uint8_t dest;
@@ -356,10 +357,9 @@ implementation {
              int i = 0;
                 for(i = 0; i < 19; i++) {
                         if(table[i].dest  == dest) {
-                                table[i].dest = (uint8_t)NULL;
+                                table[i].dest = 0;
                                 table[i].cost = MAX_HOP;
-                                table[i].nextHop = (uint8_t)NULL;
-
+                                table[i].nextHop = 0;
                         }
                 }
         }
