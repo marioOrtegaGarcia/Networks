@@ -371,7 +371,7 @@ implementation {
         //void *memcpy(void *str1, const void *str2, size_t n)
         void sendDVRTable() {
                 void* payload;
-                payload = malloc (sizeof(table))
+                payload = malloc (sizeof(table));
                 int i;
 
                 dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MEMCPY\n");
