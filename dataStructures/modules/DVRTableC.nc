@@ -35,7 +35,7 @@ implementation{
           int i = 0;
              for(i = 0; i < 19; i++) {
                      if(table[i].dest  == dest) {
-                             table[i].dest = NULL;
+                             table[i].dest = (uint8_t)NULL;
                              table[i].cost = MAX_HOP;
                              table[i].nextHop = (uint8_t)NULL;
 
@@ -43,9 +43,9 @@ implementation{
              }
      }
 
-     command void clear(){
+     command void DVRTable.clear(){
              int i = 0;
-             DVRtouple temp = {NULL, MAX_HOP, NULL};
+             DVRtouple temp = {(uint8_t)NULL, MAX_HOP, (uint8_t)NULL};
              for(i = 0; i < 19; i++)
                      table[i] = temp;
      }
