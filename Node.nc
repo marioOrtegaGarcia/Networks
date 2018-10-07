@@ -46,14 +46,14 @@ implementation {
         uint8_t MAX_HOP = 18;
         bool fired = FALSE;
 
-        typedef struct DVRtable {
 
-             typedef struct DVRtouple {
-                uint8_t dest;
-                uint8_t cost;
-                uint8_t nextHop;
-             } DVRtouple;
-                
+        typedef struct DVRtouple {
+           uint8_t dest;
+           uint8_t cost;
+           uint8_t nextHop;
+        } DVRtouple;
+
+        typedef struct DVRtable {
                 DVRtouple* table[19];
         } DVRtable;
 
