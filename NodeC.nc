@@ -27,7 +27,7 @@ implementation {
 
     components new ListC(pack, 64) as PackLogsC;
     components new ListC(uint16_t, 64) as NeighborListC;
-    components new DVRTableC(uint8_t) as DVRTableC;
+    components new DVRTableC(uint8_t) as TableC;
     /*
      * Testing timer format from online Presentation
      * We need to initiate unique timers so the right node fires.
@@ -43,7 +43,7 @@ implementation {
 
     Node.PackLogs -> PackLogsC;
     Node.NeighborList -> NeighborListC;
-    Node.DVRTable -> DVRTableC;
+    Node.Table -> TableC;
 
     components ActiveMessageC;
     Node.AMControl -> ActiveMessageC;
