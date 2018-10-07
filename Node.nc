@@ -339,9 +339,9 @@ implementation {
              int i = 0;
              for(i = 0; i < 19; i++){
                      // TODO POTENTIAL BUG BUG BUG BUG BUG BUG BUG BUG BUG BUG
-                     table[i].dest         = 0;
-                     table[i].cost         = MAX_HOP;
-                     table[i].nextHop      = 0;
+                     table[i]->dest         = 0;
+                     table[i]->cost         = MAX_HOP;
+                     table[i]->nextHop      = 0;
              }
         }
 
@@ -351,7 +351,7 @@ implementation {
              DVRtouple input = {dest, cost, nextHop};
 
              for(i = 0; i < 19; ++i){
-                  if(table[i].dest == 0){
+                  if(table[i]->dest == 0){
                        table[i] = input;
                   }
              }
@@ -360,10 +360,10 @@ implementation {
         void removeFromTable(uint8_t dest){
              int i = 0;
                 for(i = 0; i < 19; i++) {
-                        if(table[i].dest  == dest) {
-                                table[i].dest = 0;
-                                table[i].cost = MAX_HOP;
-                                table[i].nextHop = 0;
+                        if(table[i]->dest  == dest) {
+                                table[i]->dest = 0;
+                                table[i]->cost = MAX_HOP;
+                                table[i]->nextHop = 0;
                         }
                 }
         }
