@@ -382,7 +382,7 @@ implementation {
                 payload = malloc(sizeof(DVTable));
                 dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MEMCPY\n");
                 dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: Size of Table is %d\n", sizeof(DVTable));
-                memcpy((void*)payload, (void*)DVTable, sizeof(DVTable));
+                memcpy(&payload, &DVTable, sizeof(DVTable));
                 dbg(GENERAL_CHANNEL,"TRYING TO Loop through sendDVRTable: NeighborList\n");
                 for(i = 0; i < call NeighborList.size(); ++i) {
                         dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MAKING DV PACK\n");
