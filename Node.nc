@@ -89,7 +89,7 @@ implementation {
                 clearNeighbors();
                 scanNeighbors();
                 if (fired == TRUE ) {
-                        /* sendDVRTable(); */
+                        sendDVRTable();
                 } else {
                         fired = TRUE;
                 }
@@ -370,16 +370,13 @@ implementation {
 
         void sendDVRTable() {
                 void* payload; int i;
+                dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MEMCPY");
                 memcpy(payload, (void*)table, sizeof(table)+1);
-
+                dbg(GENERAL_CHANNEL,"TRYING TO Loop through sendDVRTable: NeighborList");
                 for(i = 0; i < call NeighborList.size(); ++i){
                      makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
-
+                     dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MAKING DV PACK");
                      call Sender.send(sendPackage, call NeighborList.get(i));
                 }
-
-
-
-
         }
 }
