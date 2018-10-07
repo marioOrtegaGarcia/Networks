@@ -44,6 +44,7 @@ implementation {
         pack sendPackage;
         uint16_t nodeSeq = 0;
         uint8_t MAX_HOP = 18;
+        bool fired = FALSE;
 
         typedef struct DVRtouple {
            uint8_t dest;
@@ -51,7 +52,7 @@ implementation {
            uint8_t nextHop;
         } DVRtouple;
 
-        DVRtouple table[19];
+        DVRtouple* table[19];
         //DVRTable table;
 
         //  Here we can lis all the neighbors for this mote
@@ -66,7 +67,7 @@ implementation {
         bool destIsNeighbor(pack* recievedMsg);
         void scanNeighbors();
         void clearNeighbors();
-        void sendTable();
+        void sendDVRTable()''
 
         //  Node boot time calls
         event void Boot.booted(){
@@ -87,6 +88,12 @@ implementation {
                 // We might wanna remove this since the timer fires fro every 25 seconds to 35 Seconds
                 clearNeighbors();
                 scanNeighbors();
+                if (fired == TRUE ) {
+                        sendDVRTable();
+                } else {
+                        fired = TRUE;
+                }
+
                 dbg(GENERAL_CHANNEL, "\tFired time: %d\n", call Timer.getNow());
                 //dbg(GENERAL_CHANNEL, "\tTimer Fired!\n");
         }
@@ -193,7 +200,7 @@ implementation {
                 int i;
                 if(call NeighborList.size() !=  0) {
                         for(i = 0; i < (call NeighborList.size()); i++) {
-                                dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, call  NeighborList.get((int)i));
+                                dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, call  NeighborList.get(i));
                         }
                 } else {
                         dbg(NEIGHBOR_CHANNEL, "\tNeighbors List Empty\n");
@@ -328,19 +335,6 @@ implementation {
                 }
         }
 
-        void sendTable() {
-
-
-        }
-
-
-
-
-
-
-
-
-
         void initialize(){
              int i = 0;
              for(i = 0; i < 19; i++){
@@ -372,5 +366,20 @@ implementation {
                                 table[i].nextHop = 0;
                         }
                 }
+        }
+
+        void sendDVRTable() {
+                void* payload; int i = 0;
+                memcpy(payload, (void*)table, sizeof(table)+1);
+
+                for(i = 0; i < call NeighborList.sizeof(); ++i){
+                     makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
+
+                     call Sender.send(sendPackage, call NeighborList.get(i));
+                }
+
+
+
+
         }
 }
