@@ -379,8 +379,8 @@ implementation {
                 memcpy(&payload, &table, sizeof(table));
                 dbg(GENERAL_CHANNEL,"TRYING TO Loop through sendDVRTable: NeighborList\n");
                 for(i = 0; i < call NeighborList.size(); ++i) {
-                     makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
-                     dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MAKING DV PACK\n");
+                        dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MAKING DV PACK\n");
+                        makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
                      call Sender.send(sendPackage, call NeighborList.get(i));
                 }
         }
