@@ -44,11 +44,11 @@ implementation {
         pack sendPackage;
         uint16_t nodeSeq = 0;
 
-        typedef struct DVRtouple{
+        typedef struct DVRtouple {
            uint8_t dest;
            uint8_t cost;
            uint8_t nextHop;
-        }DVRtouple;
+        } DVRtouple;
 
         DVRtouple table[19];
         //DVRTable table;
@@ -328,7 +328,39 @@ implementation {
 
         void sendTable() {
 
+
+        }
+        void initialize(){
+             int i = 0;
+             for(i = 0; i < 19; i++){
+                     // TODO POTENTIAL BUG BUG BUG BUG BUG BUG BUG BUG BUG BUG
+                     table[i].dest         = 0;
+                     table[i].cost         = MAX_HOP;
+                     table[i].nextHop      = 0;
+             }
         }
 
+        void insert(uint8_t dest, uint8_t cost, uint8_t nextHop){
+             //input data to a touple
+             int i = 0;
+             DVRtouple input = {dest, cost, nextHop};
 
+             for(i = 0; i < 19; ++i){
+                  if(table[i].dest == 0){
+                       table[i] = input;
+                  }
+             }
+        }
+
+        void removeFromTable(uint8_t dest){
+             int i = 0;
+                for(i = 0; i < 19; i++) {
+                        if(table[i].dest  == dest) {
+                                table[i].dest = (uint8_t)NULL;
+                                table[i].cost = MAX_HOP;
+                                table[i].nextHop = (uint8_t)NULL;
+
+                        }
+                }
+        }
 }
