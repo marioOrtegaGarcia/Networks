@@ -89,7 +89,7 @@ implementation {
                 clearNeighbors();
                 scanNeighbors();
                 if (fired == TRUE ) {
-                        sendDVRTable();
+                        /* sendDVRTable(); */
                 } else {
                         fired = TRUE;
                 }
@@ -348,7 +348,7 @@ implementation {
         void insert(uint8_t dest, uint8_t cost, uint8_t nextHop){
              //input data to a touple
              int i;
-             for(i = 0; i < 19; ++i){
+             for(i = 0; i < 19; ++i) {
                   if(table[i]->dest == 0){
                        table[i]->dest = dest;
                        table[i]->cost = cost;
