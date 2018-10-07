@@ -368,10 +368,13 @@ implementation {
                 }
         }
 
+        //void *memcpy(void *str1, const void *str2, size_t n)
         void sendDVRTable() {
-                void* payload; int i;
+                DVRtouple* payload;
+                int i;
+                
                 dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MEMCPY");
-                memcpy(payload, (void*)table, sizeof(table)+1);
+                memcpy((void*)payload, (void*)table, sizeof(table)+1);
                 dbg(GENERAL_CHANNEL,"TRYING TO Loop through sendDVRTable: NeighborList");
                 for(i = 0; i < call NeighborList.size(); ++i){
                      makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
