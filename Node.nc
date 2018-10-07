@@ -53,9 +53,9 @@ implementation {
            uint8_t nextHop;
         } DVRtouple;
 
-        typedef struct DVRtable {
+        typedef struct DVRTable {
                 DVRtouple* table[19];
-        } DVRtable;
+        } DVRTable;
 
         DVRTable* DVTable;
 
