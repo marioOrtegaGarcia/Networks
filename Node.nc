@@ -46,13 +46,18 @@ implementation {
         uint8_t MAX_HOP = 18;
         bool fired = FALSE;
 
-        typedef struct DVRtouple {
-           uint8_t dest;
-           uint8_t cost;
-           uint8_t nextHop;
-        } DVRtouple;
+        typedef struct DVRtable {
 
-        DVRtouple* table[19];
+             typedef struct DVRtouple {
+                uint8_t dest;
+                uint8_t cost;
+                uint8_t nextHop;
+             } DVRtouple;
+                
+                DVRtouple* table[19];
+        } DVRtable;
+
+
         //DVRTable table;
 
         //  Here we can lis all the neighbors for this mote
@@ -381,7 +386,8 @@ implementation {
                 for(i = 0; i < call NeighborList.size(); ++i) {
                         dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MAKING DV PACK\n");
                         makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
-                     call Sender.send(sendPackage, call NeighborList.get(i));
+                        dbg(GENERAL_CHANNEL,"sendDVRTable:FINISHED DV PACK\n");
+                        call Sender.send(sendPackage, call NeighborList.get(i));
                 }
         }
 }
