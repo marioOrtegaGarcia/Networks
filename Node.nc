@@ -354,7 +354,7 @@ implementation {
              //input data to a touple
              int i;
              for(i = 0; i < 19; ++i) {
-                  if(table[i]->dest == 0) {
+                  if(DVTable->table[i]->dest == 0) {
                        DVTable->table[i]->dest = dest;
                        DVTable->table[i]->cost = cost;
                        DVTable->table[i]->nextHop = nextHop;
@@ -364,11 +364,12 @@ implementation {
 
         void removeFromTable(DVRTable* DVTable, uint8_t dest){
              int i;
+             DVRTable* temp = DVTable;
                 for(i = 0; i < 19; i++) {
-                        if(table[i]->dest  == dest) {
-                                DVTable->table[i]->dest = 0;
-                                DVTable->table[i]->cost = MAX_HOP;
-                                DVTable->table[i]->nextHop = 0;
+                        if(temp->table[i]->dest  == dest) {
+                                temp->table[i]->dest = 0;
+                                temp->table[i]->cost = MAX_HOP;
+                                temp->table[i]->nextHop = 0;
                         }
                 }
         }
