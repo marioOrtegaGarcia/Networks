@@ -57,6 +57,7 @@ implementation {
                 DVRtouple* table[19];
         } DVRtable;
 
+        DVRTable DVTable;
 
         //DVRTable table;
 
@@ -344,9 +345,9 @@ implementation {
              int i = 0;
              for(i = 0; i < 19; i++){
                      // TODO POTENTIAL BUG BUG BUG BUG BUG BUG BUG BUG BUG BUG
-                     table[i]->dest         = 0;
-                     table[i]->cost         = MAX_HOP;
-                     table[i]->nextHop      = 0;
+                     DVTable.table[i]->dest         = 0;
+                     DVTable.table[i]->cost         = MAX_HOP;
+                     DVTable.table[i]->nextHop      = 0;
              }
         }
 
@@ -355,9 +356,9 @@ implementation {
              int i;
              for(i = 0; i < 19; ++i) {
                   if(table[i]->dest == 0){
-                       table[i]->dest = dest;
-                       table[i]->cost = cost;
-                       table[i]->nextHop = nextHop;
+                       DVTable.table[i]->dest = dest;
+                       DVTable.table[i]->cost = cost;
+                       DVTable.table[i]->nextHop = nextHop;
                   }
              }
         }
@@ -366,9 +367,9 @@ implementation {
              int i;
                 for(i = 0; i < 19; i++) {
                         if(table[i]->dest  == dest) {
-                                table[i]->dest = 0;
-                                table[i]->cost = MAX_HOP;
-                                table[i]->nextHop = 0;
+                                DVTable.table[i]->dest = 0;
+                                DVTable.table[i]->cost = MAX_HOP;
+                                DVTable.table[i]->nextHop = 0;
                         }
                 }
         }
@@ -378,10 +379,10 @@ implementation {
                 void* payload;
                 int i;
 
-                payload = malloc(sizeof(table));
+                payload = malloc(sizeof(DVTable));
                 dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MEMCPY\n");
                 dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: Size of Table is %d\n", sizeof(table));
-                memcpy(&payload, &table, sizeof(table));
+                memcpy(&payload, &DVTable, sizeof(DVTable));
                 dbg(GENERAL_CHANNEL,"TRYING TO Loop through sendDVRTable: NeighborList\n");
                 for(i = 0; i < call NeighborList.size(); ++i) {
                         dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MAKING DV PACK\n");
