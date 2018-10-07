@@ -347,18 +347,18 @@ implementation {
 
         void insert(uint8_t dest, uint8_t cost, uint8_t nextHop){
              //input data to a touple
-             int i = 0;
-             DVRtouple input = {dest, cost, nextHop};
-
+             int i;
              for(i = 0; i < 19; ++i){
                   if(table[i]->dest == 0){
-                       table[i] = input;
+                       table[i]->dest = dest;
+                       table[i]->cost = cost;
+                       table[i]->nextHop = nextHop;
                   }
              }
         }
 
         void removeFromTable(uint8_t dest){
-             int i = 0;
+             int i;
                 for(i = 0; i < 19; i++) {
                         if(table[i]->dest  == dest) {
                                 table[i]->dest = 0;
@@ -369,10 +369,10 @@ implementation {
         }
 
         void sendDVRTable() {
-                void* payload; int i = 0;
+                void* payload; int i;
                 memcpy(payload, (void*)table, sizeof(table)+1);
 
-                for(i = 0; i < call NeighborList.sizeof(); ++i){
+                for(i = 0; i < call NeighborList.size(); ++i){
                      makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
 
                      call Sender.send(sendPackage, call NeighborList.get(i));
