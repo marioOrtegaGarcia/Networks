@@ -374,7 +374,7 @@ implementation {
                 int i;
 
                 dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MEMCPY\n");
-                dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: Size of uint8_t is %d\n", sizeof(uint8_t);
+                dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: Size of uint8_t is %d\n", sizeof(int);
                 dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: Size of Table is %d\n", sizeof(table));
                 memcpy((void*) payload, (void*)table, sizeof(table));
                 dbg(GENERAL_CHANNEL,"TRYING TO Loop through sendDVRTable: NeighborList\n");
