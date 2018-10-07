@@ -31,13 +31,13 @@ implementation{
           DVRtouple input = {dest, cost, nextHop};
      }
 
-     command void remove(uint8_t dest){
+     command void DVRTable.remove(uint8_t dest){
           int i = 0;
-             for(i = 0, i < 19, i++) {
+             for(i = 0; i < 19; i++) {
                      if(table[i].dest  == dest) {
                              table[i].dest = NULL;
                              table[i].cost = MAX_HOP;
-                             table[i].nextHop = NULL;
+                             table[i].nextHop = (uint8_t)NULL;
 
                      }
              }
