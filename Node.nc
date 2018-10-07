@@ -341,7 +341,7 @@ implementation {
                 }
         }
 
-        void initialize(DVRTable* DVTable) {
+        void initialize() {
              int i = 0;
              for(i = 0; i < 19; i++) {
                      DVTable->table[i]->dest         = 0;
@@ -350,7 +350,7 @@ implementation {
              }
         }
 
-        void insert(DVRTable* DVTable, uint8_t dest, uint8_t cost, uint8_t nextHop) {
+        void insert(uint8_t dest, uint8_t cost, uint8_t nextHop) {
              //input data to a touple
              int i;
              for(i = 0; i < 19; ++i) {
@@ -362,7 +362,7 @@ implementation {
              }
         }
 
-        void removeFromTable(DVRTable* DVTable, uint8_t dest){
+        void removeFromTable(uint8_t dest){
              int i;
              DVRTable* temp = DVTable;
                 for(i = 0; i < 19; i++) {
