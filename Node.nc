@@ -371,7 +371,7 @@ implementation {
                        */
                   }
              }
-        }
+
 
         void removeFromTable(uint8_t dest){
              initialize();
@@ -389,7 +389,7 @@ implementation {
                         }
                         */
                 }
-        }
+
 
         //void *memcpy(void *str1, const void *str2, size_t n)
         void sendDVRTable() {
