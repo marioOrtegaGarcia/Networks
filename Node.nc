@@ -379,7 +379,7 @@ implementation {
                 void* payload;
                 int i;
 
-                payload = malloc(sizeof(DVTable)));
+                payload = malloc(sizeof(DVTable));
                         dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MEMCPY\n");
                         dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: Size of Table is %d\n", sizeof(DVTable));
                 memcpy(&payload, &DVTable, sizeof(DVTable));
