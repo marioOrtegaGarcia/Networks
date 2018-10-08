@@ -390,7 +390,7 @@ implementation {
                         nodeSeq++;
                         makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, payload, sizeof(payload));
                                 dbg(GENERAL_CHANNEL,"sendDVRTable:FINISHED DV PACK\n");
-                        call Sender.send(sendPackage, sendPackage->dest);
+                        call Sender.send(sendPackage, sendPackage.dest);
                 }
         }
 }
