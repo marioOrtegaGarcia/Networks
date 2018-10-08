@@ -379,7 +379,7 @@ implementation {
                 void* payload;
                 int i;
 
-                payload = malloc(sizeof(DVTable));
+                payload = malloc(PACKET_MAX_PAYLOAD_SIZE);
                 dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MEMCPY\n");
                 dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: Size of Table is %d\n", sizeof(DVTable));
                 memcpy(&payload, &DVTable, sizeof(DVTable));
@@ -387,7 +387,7 @@ implementation {
                 for(i = 0; i < call NeighborList.size(); ++i) {
                         dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MAKING DV PACK\n");
                         dbg(GENERAL_CHANNEL, "TRYING TO sendDVRTable: sending to Neighbor %d \n", call NeighborList.get(i));
-                        makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, (void*)payload, sizeof(payload));
+                        makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, payload, sizeof(payload));
                         dbg(GENERAL_CHANNEL,"sendDVRTable:FINISHED DV PACK\n");
                         call Sender.send(sendPackage, call NeighborList.get(i));
                 }
