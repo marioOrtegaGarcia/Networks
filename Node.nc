@@ -45,6 +45,7 @@ implementation {
         uint16_t nodeSeq = 0;
         uint8_t MAX_HOP = 18;
         bool fired = FALSE;
+        uint8_t numroutes = 0;
 
 
         typedef struct DVRtouple {
@@ -74,6 +75,7 @@ implementation {
         void scanNeighbors();
         void clearNeighbors();
         void sendDVRTable();
+        void mergeRoute(uint8_t* newRoute);
 
         //  Node boot time calls
         event void Boot.booted(){
@@ -179,6 +181,10 @@ implementation {
                                  */
                                 relayToNeighbors(&sendPackage);
                                 return msg;
+                        }
+                        //LSP packet
+                        else if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV){
+                             mergeRoute((uint8_t*)recievedMsg->payload);
                         }
 
                         // If Packet get here we have not expected it and it will fail
@@ -426,6 +432,39 @@ implementation {
 
                                 //dbg(GENERAL_CHANNEL,"sendDVRTable:FINISHED DV PACK\n");
                         //call Sender.send(sendPackage, sendPackage.dest);
+
+                }
+
+                void mergeRoute(uint8_t* newRoute){
+                     int i;
+                     for(i = 0; i < 19; ++i){
+                          if(newRoute[i][0] == routing[i][0]){
+                               if(newRoute[i][1] + 1 < routing[i][1]){
+                                    //better route
+                                    break;
+                               }
+                               else if(newRoute[i][2] == routing[i][2]){
+                                    //metric for current nextHop may have changed
+                                    break;
+                               }
+                               else {
+                                    //route is irrelevant
+                                    return;
+                               }
+                          }
+                     }
+                     if(i == 19){
+                          //route hasnt been seen Before
+                          if(numroutes < 19){
+                               ++numroutes;
+                          }
+                          else {
+                               return;
+                          }
+                     }
+                     routing[i][0] = newRoute[i][0];
+                     routing[i][1] = newRoute[i][1] + 1;
+                     routing[i][2] = newRoute[i][2];
 
                 }
         }
