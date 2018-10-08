@@ -394,7 +394,7 @@ implementation {
                         sendPackage.TTL = 1;
                         sendPackage.seq = nodeSeq;
                         sendPackage.protocol = PROTOCOL_DV;
-                        memcpy(sendPackage.payload, DVTable, sizeof(DVRTable));
+                        memcpy(sendPackage.payload, DVTable, sizeof(DVTable));
 
                                 dbg(GENERAL_CHANNEL,"sendDVRTable:FINISHED DV PACK\n");
                         call Sender.send(sendPackage, sendPackage.dest);
