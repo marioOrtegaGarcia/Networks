@@ -397,7 +397,7 @@ implementation {
         //memcpy(payload, routes[TOS_NODE_ID], sizeof(routes));
         for(i = 0; i < call NeighborList.size(); ++i){
              dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MAKING DV PACK\n");
-             makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, routes, sizeof(routes));
+             makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, routing, sizeof(routing));
              call Sender.send(sendPackage, sendPackage.dest);
              dbg(GENERAL_CHANNEL,"sendDVRTable:FINISHED DV PACK\n");
         }
