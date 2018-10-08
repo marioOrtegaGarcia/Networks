@@ -187,8 +187,8 @@ implementation {
                                 relayToNeighbors(&sendPackage);
                                 return msg;
                         }
-                        //LSP packet
-                        else if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV){
+                        // Receiving DV Table
+                        if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV) {
                              mergeRoute((uint8_t*)recievedMsg->payload);
                         }
 
@@ -414,6 +414,7 @@ implementation {
         //memcpy(payload, routes[TOS_NODE_ID], sizeof(routes));
         for(i = 0; i < call NeighborList.size(); ++i){
              dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MAKING DV PACK\n");
+             nodeSeq++;
              makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, (uint8_t*)routing, sizeof(routing));
              call Sender.send(sendPackage, sendPackage.dest);
              dbg(GENERAL_CHANNEL,"sendDVRTable:FINISHED DV PACK\n");
