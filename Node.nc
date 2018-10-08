@@ -208,7 +208,7 @@ implementation {
         }
 
         //  This are functions we are going to be implementing in the future.
-        event void CommandHandler.printNeighbors(){
+        event void CommandHandler.printNeighbors() {
                 int i;
                 if(call NeighborList.size() !=  0) {
                         for(i = 0; i < (call NeighborList.size()); i++) {
@@ -219,7 +219,13 @@ implementation {
                 }
         }
 
-        event void CommandHandler.printRouteTable(){
+        event void CommandHandler.printRouteTable() {
+                int i;
+                dbg(GENERAL_CHANNEL, "\tRouting Table:\n");
+                dbg(GENERAL_CHANNEL, "\tDest\tHop\tCount:\n");
+                for (i = 0; i < 19; i++) {
+                        dbg(GENERAL_CHANNEL, "\t%d \t%d \t%d \n", routing[i][1], routing[i][2], routing[i][3]);
+                }
         }
 
         event void CommandHandler.printLinkState(){
