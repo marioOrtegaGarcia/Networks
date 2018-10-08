@@ -446,11 +446,11 @@ implementation {
                      int i;
                      for(i = 0; i < 19; ++i){
                           if(*(newRoute + (i * 3)) == routing[i][0]){
-                               if(newRoute[i][1] + 1 < routing[i][1]){
+                               if(*(newRoute + (i * 3 + 1)) + 1 < routing[i][1]){
                                     //better route
                                     break;
                                }
-                               else if(newRoute[i][2] == routing[i][2]){
+                               else if(*(newRoute + (i * 3 + 2)) == routing[i][2]){
                                     //metric for current nextHop may have changed
                                     break;
                                }
@@ -469,9 +469,9 @@ implementation {
                                return;
                           }
                      }
-                     routing[i][0] = newRoute[i][0];
-                     routing[i][1] = newRoute[i][1] + 1;
-                     routing[i][2] = newRoute[i][2];
+                     routing[i][0] = *(newRoute + (i * 3));
+                     routing[i][1] = *(newRoute + (i * 3 + 1)) + 1;
+                     routing[i][2] = *(newRoute + (i * 3 + 2));
 
                 }
         }
