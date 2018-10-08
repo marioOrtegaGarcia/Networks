@@ -58,6 +58,7 @@ implementation {
         } DVRTable;
 
         DVRTable* DVTable;
+        uint8_t routing[19][3];
         //DVRTable table;
 
         //  Here we can lis all the neighbors for this mote
@@ -343,9 +344,14 @@ implementation {
         void initialize() {
              int i = 0;
              for(i = 0; i < 19; i++) {
+                  routing[i][0] = 0;
+                  routing[i][1] = MAX_HOP;
+                  routing[i][2] = 0;
+                    /*
                      DVTable->table[i]->dest         = 0;
                      DVTable->table[i]->cost         = MAX_HOP;
                      DVTable->table[i]->nextHop      = 0;
+                     */
              }
         }
 
@@ -353,28 +359,50 @@ implementation {
              //input data to a touple
              int i;
              for(i = 0; i < 19; ++i) {
-                  if(DVTable->table[i]->dest == 0) {
+                  if(routing[i][0] == 0){
+                       routing[i][0] = dest;
+                       routing[i][1] = cost;
+                       routing[i][2] = nextHop;
+                  }
+                  /*if(DVTable->table[i]->dest == 0) {
                        DVTable->table[i]->dest = dest;
                        DVTable->table[i]->cost = cost;
                        DVTable->table[i]->nextHop = nextHop;
+                       */
                   }
              }
         }
 
         void removeFromTable(uint8_t dest){
+             initialize();
+             /*
              int i;
-             DVRTable* temp = DVTable;
+             //DVRTable* temp = DVTable;
+
                 for(i = 0; i < 19; i++) {
+
+
                         if(temp->table[i]->dest  == dest) {
                                 temp->table[i]->dest = 0;
                                 temp->table[i]->cost = MAX_HOP;
                                 temp->table[i]->nextHop = 0;
                         }
+                        */
                 }
         }
 
         //void *memcpy(void *str1, const void *str2, size_t n)
         void sendDVRTable() {
+        uint8_t* payload; int i;
+        //memcpy(payload, routes[TOS_NODE_ID], sizeof(routes));
+        for(i = 0; i < call NeighborList.size(); ++i){
+             dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MAKING DV PACK\n");
+             makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, routes, sizeof(routes));
+             call Sender.send(sendPackage, sendPackage.dest);
+             dbg(GENERAL_CHANNEL,"sendDVRTable:FINISHED DV PACK\n");
+        }
+
+               /*
                 void* payload;
                 int i;
 
@@ -387,17 +415,18 @@ implementation {
                                 dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MAKING DV PACK\n");
                                 dbg(GENERAL_CHANNEL, "TRYING TO sendDVRTable: sending to Neighbor %d \n", call NeighborList.get(i));
                         nodeSeq++;
-                        /* makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, DVTable, (uint8_t) sizeof(DVTable)); */
+                        makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, DVTable, (uint8_t) sizeof(DVTable));
 
-                        sendPackage.src = TOS_NODE_ID;
+                        /* sendPackage.src = TOS_NODE_ID;
                         sendPackage.dest = call NeighborList.get(i);
                         sendPackage.TTL = 1;
                         sendPackage.seq = nodeSeq;
                         sendPackage.protocol = PROTOCOL_DV;
-                        memcpy(sendPackage.payload, DVTable, sizeof(DVTable));
+                        memcpy(sendPackage.payload, DVTable, sizeof(DVRTable)); */
 
-                                dbg(GENERAL_CHANNEL,"sendDVRTable:FINISHED DV PACK\n");
-                        call Sender.send(sendPackage, sendPackage.dest);
+                                //dbg(GENERAL_CHANNEL,"sendDVRTable:FINISHED DV PACK\n");
+                        //call Sender.send(sendPackage, sendPackage.dest);
+
                 }
         }
 }
