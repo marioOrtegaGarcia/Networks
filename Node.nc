@@ -74,6 +74,9 @@ implementation {
         bool destIsNeighbor(pack* recievedMsg);
         void scanNeighbors();
         void clearNeighbors();
+        void initialize();
+        void insert(uint8_t dest, uint8_t cost, uint8_t nextHop);
+        void removeFromTable(uint8_t dest);
         void sendDVRTable();
         void mergeRoute(uint8_t* newRoute);
 
@@ -89,6 +92,8 @@ implementation {
                 call Timer.startPeriodicAt(t0, dt);
 
                 dbg(GENERAL_CHANNEL, "\tBooted\n");
+
+                initialize();
         }
 
         //  This function is ran after t0 Milliseconds the node is alive, and fires every dt seconds.

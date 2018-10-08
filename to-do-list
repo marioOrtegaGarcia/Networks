@@ -6,7 +6,7 @@ CONDITIONS TO SEND ROUTING UPDATE:
   * periodic update - every so often
   * triggered update - when node notices a link failure or a neighbor causes it to change one of its routes. Can detect failure if periodic update is not received for X cycles.
 
-  1. send table through payload
-  2. implement updateTable
+  1. send table through payload    - COMPLETE
+  2. implement updateTable         - COMPLETE
   3. incorporate dijkstras algo
   4. implement print table func
