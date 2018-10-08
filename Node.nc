@@ -58,14 +58,13 @@ implementation {
         } DVRTable;
 
         DVRTable* DVTable;
-
         //DVRTable table;
 
         //  Here we can lis all the neighbors for this mote
         //  We getting an error with neighbors
 
         //  Prototypes
-        void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
+        void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, void *payload, uint8_t length);
         void logPacket(pack* payload);
         bool hasSeen(pack* payload);
         void addNeighbor(pack* Neighbor);
@@ -234,7 +233,7 @@ implementation {
         event void CommandHandler.setAppClient(){
         }
 
-        void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t protocol, uint16_t seq, uint8_t* payload, uint8_t length){
+        void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t protocol, uint16_t seq, void* payload, uint8_t length){
                 Package->src = src;
                 Package->dest = dest;
                 Package->TTL = TTL;
@@ -388,7 +387,15 @@ implementation {
                                 dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MAKING DV PACK\n");
                                 dbg(GENERAL_CHANNEL, "TRYING TO sendDVRTable: sending to Neighbor %d \n", call NeighborList.get(i));
                         nodeSeq++;
-                        makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, (uint8_t)DVTable, (uint8_t) sizeof(DVTable));
+                        makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, DVTable, (uint8_t) sizeof(DVTable));
+
+                        /* sendPackage.src = TOS_NODE_ID;
+                        sendPackage.dest = call NeighborList.get(i);
+                        sendPackage.TTL = 1;
+                        sendPackage.seq = nodeSeq;
+                        sendPackage.protocol = PROTOCOL_DV;
+                        memcpy(sendPackage.payload, DVTable, sizeof(DVRTable)); */
+
                                 dbg(GENERAL_CHANNEL,"sendDVRTable:FINISHED DV PACK\n");
                         call Sender.send(sendPackage, sendPackage.dest);
                 }
