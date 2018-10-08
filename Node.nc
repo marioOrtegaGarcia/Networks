@@ -387,14 +387,14 @@ implementation {
                                 dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MAKING DV PACK\n");
                                 dbg(GENERAL_CHANNEL, "TRYING TO sendDVRTable: sending to Neighbor %d \n", call NeighborList.get(i));
                         nodeSeq++;
-                        makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, DVTable, (uint8_t) sizeof(DVTable));
+                        /* makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, DVTable, (uint8_t) sizeof(DVTable)); */
 
-                        /* sendPackage.src = TOS_NODE_ID;
+                        sendPackage.src = TOS_NODE_ID;
                         sendPackage.dest = call NeighborList.get(i);
                         sendPackage.TTL = 1;
                         sendPackage.seq = nodeSeq;
                         sendPackage.protocol = PROTOCOL_DV;
-                        memcpy(sendPackage.payload, DVTable, sizeof(DVRTable)); */
+                        memcpy(sendPackage.payload, DVTable, sizeof(DVRTable));
 
                                 dbg(GENERAL_CHANNEL,"sendDVRTable:FINISHED DV PACK\n");
                         call Sender.send(sendPackage, sendPackage.dest);
