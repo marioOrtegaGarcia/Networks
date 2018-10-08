@@ -441,10 +441,11 @@ implementation {
 
                 }
 
+                //function provided in book
                 void mergeRoute(uint8_t* newRoute){
                      int i;
                      for(i = 0; i < 19; ++i){
-                          if(newRoute[i][0] == routing[i][0]){
+                          if(*newRoute[i][0] == routing[i][0]){
                                if(newRoute[i][1] + 1 < routing[i][1]){
                                     //better route
                                     break;
