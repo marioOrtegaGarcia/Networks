@@ -188,8 +188,9 @@ implementation {
                                 return msg;
                         }
                         // Receiving DV Table
-                        if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV) {
+                        else if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV) {
                              mergeRoute((uint8_t*)recievedMsg->payload);
+                             return msg;
                         }
 
                         // If Packet get here we have not expected it and it will fail
