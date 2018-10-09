@@ -420,7 +420,7 @@ implementation {
         void sendTableToNeighbors() {
                 int i;
                 for (i = 0; i < call NeighborList.size(); i++)
-                        sendTable(call NeighborList.get(i));
+                        sendTableTo(call NeighborList.get(i));
         }
 
         //void *memcpy(void *str1, const void *str2, size_t n)
@@ -438,7 +438,7 @@ implementation {
                 for (i = 0; i < 19; i++) {
                         for (j = 0; j < 19; ++j) {
                                 // Dest are same and our Distance is larger
-                                if ((sharedTable[i][1]+1) < routing[j][1] && sharedTable[i][0] == routing[j][0]) {
+                                if ((sharedTable[i][1] + 1) < routing[j][1] && sharedTable[i][0] == routing[j][0]) {
                                         // Update Cost and Next Hop
                                         routing[j][1] = sharedTable[i][1] + 1;
                                         routing[j][2] = sharedTable[0][0];
