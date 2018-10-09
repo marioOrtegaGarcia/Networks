@@ -152,6 +152,7 @@ implementation {
                                 call Sender.send(sendPackage, AM_BROADCAST_ADDR);
 
                                 //signal CommandHandler.printNeighbors();
+                                signal CommandHandler.printRouteTable();
                                 return msg;
                         }
 
