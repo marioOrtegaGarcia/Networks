@@ -228,7 +228,7 @@ implementation {
 
         event void CommandHandler.printRouteTable() {
                 int i;
-                dbg(GENERAL_CHANNEL, "\tRouting Table:\n");
+                dbg(GENERAL_CHANNEL, "\t~~~~~~~~~~~~~Mote %d's Routing Table~~~~~~~~\n", TOS_NODE_ID);
                 dbg(GENERAL_CHANNEL, "\tDest\tHop\tCount:\n");
                 for (i = 0; i < 19; i++) {
                         dbg(GENERAL_CHANNEL, "\t%d \t%d \t%d \n", routing[i][1], routing[i][2], routing[i][3]);
