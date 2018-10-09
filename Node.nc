@@ -425,7 +425,7 @@ implementation {
 
         //void *memcpy(void *str1, const void *str2, size_t n)
         void sendTableTo(uint8_t dest) {
-                uint8_t* payload
+                uint8_t* payload;
                 nodeSeq++;
                 makePack(&sendPackage, TOS_NODE_ID, dest, 1, PROTOCOL_DV, nodeSeq, (uint8_t*)routing, sizeof(routing));
                 call Sender.send(sendPackage, dest);
