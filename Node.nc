@@ -369,17 +369,18 @@ implementation {
         */
 
         void initialize() {
-        // Setting default values for table
-             int i = 0;
-             for(i = 0; i < 19; i++) {
+                dbg(ROUTING_CHANNEL, "\tMOTE(%d) Initializing DVR Table");
+                //Setting the default values of the table
+                int i = 0;
+                // |     DVR Table Schema
+                // | Dest | Cost | Next Hop |
+                routing[i][0] = TOS_NODE_ID;
+                routing[i][1] = 0;
+                routing[i][2] = TOS_NODE_ID;
+                for(i = 0; i < 19; ++i) {
                   routing[i][0] = 0;
                   routing[i][1] = MAX_HOP;
                   routing[i][2] = 0;
-                    /*
-                     DVTable->table[i]->dest         = 0;
-                     DVTable->table[i]->cost         = MAX_HOP;
-                     DVTable->table[i]->nextHop      = 0;
-                     */
              }
         }
 
