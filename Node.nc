@@ -453,9 +453,11 @@ implementation {
                 void mergeRoute(uint8_t *newRoute){
                      int i;
                      for(i = 0; i < 19; ++i){
+                             dbg(GENERAL_CHANNEL, "Checking for Node: %d", i);
                           if(*(newRoute + (i * 3)) == routing[i][0]){
                                if(*(newRoute + (i * 3 + 1)) + 1 < routing[i][1]){
                                     //better route
+
                                     break;
                                }
                                else if(*(newRoute + (i * 3 + 2)) == routing[i][2]){
