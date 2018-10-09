@@ -80,7 +80,7 @@ implementation {
         void insert(uint8_t dest, uint8_t cost, uint8_t nextHop);
         void sendTableToNeighbors();
         void sendTableTo(uint8_t dest);
-        void mergeTables(uint8_t *sharedTable);
+        void mergeTables(uint8_t* sharedTable);
 
         void removeFromTable(uint8_t dest);
         void sendDVRTable();
@@ -431,17 +431,17 @@ implementation {
                 call Sender.send(sendPackage, dest);
         }
 
-        void mergeTables(uint8_t *sharedTable) {
+        void mergeTables(uint8_t* sharedTable) {
                 int i, j;
 
                 // Using Dijkstra's Algorithm to
                 for (i = 0; i < 19; i++) {
                         for (j = 0; j < 19; ++j) {
                                 // Dest are same and our Distance is larger
-                                if ((uint8_t)(sharedTable[i][1] + 1) < (uint8_t)routing[j][1] && (uint8_t)sharedTable[i][0] == (uint8_t)routing[j][0]) {
+                                if ((sharedTable[i][1] + 1) < routing[j][1] && sharedTable[i][0] == routing[j][0]) {
                                         // Update Cost and Next Hop
-                                        (uint8_t)routing[j][1] = (uint8_t)sharedTable[i][1] + 1;
-                                        (uint8_t)routing[j][2] = (uint8_t)sharedTable[0][0];
+                                        routing[j][1] = sharedTable[i][1] + 1;
+                                        routing[j][2] = sharedTable[0][0];
                                 }
                         }
                 }
