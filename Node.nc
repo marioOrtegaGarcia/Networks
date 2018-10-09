@@ -107,7 +107,7 @@ implementation {
                         fired = TRUE;
                 }
 
-                dbg(GENERAL_CHANNEL, "\tFired time: %d\n", call Timer.getNow());
+                //dbg(GENERAL_CHANNEL, "\tFired time: %d\n", call Timer.getNow());
                 //dbg(GENERAL_CHANNEL, "\tTimer Fired!\n");
         }
 
