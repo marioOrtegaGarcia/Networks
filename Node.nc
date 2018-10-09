@@ -379,7 +379,7 @@ implementation {
 
         void initialize() {
                 int i = 0;
-                dbg(ROUTING_CHANNEL, "\tMOTE(%d) Initializing DVR Table");
+                dbg(ROUTING_CHANNEL, "\tMOTE(%d) Initializing DVR Table\n");
                 //Setting the default values of the table
                 // |     DVR Table Schema
                 // | Dest | Cost | Next Hop |
@@ -394,7 +394,7 @@ implementation {
         }
 
         void clearTable() {
-                dbg(ROUTING_CHANNEL, "\tMOTE(%d) Clear DVR Table");
+                dbg(ROUTING_CHANNEL, "\tMOTE(%d) Clear DVR Table\n");
                 initialize();
         }
 
@@ -473,7 +473,7 @@ implementation {
                 void mergeRoute(uint8_t *newRoute){
                      int i;
                      for(i = 0; i < 19; ++i){
-                             dbg(GENERAL_CHANNEL, "Checking for Node: %d", i);
+                             dbg(ROUTING_CHANNEL, "Checking for Node: %d\n", i);
                              //Check if node is in table if not save to next open space
                           if(*(newRoute + (i * 3)) == routing[i][0]){
                                if(*(newRoute + (i * 3 + 1)) + 1 < routing[i][1]){
