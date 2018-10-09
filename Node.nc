@@ -438,10 +438,10 @@ implementation {
                 for (i = 0; i < 19; i++) {
                         for (j = 0; j < 19; ++j) {
                                 // Dest are same and our Distance is larger
-                                if ((sharedTable[i][1] + 1) < routing[j][1] && sharedTable[i][0] == routing[j][0]) {
+                                if ((uint8_t)(sharedTable[i][1] + 1) < (uint8_t)routing[j][1] && (uint8_t)sharedTable[i][0] == (uint8_t)routing[j][0]) {
                                         // Update Cost and Next Hop
-                                        routing[j][1] = sharedTable[i][1] + 1;
-                                        routing[j][2] = sharedTable[0][0];
+                                        (uint8_t)routing[j][1] = (uint8_t)sharedTable[i][1] + 1;
+                                        (uint8_t)routing[j][2] = (uint8_t)sharedTable[0][0];
                                 }
                         }
                 }
