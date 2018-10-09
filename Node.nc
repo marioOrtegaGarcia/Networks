@@ -74,12 +74,18 @@ implementation {
         bool destIsNeighbor(pack* recievedMsg);
         void scanNeighbors();
         void clearNeighbors();
+        //DV Table Functions
         void initialize();
+        void clearTable();
         void insert(uint8_t dest, uint8_t cost, uint8_t nextHop);
+        void sendTableToNeighbors();
+        void sendTableTo(uint8_t dest);
+        void mergeTables(uint8_t *sharedTable);
+
         void removeFromTable(uint8_t dest);
         void sendDVRTable();
         void mergeRoute(uint8_t* newRoute);
-        void clearTable();
+
 
         //  Node boot time calls
         event void Boot.booted(){
@@ -103,7 +109,7 @@ implementation {
                 clearNeighbors();
                 scanNeighbors();
                 if (fired == TRUE ) {
-                        sendDVRTable();
+                        sendTableToNeighbors();
                 } else {
                         fired = TRUE;
                 }
@@ -191,7 +197,7 @@ implementation {
                         }
                         // Receiving DV Table
                         else if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV) {
-                             mergeRoute((uint8_t*)recievedMsg->payload);
+                             mergeTables((uint8_t*)recievedMsg->payload);
                              return msg;
                         }
 
@@ -411,6 +417,37 @@ implementation {
                 }
         }
 
+        void sendTableToNeighbors() {
+                int i;
+                for (i = 0; i < call NeighborList.size(); i++)
+                        sendTable(call NeighborList.get(i));
+        }
+
+        //void *memcpy(void *str1, const void *str2, size_t n)
+        void sendTableTo(uint8_t dest) {
+                uint8_t* payload
+                nodeSeq++;
+                makePack(&sendPackage, TOS_NODE_ID, dest, 1, PROTOCOL_DV, nodeSeq, (uint8_t*)routing, sizeof(routing));
+                call Sender.send(sendPackage, dest);
+        }
+
+        void mergeTables(uint8_t *sharedTable) {
+                int i, j;
+
+                // Using Dijkstra's Algorithm to
+                for (i = 0; i < 19; i++) {
+                        for (j = 0; j < 19; ++j) {
+                                // Dest are same and our Distance is larger
+                                if ((sharedTable[i][1]+1) < routing[j][1] && sharedTable[i][0] == routing[j][0]) {
+                                        // Update Cost and Next Hop
+                                        routing[j][1] = sharedTable[i][1] + 1;
+                                        routing[j][2] = sharedTable[0][0];
+                                }
+                        }
+                }
+
+
+        }
 
         void removeFromTable(uint8_t dest){
              initialize();
@@ -432,17 +469,16 @@ implementation {
 
         //void *memcpy(void *str1, const void *str2, size_t n)
         void sendDVRTable() {
-        uint8_t* payload; int i;
-        //memcpy(payload, routes[TOS_NODE_ID], sizeof(routes));
-        for(i = 0; i < call NeighborList.size(); ++i){
-             //dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MAKING DV PACK\n");
-             nodeSeq++;
-             makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, (uint8_t*)routing, sizeof(routing));
-             call Sender.send(sendPackage, sendPackage.dest);
-             //dbg(GENERAL_CHANNEL,"sendDVRTable:FINISHED DV PACK\n");
-        }
-
-               /*
+                uint8_t* payload; int i;
+                //memcpy(payload, routes[TOS_NODE_ID], sizeof(routes));
+                for(i = 0; i < call NeighborList.size(); ++i){
+                        //dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MAKING DV PACK\n");
+                        nodeSeq++;
+                        makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, (uint8_t*)routing, sizeof(routing));
+                        call Sender.send(sendPackage, sendPackage.dest);
+                        //dbg(GENERAL_CHANNEL,"sendDVRTable:FINISHED DV PACK\n");
+                }
+                /*
                 void* payload;
                 int i;
 
@@ -463,14 +499,12 @@ implementation {
                         sendPackage.seq = nodeSeq;
                         sendPackage.protocol = PROTOCOL_DV;
                         memcpy(sendPackage.payload, DVTable, sizeof(DVRTable)); */
-
                                 //dbg(GENERAL_CHANNEL,"sendDVRTable:FINISHED DV PACK\n");
                         //call Sender.send(sendPackage, sendPackage.dest);
+        }
 
-                }
-
-                //function provided in book
-                void mergeRoute(uint8_t *newRoute){
+        //function provided in book
+        void mergeRoute(uint8_t *newRoute){
                      int i;
                      for(i = 0; i < 19; ++i){
                              dbg(ROUTING_CHANNEL, "Checking for Node: %d\n", i);
@@ -503,6 +537,5 @@ implementation {
                      routing[i][0] = *(newRoute + (i * 3));
                      routing[i][1] = *(newRoute + (i * 3 + 1)) + 1;
                      routing[i][2] = *(newRoute + (i * 3 + 2));
-
-                }
         }
+}
