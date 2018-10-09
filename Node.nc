@@ -360,7 +360,16 @@ implementation {
                 }
         }
 
+        /*
+                                        ██████  ██    ██ ██████      ████████  █████  ██████  ██      ███████
+                                        ██   ██ ██    ██ ██   ██        ██    ██   ██ ██   ██ ██      ██
+                                        ██   ██ ██    ██ ██████         ██    ███████ ██████  ██      █████
+                                        ██   ██  ██  ██  ██   ██        ██    ██   ██ ██   ██ ██      ██
+                                        ██████    ████   ██   ██        ██    ██   ██ ██████  ███████ ███████
+        */
+
         void initialize() {
+        // Setting default values for table
              int i = 0;
              for(i = 0; i < 19; i++) {
                   routing[i][0] = 0;
@@ -453,7 +462,8 @@ implementation {
                 void mergeRoute(uint8_t *newRoute){
                      int i;
                      for(i = 0; i < 19; ++i){
-                             dbg(GENERAL_CHANNEL, "Checking for Node: %d\n", i);
+                             dbg(GENERAL_CHANNEL, "Checking for Node: %d", i);
+                             //Check if node is in table if not save to next open space
                           if(*(newRoute + (i * 3)) == routing[i][0]){
                                if(*(newRoute + (i * 3 + 1)) + 1 < routing[i][1]){
                                     //better route
