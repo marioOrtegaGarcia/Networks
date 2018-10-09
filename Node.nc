@@ -79,6 +79,7 @@ implementation {
         void removeFromTable(uint8_t dest);
         void sendDVRTable();
         void mergeRoute(uint8_t* newRoute);
+        void clearTable();
 
         //  Node boot time calls
         event void Boot.booted(){
@@ -382,9 +383,9 @@ implementation {
                 //Setting the default values of the table
                 // |     DVR Table Schema
                 // | Dest | Cost | Next Hop |
-                routing[i][0] = TOS_NODE_ID;
-                routing[i][1] = 0;
-                routing[i][2] = TOS_NODE_ID;
+                routing[0][0] = TOS_NODE_ID;
+                routing[0][1] = 0;
+                routing[0][2] = TOS_NODE_ID;
                 for(i = 0; i < 19; ++i) {
                   routing[i][0] = 0;
                   routing[i][1] = MAX_HOP;
@@ -392,22 +393,23 @@ implementation {
              }
         }
 
+        void clearTable() {
+                dbg(ROUTING_CHANNEL, "\tMOTE(%d) Clear DVR Table");
+                initialize();
+        }
+
         void insert(uint8_t dest, uint8_t cost, uint8_t nextHop) {
-             //input data to a touple
-             int i;
-             for(i = 0; i < 19; ++i) {
-                  if(routing[i][0] == 0){
-                       routing[i][0] = dest;
-                       routing[i][1] = cost;
-                       routing[i][2] = nextHop;
-                  }
-                  /*if(DVTable->table[i]->dest == 0) {
-                       DVTable->table[i]->dest = dest;
-                       DVTable->table[i]->cost = cost;
-                       DVTable->table[i]->nextHop = nextHop;
-                       */
-                  }
-             }
+                //input data to a touple
+                int i;
+                for(i = 0; i < 19; ++i) {
+                        if(routing[i][0] == 0){
+                                routing[i][0] = dest;
+                                routing[i][1] = cost;
+                                routing[i][2] = nextHop;
+                        }
+
+                }
+        }
 
 
         void removeFromTable(uint8_t dest){
