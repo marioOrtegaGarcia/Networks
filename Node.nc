@@ -377,9 +377,9 @@ implementation {
         */
 
         void initialize() {
+                int i = 0;
                 dbg(ROUTING_CHANNEL, "\tMOTE(%d) Initializing DVR Table");
                 //Setting the default values of the table
-                int i = 0;
                 // |     DVR Table Schema
                 // | Dest | Cost | Next Hop |
                 routing[i][0] = TOS_NODE_ID;
@@ -455,7 +455,7 @@ implementation {
                         nodeSeq++;
                         makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, DVTable, (uint8_t) sizeof(DVTable));
 
-                        /* sendPackage.src = TOS_NODE_ID;
+                        sendPackage.src = TOS_NODE_ID;
                         sendPackage.dest = call NeighborList.get(i);
                         sendPackage.TTL = 1;
                         sendPackage.seq = nodeSeq;
