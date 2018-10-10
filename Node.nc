@@ -442,7 +442,7 @@ implementation {
                           routing[i][2] = 0;
                      }
              }
-             signal CommandHandler.printNeighbors();
+             //signal CommandHandler.printNeighbors();
         }
 
         void clearTable() {
@@ -458,6 +458,7 @@ implementation {
                                 routing[i][0] = dest;
                                 routing[i][1] = cost;
                                 routing[i][2] = nextHop;
+                                break;
                         }
 
                 }
