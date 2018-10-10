@@ -116,7 +116,7 @@ implementation {
                 clearNeighbors();
                 scanNeighbors();
 
-                t0 = 5000 + call Random.rand32() % 1000;
+                t0 = 15000 + call Random.rand32() % 1000;
                 dt = 25000 + (call Random.rand32() % 10000);
                 if(fired == FALSE){
                      call TableUpdateTimer.startPeriodicAt(t0, dt);
@@ -466,9 +466,9 @@ implementation {
                 //check neighborlist against table to see if each neighbor has been listed before
                 for(j = 0; j < call NeighborList.size(); ++j){
                      //if current list item isnt 0
-                     if(call NeighborList.get(i)){
+                     if(call NeighborList.get(i) != 0){
                           neighbor = call NeighborList.get(i);
-                         insert(neighbor, 1, neighbor);
+                          insert(neighbor, 1, neighbor);
                      }
 
 
