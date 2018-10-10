@@ -103,7 +103,7 @@ implementation {
                 call Timer.startPeriodicAt(t0, dt);
 
                 //TODO maybe rework if things are wonk
-                t0 += 500 + call Random.rand32() % 1000;
+                t0 += 5000 + call Random.rand32() % 1000;
                 dt += 5000;
                 call TableUpdateTimer.startPeriodicAt(t0, dt);
 
