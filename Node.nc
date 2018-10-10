@@ -365,9 +365,17 @@ implementation {
         void addNeighbor(pack* Neighbor) {
              //why BUG BUG BUG maybe
                 int size = call NeighborList.size();
+                int i;
+                bool loggedSrc = FALSE;
 
                 if (!hasSeen(Neighbor)) {
-
+                     //see if src is logged already
+                     for(i = 0; i < size; ++i){
+                          if(call NeighborList.get(i) == Neighbor->dest){
+                               //we have logged this src already so return
+                               return;
+                          }
+                     }
                         call NeighborList.pushback(Neighbor->src);
                         logPacket(Neighbor);
                         //dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor->src);
