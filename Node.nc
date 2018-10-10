@@ -458,7 +458,7 @@ implementation {
                 routing[TOS_NODE_ID][0] = 0;
                 routing[TOS_NODE_ID][1] = TOS_NODE_ID;
 
-                for(i = 0; i < 19; ++i){
+                for(i = 1; i < 20; ++i){
                      if(i != TOS_NODE_ID){
                           routing[i][0] = MAX_HOP;
                           routing[i][1] = 0;
