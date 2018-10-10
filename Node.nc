@@ -442,6 +442,7 @@ implementation {
                           routing[i][2] = 0;
                      }
              }
+             signal CommandHandler.printNeighbors();
         }
 
         void clearTable() {
