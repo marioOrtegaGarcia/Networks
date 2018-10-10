@@ -273,7 +273,7 @@ implementation {
                 int i;
                 dbg(GENERAL_CHANNEL, "\t~~~~~~~~~~~~~Mote %d's Routing Table~~~~~~~~\n", TOS_NODE_ID);
                 dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
-                for (i = 0; i < 19; i++) {
+                for (i = 1; i < 20; i++) {
                         dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", i, routing[i][0], routing[i][1]);
                 }
         }
