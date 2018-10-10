@@ -114,6 +114,7 @@ implementation {
                      if(initialized == FALSE){
                           initialize();
                           initialized = TRUE;
+                          signal CommandHandler.printRouteTable();
                      }
                          sendTableToNeighbors();
                 } else {
@@ -186,7 +187,7 @@ implementation {
 
                         // Receiving DV Table
                         else if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV) {
-                             dbg(GENERAL_CHANNEL, "CALLING MERGERROUTE!!\n");
+                             //dbg(GENERAL_CHANNEL, "CALLING MERGERROUTE!!\n");
                              mergeRoute((uint8_t*)recievedMsg->payload);
                              return msg;
                         }
@@ -564,7 +565,7 @@ implementation {
                           if(*(newRoute + (i * 3)) == routing[i][0]){
                                if(*(newRoute + (i * 3 + 1)) + 1 < routing[i][1]){
                                     //better route
-                                    dbg(GENERAL_CHANNEL, "Found better route\n");
+                                    //dbg(GENERAL_CHANNEL, "Found better route\n");
                                     break;
                                }
                                else if(*(newRoute + (i * 3 + 2)) == routing[i][2]){
