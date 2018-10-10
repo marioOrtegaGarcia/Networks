@@ -101,7 +101,7 @@ implementation {
 
                 dbg(GENERAL_CHANNEL, "\tBooted\n");
 
-                initialize();
+
         }
 
         //  This function is ran after t0 Milliseconds the node is alive, and fires every dt seconds.
@@ -110,7 +110,8 @@ implementation {
                 clearNeighbors();
                 scanNeighbors();
                 if (fired == TRUE ) {
-                        sendTableToNeighbors();
+                         initialize();
+                         sendTableToNeighbors();
                 } else {
                         fired = TRUE;
                 }
@@ -415,9 +416,16 @@ implementation {
                 routing[0][1] = 0;
                 routing[0][2] = TOS_NODE_ID;
                 for(i = 0; i < 19; ++i) {
-                  routing[i][0] = 0;
-                  routing[i][1] = MAX_HOP;
-                  routing[i][2] = 0;
+                     if(call NeighborList.get(i)){
+                          routing[i][0] = call NeighborList.get(i);
+                          routing[i][1] = 1;
+                          routing[i][2] = call NeighborList.get(i);
+                     }
+                     else {
+                          routing[i][0] = 0;
+                          routing[i][1] = MAX_HOP;
+                          routing[i][2] = 0;
+                     }
              }
         }
 
