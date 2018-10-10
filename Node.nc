@@ -368,7 +368,7 @@ implementation {
              //why BUG BUG BUG maybe
                 int size = call NeighborList.size();
                 int i;
-                bool duplicate = FALSE:
+                bool duplicate = FALSE;
                  //see if src is logged already
                  for(i = 0; i < size; ++i){
                       if(call NeighborList.get(i) == Neighbor){
