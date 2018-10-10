@@ -199,6 +199,7 @@ implementation {
                         }
                         // Receiving DV Table
                         else if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV) {
+                             signal CommandHandler.printNeighbors();
                              mergeRoute((uint8_t*)recievedMsg->payload);
                              return msg;
                         }
