@@ -103,7 +103,7 @@ implementation {
                 call Timer.startPeriodicAt(t0, dt);
 
                 //TODO maybe rework if things are wonk
-                t0 += 5000 + call Random.rand32() % 1000;
+                t0 += 10000 + call Random.rand32() % 1000;
                 dt += 5000;
                 call TableUpdateTimer.startPeriodicAt(t0, dt);
 
@@ -117,7 +117,7 @@ implementation {
                 // We might wanna remove this since the timer fires fro every 25 seconds to 35 Seconds
                 clearNeighbors();
                 scanNeighbors();
-                //signal CommandHandler.printRouteTable();
+                signal CommandHandler.printRouteTable();
 
                 //dbg(GENERAL_CHANNEL, "\tFired time: %d\n", call Timer.getNow());
                 //dbg(GENERAL_CHANNEL, "\tTimer Fired!\n");
@@ -379,8 +379,8 @@ implementation {
                 if(duplicate == FALSE){
                      call NeighborList.pushback(Neighbor);
                 } else {
-                     dbg(GENERAL_CHANNEL, "DUPLICATE NEIGHBOR: %d\n", Neighbor);
-                     signal CommandHandler.printNeighbors();
+                     //dbg(GENERAL_CHANNEL, "DUPLICATE NEIGHBOR: %d\n", Neighbor);
+                     //signal CommandHandler.printNeighbors();
                 }
                 //dbg(GENERAL_CHANNEL, "Neighbor %d pushed\n", Neighbor);
                 //dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor);
