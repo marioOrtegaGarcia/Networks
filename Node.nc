@@ -188,6 +188,7 @@ implementation {
                         else if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == AM_BROADCAST_ADDR && recievedMsg->TTL == 1) {
                                 //dbg(GENERAL_CHANNEL, "\tNeighbor Discovery Ping Recieved\n");
                                 // Log as neighbor
+                                dbg(GENERAL_CHANNEL, "Neighbor Discovery packet SRC: %d\n", recievedMsg->src);
                                 addNeighbor(recievedMsg->src);
                                 logPacket(recievedMsg);
                                 return msg;
