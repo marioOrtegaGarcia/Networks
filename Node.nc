@@ -124,7 +124,7 @@ implementation {
         }
 
         event void TableUpdateTimer.fired() {
-             signal CommandHandler.printNeighbors();
+             //signal CommandHandler.printNeighbors();
              if(initialized == FALSE){
                   initialize();
                   initialized = TRUE;
@@ -378,7 +378,10 @@ implementation {
                  }
                 if(duplicate == FALSE){
                      call NeighborList.pushback(Neighbor);
-                } else dbg(GENERAL_CHANNEL, "DUPLICATE NEIGHBOR: %d\n", Neighbor);
+                } else {
+                     dbg(GENERAL_CHANNEL, "DUPLICATE NEIGHBOR: %d\n", Neighbor);
+                     signal CommandHandler.printNeighbors();
+                }
                 //dbg(GENERAL_CHANNEL, "Neighbor %d pushed\n", Neighbor);
                 //dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor);
 
