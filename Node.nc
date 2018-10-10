@@ -115,6 +115,7 @@ implementation {
         //  This function is ran after t0 Milliseconds the node is alive, and fires every dt seconds.
         event void Timer.fired() {
                 // We might wanna remove this since the timer fires fro every 25 seconds to 35 Seconds
+                dbg(GENERAL_CHANNEL, "/////////////////////////////////////////////////////////////////////////////////////////////\n");
                 signal CommandHandler.printNeighbors();
                 clearNeighbors();
                 scanNeighbors();
