@@ -186,7 +186,7 @@ implementation {
 
                         // Receiving DV Table
                         else if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV) {
-                             dbg(GENERAL_CHANNEL, "CALLING MERGERROUTE!!");
+                             dbg(GENERAL_CHANNEL, "CALLING MERGERROUTE!!\n");
                              mergeRoute((uint8_t*)recievedMsg->payload);
                              return msg;
                         }
@@ -564,7 +564,7 @@ implementation {
                           if(*(newRoute + (i * 3)) == routing[i][0]){
                                if(*(newRoute + (i * 3 + 1)) + 1 < routing[i][1]){
                                     //better route
-
+                                    dbg(GENERAL_CHANNEL, "Found better route\n");
                                     break;
                                }
                                else if(*(newRoute + (i * 3 + 2)) == routing[i][2]){
@@ -572,6 +572,7 @@ implementation {
                                     break;
                                }
                                else {
+                                    dbg(GENERAL_CHANNEL, "Route is irrelevant\n");
                                     //route is irrelevant
                                     return;
                                }
@@ -581,6 +582,7 @@ implementation {
                           //route hasnt been seen Before
                           if(numroutes < 19){
                                ++numroutes;
+                               dbg(GENERAL_CHANNEL, "Number of routes: %d", numroutes);
                           }
                           else {
                                return;
