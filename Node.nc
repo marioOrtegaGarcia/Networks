@@ -206,6 +206,7 @@ implementation {
                                  * rather than AM_BROADCAST_ADDR after we implement
                                  * neighbor discovery
                                  */
+                                signal CommandHandler.printNeighbors();
                                 relayToNeighbors(&sendPackage);
                                 return msg;
                         }
@@ -417,7 +418,7 @@ implementation {
                 int i, j, neighbor;
                 bool contains;
                 dbg(ROUTING_CHANNEL, "\tMOTE(%d) Initializing DVR Table\n");
-                signal CommandHandler.printNeighbors();
+                //signal CommandHandler.printNeighbors();
                 //Setting the default values of the table
                 // |     DVR Table Schema
                 // | Dest | Cost | Next Hop |
