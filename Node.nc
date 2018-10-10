@@ -331,7 +331,7 @@ implementation {
                    }
         }
 
-        bool hasSeen(pack* payload) {
+        bool hasSeen(pack* packet) {
                 pack stored;
                 int i, size;
                 size = call PackLogs.size();
@@ -342,7 +342,7 @@ implementation {
                         for (i = 0; i < size; i++) {
                                 //dbg(FLOODING_CHANNEL, "\t%i th Packet in the list\n", i);
                                 stored = call PackLogs.get(i);
-                                if (stored.src == payload->src && stored.seq >= payload->seq) {
+                                if (stored.src == packet->src && stored.seq >= packet->seq) {
                                         //dbg(FLOODING_CHANNEL, "\t%s\n", stored.payload);
                                         return 1;
                                 }
@@ -363,9 +363,13 @@ implementation {
 
 
         void addNeighbor(pack* Neighbor) {
+             //why BUG BUG BUG maybe
                 int size = call NeighborList.size();
+
                 if (!hasSeen(Neighbor)) {
+
                         call NeighborList.pushback(Neighbor->src);
+                        logPacket(Neighbor);
                         //dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor->src);
                 }
         }
