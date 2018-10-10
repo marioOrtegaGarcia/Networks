@@ -185,7 +185,7 @@ implementation {
                         }
 
                         //  Neighbor Discovery: Timer
-                        else if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == AM_BROADCAST_ADDR && recievedMsg->TTL == 1) {
+                        else if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == AM_BROADCAST_ADDR) {
                                 //dbg(GENERAL_CHANNEL, "\tNeighbor Discovery Ping Recieved\n");
                                 // Log as neighbor
                                 dbg(GENERAL_CHANNEL, "Neighbor Discovery packet SRC: %d\n", recievedMsg->src);
