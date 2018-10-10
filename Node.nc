@@ -438,7 +438,7 @@ implementation {
                               contains = TRUE;
                      }
                      //table doesnt contain a listing for that neighbor yet
-                     if(contains = FALSE){
+                     if(contains == FALSE){
                           insert(neighbor, 1, neighbor);
                      }
                 }
