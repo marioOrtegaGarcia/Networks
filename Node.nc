@@ -85,6 +85,8 @@ implementation {
         void removeFromTable(uint8_t dest);
         void sendDVRTable();
         void mergeRoute(uint8_t* newRoute);
+        void splitHorizon(uint8_t *newRoute);
+        void poisonReverse(uint8_t *newRoute);
 
 
         //  Node boot time calls
@@ -557,5 +559,13 @@ implementation {
                      routing[i][0] = *(newRoute + (i * 3));
                      routing[i][1] = *(newRoute + (i * 3 + 1)) + 1;
                      routing[i][2] = *(newRoute + (i * 3 + 2));
+        }
+
+        void splitHorizon(uint8_t *newRoute){
+
+        }
+
+        void poisonReverse(uint8_t *newRoute){
+
         }
 }
