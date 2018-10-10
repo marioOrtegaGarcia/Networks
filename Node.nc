@@ -45,6 +45,7 @@ implementation {
         uint16_t nodeSeq = 0;
         uint8_t MAX_HOP = 18;
         bool fired = FALSE;
+        bool initialized = FALSE;
         uint8_t numroutes = 0;
 
 
@@ -110,10 +111,13 @@ implementation {
                 clearNeighbors();
                 scanNeighbors();
                 if (fired == TRUE ) {
+                     if(initialized == FALSE){
+                          initialize();
+                          initialized = TRUE;
+                     }
                          sendTableToNeighbors();
                 } else {
                         fired = TRUE;
-                        initialize();
                 }
 
                 //dbg(GENERAL_CHANNEL, "\tFired time: %d\n", call Timer.getNow());
