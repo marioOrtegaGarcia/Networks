@@ -417,6 +417,7 @@ implementation {
                 int i, j, neighbor;
                 bool contains;
                 dbg(ROUTING_CHANNEL, "\tMOTE(%d) Initializing DVR Table\n");
+                signal CommandHandler.printNeighbors();
                 //Setting the default values of the table
                 // |     DVR Table Schema
                 // | Dest | Cost | Next Hop |
@@ -493,7 +494,7 @@ implementation {
                 makePack(&sendPackage, TOS_NODE_ID, dest, 2, PROTOCOL_DV, nodeSeq, (uint8_t*)routing, sizeof(routing));
                 call Sender.send(sendPackage, dest);
         }
-
+        /*
         void mergeTables(uint8_t* sharedTable) {
                 int i, j;
 
@@ -511,7 +512,7 @@ implementation {
 
 
         }
-
+        */
         void removeFromTable(uint8_t dest){
              initialize();
              /*
