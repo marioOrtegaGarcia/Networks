@@ -199,7 +199,7 @@ implementation {
                         }
                         // Receiving DV Table
                         else if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV) {
-                             mergeTables((uint8_t*)recievedMsg->payload);
+                             mergeRoute((uint8_t*)recievedMsg->payload);
                              return msg;
                         }
 
@@ -554,7 +554,7 @@ implementation {
                                }
                           }
                      }
-                     if(i == 19){
+                     if(i == numroutes){
                           //route hasnt been seen Before
                           if(numroutes < 19){
                                ++numroutes;
