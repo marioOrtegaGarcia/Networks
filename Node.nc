@@ -582,7 +582,7 @@ implementation {
                           //route hasnt been seen Before
                           if(numroutes < 19){
                                ++numroutes;
-                               dbg(GENERAL_CHANNEL, "Number of routes: %d", numroutes);
+                               dbg(GENERAL_CHANNEL, "Number of routes: %d\n", numroutes);
                           }
                           else {
                                return;
