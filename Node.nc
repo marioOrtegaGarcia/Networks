@@ -124,6 +124,7 @@ implementation {
         }
 
         event void TableUpdateTimer.fired() {
+             signal CommandHandler.printNeighbors();
              if(initialized == FALSE){
                   initialize();
                   initialized = TRUE;
