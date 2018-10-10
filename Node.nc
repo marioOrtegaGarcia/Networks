@@ -186,6 +186,7 @@ implementation {
 
                         // Receiving DV Table
                         else if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV) {
+                             dbg(GENERAL_CHANNEL, "CALLING MERGERROUTE!!");
                              mergeRoute((uint8_t*)recievedMsg->payload);
                              return msg;
                         }
