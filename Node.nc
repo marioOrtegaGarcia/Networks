@@ -439,6 +439,7 @@ implementation {
                      }
                      //table doesnt contain a listing for that neighbor yet
                      if(contains == FALSE){
+                          dbg(GENERAL_CHANNEL, "Inserting new neighbor\n");
                           insert(neighbor, 1, neighbor);
                      }
                 }
