@@ -242,6 +242,7 @@ implementation {
         event void CommandHandler.printNeighbors() {
                 int i;
                 if(call NeighborList.size() !=  0) {
+                     dbg(GENERAL_CHANNEL, "NeighborList Size: %d\n", call NeighborList.size())
                         for(i = 0; i < (call NeighborList.size()); i++) {
                                 dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, call  NeighborList.get(i));
                         }
