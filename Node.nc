@@ -432,7 +432,7 @@ implementation {
                 //check neighborlist against table to see if each neighbor has been listed before
                 for(j = 0; j < call NeighborList.size(); ++j){
                      contains = FALSE;
-                     neighbor = call NeighborList.get(i);
+                     neighbor = call NeighborList.get(j);
                      for(i = 0; i < 19; ++i){
                           if(neighbor == routing[i][0])
                               contains = TRUE;
