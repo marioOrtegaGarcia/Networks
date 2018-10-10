@@ -378,7 +378,7 @@ implementation {
                  }
                 if(duplicate == FALSE){
                      call NeighborList.pushback(Neighbor);
-                } else dbg(GENERAL_CHANNEL, "DUPLICATE NEIGHBOR: %d\n", Neighbor)
+                } else dbg(GENERAL_CHANNEL, "DUPLICATE NEIGHBOR: %d\n", Neighbor);
                 //dbg(GENERAL_CHANNEL, "Neighbor %d pushed\n", Neighbor);
                 //dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor);
 
