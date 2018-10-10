@@ -110,10 +110,10 @@ implementation {
                 clearNeighbors();
                 scanNeighbors();
                 if (fired == TRUE ) {
-                         initialize();
                          sendTableToNeighbors();
                 } else {
                         fired = TRUE;
+                        initialize();
                 }
 
                 //dbg(GENERAL_CHANNEL, "\tFired time: %d\n", call Timer.getNow());
