@@ -85,7 +85,7 @@ implementation {
         void removeFromTable(uint8_t dest);
         void sendDVRTable();
         void mergeRoute(uint8_t* newRoute);
-        void splitHorizon(uint8_t *newRoute, uint8_t nextHop);
+        void splitHorizon(uint8_t nextHop);
 
 
         //  Node boot time calls
@@ -560,7 +560,7 @@ implementation {
                      routing[i][2] = *(newRoute + (i * 3 + 2));
         }
 
-        void splitHorizon(uint8_t *newRoute, uint8_t nextHop){
+        void splitHorizon(uint8_t nextHop){
              int i;
              for(i = 0; i < 19; ++i){
                   if(nextHop == routing[i][2]){
