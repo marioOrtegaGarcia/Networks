@@ -376,7 +376,7 @@ implementation {
                       }
                  }
                 call NeighborList.pushback(Neighbor);
-                dbg(GENERAL_CHANNEL, "Neighbor %d pushed", Neighbor);
+                dbg(GENERAL_CHANNEL, "Neighbor %d pushed\n", Neighbor);
                 //dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor);
 
         }
