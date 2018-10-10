@@ -465,16 +465,9 @@ implementation {
                 }
                 //check neighborlist against table to see if each neighbor has been listed before
                 for(j = 0; j < call NeighborList.size(); ++j){
-                     contains = FALSE;
-                     neighbor = call NeighborList.get(j);
-                     for(i = 0; i < 19; ++i){
-                          if(neighbor == routing[i][0])
-                              contains = TRUE;
-                     }
-                     //table doesnt contain a listing for that neighbor yet
-                     if(contains == FALSE){
-                          dbg(GENERAL_CHANNEL, "Inserting new neighbor\n");
-                          insert(neighbor, 1, neighbor);
+                     neighbor = call NeighborList.get(i);
+                     insert(neighbor, 1, neighbor);
+
                      }
                 }
                 /*
