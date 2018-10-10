@@ -424,6 +424,11 @@ implementation {
                 routing[0][1] = 0;
                 routing[0][2] = TOS_NODE_ID;
 
+                for(i = 1; i < 19; ++i){
+                     routing[i][0] = 0;
+                     routing[i][1] = MAX_HOP;
+                     routing[i][2] = 0;
+                }
                 //check neighborlist against table to see if each neighbor has been listed before
                 for(j = 0; j < call NeighborList.size(); ++j){
                      contains = FALSE;
@@ -437,6 +442,7 @@ implementation {
                           insert(neighbor, 1, neighbor);
                      }
                 }
+                /*
                 for(i = 0; i < 19; ++i) {
                      if(call NeighborList.get(i)){
                           routing[i][0] = call NeighborList.get(i);
@@ -448,6 +454,7 @@ implementation {
                           routing[i][1] = MAX_HOP;
                           routing[i][2] = 0;
                      }
+                     */
              }
              //signal CommandHandler.printNeighbors();
         }
