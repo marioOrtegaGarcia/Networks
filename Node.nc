@@ -184,6 +184,12 @@ implementation {
                                 return msg;
                         }
 
+                        // Receiving DV Table
+                        else if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV) {
+                             mergeRoute((uint8_t*)recievedMsg->payload);
+                             return msg;
+                        }
+
                         // Relaying Packet: Not for us
                         else if (recievedMsg->dest != TOS_NODE_ID && recievedMsg->dest != AM_BROADCAST_ADDR) {
                                 //dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Relay\n", recievedMsg->src, recievedMsg->dest);
@@ -200,11 +206,6 @@ implementation {
                                  */
                                 relayToNeighbors(&sendPackage);
                                 return msg;
-                        }
-                        // Receiving DV Table
-                        else if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV) {
-                             mergeRoute((uint8_t*)recievedMsg->payload);
-                             return msg;
                         }
 
                         // If Packet get here we have not expected it and it will fail
@@ -478,7 +479,7 @@ implementation {
         void sendTableTo(uint8_t dest) {
                 uint8_t* payload;
                 nodeSeq++;
-                makePack(&sendPackage, TOS_NODE_ID, dest, 1, PROTOCOL_DV, nodeSeq, (uint8_t*)routing, sizeof(routing));
+                makePack(&sendPackage, TOS_NODE_ID, dest, 2, PROTOCOL_DV, nodeSeq, (uint8_t*)routing, sizeof(routing));
                 call Sender.send(sendPackage, dest);
         }
 
