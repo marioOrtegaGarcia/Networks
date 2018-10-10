@@ -199,7 +199,6 @@ implementation {
                         }
                         // Receiving DV Table
                         else if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV) {
-                             signal CommandHandler.printNeighbors();
                              mergeRoute((uint8_t*)recievedMsg->payload);
                              return msg;
                         }
@@ -408,7 +407,8 @@ implementation {
         */
 
         void initialize() {
-                int i = 0;
+                int i, j, neighbor;
+                bool contains;
                 dbg(ROUTING_CHANNEL, "\tMOTE(%d) Initializing DVR Table\n");
                 //Setting the default values of the table
                 // |     DVR Table Schema
@@ -416,6 +416,20 @@ implementation {
                 routing[0][0] = TOS_NODE_ID;
                 routing[0][1] = 0;
                 routing[0][2] = TOS_NODE_ID;
+
+                //check neighborlist against table to see if each neighbor has been listed before
+                for(j = 0; j < call NeighborList.size(); ++j){
+                     contains = FALSE;
+                     neighbor = call NeighborList.get(i);
+                     for(i = 0; i < 19; ++i){
+                          if(neighbor == routing[i][0])
+                              contains = TRUE;
+                     }
+                     //table doesnt contain a listing for that neighbor yet
+                     if(contains = FALSE){
+                          insert(neighbor, 1, neighbor);
+                     }
+                }
                 for(i = 0; i < 19; ++i) {
                      if(call NeighborList.get(i)){
                           routing[i][0] = call NeighborList.get(i);
