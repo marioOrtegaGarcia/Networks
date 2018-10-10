@@ -104,7 +104,7 @@ implementation {
 
                 //TODO maybe rework if things are wonk
                 t0 += 10000 + call Random.rand32() % 1000;
-                dt += 5000;
+                //dt += 5000;
                 call TableUpdateTimer.startPeriodicAt(t0, dt);
 
                 dbg(GENERAL_CHANNEL, "\tBooted\n");
