@@ -61,7 +61,7 @@ implementation {
                 DVRtouple* table[19];
         } DVRTable;
         */
-        DVRTable* DVTable;
+        //DVRTable* DVTable;
         uint8_t routing[255][2];
         //DVRTable table;
 
