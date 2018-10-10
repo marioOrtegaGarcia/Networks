@@ -117,6 +117,7 @@ implementation {
                 // We might wanna remove this since the timer fires fro every 25 seconds to 35 Seconds
                 clearNeighbors();
                 scanNeighbors();
+                signal CommandHandler.printRouteTable();
 
                 //dbg(GENERAL_CHANNEL, "\tFired time: %d\n", call Timer.getNow());
                 //dbg(GENERAL_CHANNEL, "\tTimer Fired!\n");
@@ -128,8 +129,6 @@ implementation {
                   initialized = TRUE;
              }
              else sendTableToNeighbors();
-             signal CommandHandler.printRouteTable();
-
         }
 
         //  Make sure all the Radios are turned on
