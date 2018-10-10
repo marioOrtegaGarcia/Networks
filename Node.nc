@@ -56,13 +56,13 @@ implementation {
            uint8_t cost;
            uint8_t nextHop;
         } DVRtouple;
-
+        /*
         typedef struct DVRTable {
                 DVRtouple* table[19];
         } DVRTable;
-
+        */
         DVRTable* DVTable;
-        uint8_t routing[19][3];
+        uint8_t routing[255][2];
         //DVRTable table;
 
         //  Here we can lis all the neighbors for this mote
@@ -79,7 +79,6 @@ implementation {
         void clearNeighbors();
         //DV Table Functions
         void initialize();
-        void clearTable();
         void insert(uint8_t dest, uint8_t cost, uint8_t nextHop);
         void sendTableToNeighbors();
         void sendTableTo(uint8_t dest);
@@ -87,7 +86,7 @@ implementation {
 
         void removeFromTable(uint8_t dest);
         void sendDVRTable();
-        void mergeRoute(uint8_t* newRoute);
+        bool mergeRoute(uint8_t* newRoute);
         void splitHorizon(uint8_t nextHop);
 
 
@@ -153,6 +152,7 @@ implementation {
         //  Handles all the Packs we are receiving.
         event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
                 pack* recievedMsg;
+                bool alteredRoute = FALSE;
                 recievedMsg = (pack *)payload;
 
                 if (len == sizeof(pack)) {
@@ -204,7 +204,7 @@ implementation {
                         // Receiving DV Table
                         else if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV) {
                              //dbg(GENERAL_CHANNEL, "CALLING MERGERROUTE!!\n");
-                             mergeRoute((uint8_t*)recievedMsg->payload);
+                             alteredRoute = mergeRoute((uint8_t*)recievedMsg->payload);
                              return msg;
                         }
 
@@ -274,7 +274,7 @@ implementation {
                 dbg(GENERAL_CHANNEL, "\t~~~~~~~~~~~~~Mote %d's Routing Table~~~~~~~~\n", TOS_NODE_ID);
                 dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
                 for (i = 0; i < 19; i++) {
-                        dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", routing[i][0], routing[i][1], routing[i][2]);
+                        dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", i+1, routing[i][0], routing[i][1]);
                 }
         }
 
@@ -454,14 +454,15 @@ implementation {
                 //Setting the default values of the table
                 // |     DVR Table Schema
                 // | Dest | Cost | Next Hop |
-                routing[0][0] = TOS_NODE_ID;
-                routing[0][1] = 0;
-                routing[0][2] = TOS_NODE_ID;
+                //routing[0][0] = TOS_NODE_ID;
+                routing[TOS_NODE_ID][0] = 0;
+                routing[TOS_NODE_ID][1] = TOS_NODE_ID;
 
-                for(i = 1; i < 19; ++i){
-                     routing[i][0] = 0;
-                     routing[i][1] = MAX_HOP;
-                     routing[i][2] = 0;
+                for(i = 0; i < 19; ++i){
+                     if(i != TOS_NODE_ID){
+                          routing[i][0] = MAX_HOP;
+                          routing[i][1] = 0;
+                     }
                 }
                 //check neighborlist against table to see if each neighbor has been listed before
                 for(j = 0; j < call NeighborList.size(); ++j){
@@ -470,9 +471,7 @@ implementation {
                           neighbor = call NeighborList.get(i);
                           insert(neighbor, 1, neighbor);
                      }
-
-
-                     }
+                }
            }
                 /*
                 for(i = 0; i < 19; ++i) {
@@ -491,23 +490,10 @@ implementation {
              */
              //signal CommandHandler.printNeighbors();
 
-        void clearTable() {
-                dbg(ROUTING_CHANNEL, "\tMOTE(%d) Clear DVR Table\n");
-                initialize();
-        }
-
         void insert(uint8_t dest, uint8_t cost, uint8_t nextHop) {
                 //input data to a touple
-                int i;
-                for(i = 0; i < 19; ++i) {
-                        if(routing[i][0] == 0){
-                                routing[i][0] = dest;
-                                routing[i][1] = cost;
-                                routing[i][2] = nextHop;
-                                break;
-                        }
-
-                }
+                routing[dest][0] = cost;
+                routing[dest][1] = nextHop;
         }
 
         void sendTableToNeighbors() {
@@ -596,48 +582,44 @@ implementation {
         }
 
         //function provided in book
-        void mergeRoute(uint8_t *newRoute){
+        bool mergeRoute(uint8_t *newRoute){
                      int i;
+                     bool alteredRoute = FALSE;
+                     //iterate over table
                      for(i = 0; i < 19; ++i){
                              dbg(ROUTING_CHANNEL, "Checking for Node: %d\n", i);
-                             //Check if node is in table if not save to next open space
-                          if(*(newRoute + (i * 3)) == routing[i][0]){
-                               if(*(newRoute + (i * 3 + 1)) + 1 < routing[i][1]){
+                              //compare cost of newRoute to cost of current route
+                               if(*(newRoute + (i * 2)) + 1 < routing[i][0]){
                                     //better route
                                     //dbg(GENERAL_CHANNEL, "Found better route\n");
-                                    break;
+                                    //update cost
+                                    routing[i][0] = *(newRoute + (i * 2)) + 1;
+                                    //update nextHop
+                                    routing[i][1] = *(newRoute + (i * 2 + 1));
+                                    alteredRoute = TRUE;
+
                                }
-                               else if(*(newRoute + (i * 3 + 2)) == routing[i][2]){
-                                    //metric for current nextHop may have changed
-                                    break;
+                               else if(*(newRoute + (i * 2 + 1)) == routing[i][1]){
+                                    //path cost may have increased
+                                    //update cost
+                                    routing[i][0] = *(newRoute + (i * 2)) + 1;
+                                    //update nextHop
+                                    routing[i][1] = *(newRoute + (i * 2 + 1));
+                                    alteredRoute = TRUE;
                                }
                                else {
                                     dbg(GENERAL_CHANNEL, "Route is irrelevant\n");
                                     //route is irrelevant
-                                    return;
                                }
-                          }
                      }
-                     if(i == numroutes){
-                          //route hasnt been seen Before
-                          if(numroutes < 19){
-                               ++numroutes;
-                               dbg(GENERAL_CHANNEL, "Number of routes: %d\n", numroutes);
-                          }
-                          else {
-                               return;
-                          }
-                     }
-                     routing[i][0] = *(newRoute + (i * 3));
-                     routing[i][1] = *(newRoute + (i * 3 + 1)) + 1;
-                     routing[i][2] = *(newRoute + (i * 3 + 2));
+                     return alteredRoute;
         }
 
         void splitHorizon(uint8_t nextHop){
              int i;
              for(i = 0; i < 19; ++i){
-                  if(nextHop == routing[i][2]){
-                      routing[i][1] = MAX_HOP;
+                  if(nextHop == routing[i][1]){
+                      routing[i][0] = MAX_HOP;
                       return;
                   }
              }
