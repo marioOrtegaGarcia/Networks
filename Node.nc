@@ -454,8 +454,9 @@ implementation {
                           routing[i][1] = MAX_HOP;
                           routing[i][2] = 0;
                      }
-                     */
+
              }
+             */
              //signal CommandHandler.printNeighbors();
         }
 
