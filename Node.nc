@@ -463,7 +463,7 @@ implementation {
                                 if ((*(sharedTable + (i * 3 + 1)) + 1) < routing[j][1] && *(sharedTable + (i * 3)) == routing[j][0]) {
                                         // Update Cost and Next Hop
                                         routing[j][1] = *(sharedTable + (i * 3 + 1)) + 1;
-                                        routing[j][2]; = *(sharedTable + (i * 3 + 2));
+                                        routing[j][2] = *(sharedTable + (i * 3 + 2));
                                 }
                         }
                 }
