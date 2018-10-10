@@ -72,7 +72,7 @@ implementation {
         void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
         void logPacket(pack* payload);
         bool hasSeen(pack* payload);
-        void addNeighbor(pack* Neighbor);
+        void addNeighbor(uint8_t Neighbor);
         void relayToNeighbors(pack* recievedMsg);
         bool destIsNeighbor(pack* recievedMsg);
         void scanNeighbors();
@@ -188,7 +188,8 @@ implementation {
                         else if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == AM_BROADCAST_ADDR && recievedMsg->TTL == 1) {
                                 //dbg(GENERAL_CHANNEL, "\tNeighbor Discovery Ping Recieved\n");
                                 // Log as neighbor
-                                addNeighbor(recievedMsg);
+                                addNeighbor(recievedMsg->src);
+                                logPacket(recievedMsg);
                                 return msg;
                         }
 
@@ -362,24 +363,20 @@ implementation {
 
 
 
-        void addNeighbor(pack* Neighbor) {
+        void addNeighbor(uint8_t Neighbor) {
              //why BUG BUG BUG maybe
                 int size = call NeighborList.size();
                 int i;
-                bool loggedSrc = FALSE;
+                 //see if src is logged already
+                 for(i = 0; i < size; ++i){
+                      if(call NeighborList.get(i) == Neighbor){
+                           //we have logged this src already so return
+                           return;
+                      }
+                 }
+                    call NeighborList.pushback(Neighbor);
+                    //dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor->src);
 
-                if (!hasSeen(Neighbor)) {
-                     //see if src is logged already
-                     for(i = 0; i < size; ++i){
-                          if(call NeighborList.get(i) == Neighbor->dest){
-                               //we have logged this src already so return
-                               return;
-                          }
-                     }
-                        call NeighborList.pushback(Neighbor->src);
-                        logPacket(Neighbor);
-                        //dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor->src);
-                }
         }
 
         //  sends message to all known neighbors in neighbor list; if list is empty, forwards to everyone within range using AM_BROADCAST_ADDR.
