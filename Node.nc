@@ -188,7 +188,7 @@ implementation {
                         else if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == AM_BROADCAST_ADDR) {
                                 //dbg(GENERAL_CHANNEL, "\tNeighbor Discovery Ping Recieved\n");
                                 // Log as neighbor
-                                //dbg(GENERAL_CHANNEL, "Neighbor Discovery packet SRC: %d\n", recievedMsg->src);
+                                dbg(GENERAL_CHANNEL, "Neighbor Discovery packet SRC: %d\n", recievedMsg->src);
                                 addNeighbor(recievedMsg->src);
                                 logPacket(recievedMsg);
                                 return msg;
@@ -376,7 +376,7 @@ implementation {
                       }
                  }
                 call NeighborList.pushback(Neighbor);
-                dbg(GENERAL_CHANNEL, "Neighbor %d pushed\n", Neighbor);
+                //dbg(GENERAL_CHANNEL, "Neighbor %d pushed\n", Neighbor);
                 //dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor);
 
         }
