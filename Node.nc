@@ -368,14 +368,17 @@ implementation {
              //why BUG BUG BUG maybe
                 int size = call NeighborList.size();
                 int i;
+                bool duplicate = FALSE:
                  //see if src is logged already
                  for(i = 0; i < size; ++i){
                       if(call NeighborList.get(i) == Neighbor){
                            //we have logged this src already so return
-                           return;
+                           duplicate = TRUE;
                       }
                  }
-                call NeighborList.pushback(Neighbor);
+                if(duplicate == FALSE){
+                     call NeighborList.pushback(Neighbor);
+                } else dbg(GENERAL_CHANNEL, "DUPLICATE NEIGHBOR: %d\n", Neighbor)
                 //dbg(GENERAL_CHANNEL, "Neighbor %d pushed\n", Neighbor);
                 //dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor);
 
