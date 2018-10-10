@@ -586,7 +586,7 @@ implementation {
                      int i;
                      bool alteredRoute = FALSE;
                      //iterate over table
-                     for(i = 0; i < 19; ++i){
+                     for(i = 1; i < 20; ++i){
                              dbg(ROUTING_CHANNEL, "Checking for Node: %d\n", i);
                               //compare cost of newRoute to cost of current route
                                if(*(newRoute + (i * 2)) + 1 < routing[i][0]){
@@ -617,7 +617,7 @@ implementation {
 
         void splitHorizon(uint8_t nextHop){
              int i;
-             for(i = 0; i < 19; ++i){
+             for(i = 1; i < 20; ++i){
                   if(nextHop == routing[i][1]){
                       routing[i][0] = MAX_HOP;
                       return;
