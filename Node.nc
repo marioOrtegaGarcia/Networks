@@ -111,7 +111,7 @@ implementation {
         event void Timer.fired() {
                 // We might wanna remove this since the timer fires fro every 25 seconds to 35 Seconds
                 uint32_t t0, dt;
-                dbg(GENERAL_CHANNEL, "//////////////////////////////////////////////////////////////////////////////////////\n");
+                //dbg(GENERAL_CHANNEL, "//////////////////////////////////////////////////////////////////////////////////////\n");
                 signal CommandHandler.printNeighbors();
                 clearNeighbors();
                 scanNeighbors();
@@ -134,6 +134,7 @@ implementation {
              if(initialized == FALSE){
                   initialize();
                   initialized = TRUE;
+                  signal CommandHandler.printRouteTable();
              }
              else sendTableToNeighbors();
         }
