@@ -36,6 +36,8 @@ module Node {
 
         uses interface Timer<TMilli> as Timer;
 
+        uses interface Timer<TMilli> as TableUpdateTimer;
+
         //uses interface DVRTableC <uint8_t> as Table;
 }
 
@@ -100,6 +102,11 @@ implementation {
                 dt = 25000 + (call Random.rand32() % 10000);
                 call Timer.startPeriodicAt(t0, dt);
 
+                //TODO maybe rework if things are wonk
+                t0 += 500 + call Random.rand32() % 1000;
+                dt += 5000;
+                call TableUpdateTimer.startPeriodicAt(t0, dt);
+
                 dbg(GENERAL_CHANNEL, "\tBooted\n");
 
 
@@ -110,19 +117,19 @@ implementation {
                 // We might wanna remove this since the timer fires fro every 25 seconds to 35 Seconds
                 clearNeighbors();
                 scanNeighbors();
-                if (fired == TRUE ) {
-                     if(initialized == FALSE){
-                          initialize();
-                          initialized = TRUE;
-                          signal CommandHandler.printRouteTable();
-                     }
-                         sendTableToNeighbors();
-                } else {
-                        fired = TRUE;
-                }
 
                 //dbg(GENERAL_CHANNEL, "\tFired time: %d\n", call Timer.getNow());
                 //dbg(GENERAL_CHANNEL, "\tTimer Fired!\n");
+        }
+
+        event void TableUpdateTimer.fired() {
+             if(initialized == FALSE){
+                  initialize();
+                  initialized = TRUE;
+             }
+             else sendTableToNeighbors();
+             signal CommandHandler.printRouteTable();
+
         }
 
         //  Make sure all the Radios are turned on
@@ -206,7 +213,7 @@ implementation {
                                  * rather than AM_BROADCAST_ADDR after we implement
                                  * neighbor discovery
                                  */
-                                signal CommandHandler.printNeighbors();
+                                //signal CommandHandler.printNeighbors();
                                 relayToNeighbors(&sendPackage);
                                 return msg;
                         }
