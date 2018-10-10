@@ -486,7 +486,6 @@ implementation {
              }
              */
              //signal CommandHandler.printNeighbors();
-        }
 
         void clearTable() {
                 dbg(ROUTING_CHANNEL, "\tMOTE(%d) Clear DVR Table\n");
