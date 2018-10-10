@@ -102,11 +102,6 @@ implementation {
                 dt = 25000 + (call Random.rand32() % 10000);
                 call Timer.startPeriodicAt(t0, dt);
 
-                //TODO maybe rework if things are wonk
-                t0 += 15000 + call Random.rand32() % 1000;
-                //dt += 5000;
-                call TableUpdateTimer.startPeriodicAt(t0, dt);
-
                 dbg(GENERAL_CHANNEL, "\tBooted\n");
 
 
@@ -115,10 +110,19 @@ implementation {
         //  This function is ran after t0 Milliseconds the node is alive, and fires every dt seconds.
         event void Timer.fired() {
                 // We might wanna remove this since the timer fires fro every 25 seconds to 35 Seconds
-                dbg(GENERAL_CHANNEL, "/////////////////////////////////////////////////////////////////////////////////////////////\n");
+                uint32_t t0, dt;
+                dbg(GENERAL_CHANNEL, "//////////////////////////////////////////////////////////////////////////////////////\n");
                 signal CommandHandler.printNeighbors();
                 clearNeighbors();
                 scanNeighbors();
+
+                t0 = 500 + call Random.rand32() % 1000;
+                dt = 25000 + (call Random.rand32() % 10000);
+                if(fired == FALSE){
+                     call TableUpdateTimer.startPeriodicAt(t0, dt);
+                     fired = TRUE;
+                }
+
                 //signal CommandHandler.printRouteTable();
 
                 //dbg(GENERAL_CHANNEL, "\tFired time: %d\n", call Timer.getNow());
