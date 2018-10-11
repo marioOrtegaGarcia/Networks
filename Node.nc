@@ -130,8 +130,8 @@ implementation {
         event void TableUpdateTimer.fired() {
 
              if(initialized == FALSE) {
-p                  initialize();
-                  initialized = TRUE;
+                     initialize();
+                     initialized = TRUE;
                   //signal CommandHandler.printNeighbors();
              } else {
                 dbg (ROUTING_CHANNEL, "\tNode %d is Sharing his table with Neighbors\n", TOS_NODE_ID);
