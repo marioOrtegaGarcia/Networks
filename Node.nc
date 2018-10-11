@@ -206,6 +206,9 @@ implementation {
                         else if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV) {
                              //dbg(GENERAL_CHANNEL, "CALLING MERGERROUTE!!\n");
                              alteredRoute = mergeRoute((uint8_t*)recievedMsg->payload);
+                             if(alteredRoute){
+                                  sendTableToNeighbors();
+                             }
                              return msg;
                         }
 
