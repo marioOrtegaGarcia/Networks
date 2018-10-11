@@ -493,7 +493,7 @@ implementation {
 
 
 
-                              dbg(GENERAL_CHANNEL, "<><>Pritting the newRoute (%d,%d) @%d \n", *(newRoute + (i * 2)), *(newRoute + (i * 2 + 1)), i);
+                              dbg(GENERAL_CHANNEL, "<><>Pritting the newRoute (%d,%d) @%d \n", *(newRoute + (i * 2)), *(newRoute + (i * 2) + 1), i);
 
                                if(*(newRoute + (i * 2)) + 1 < routing[i][0]){
 
@@ -502,7 +502,7 @@ implementation {
                                     //update cost
                                     routing[i][0] = *(newRoute + (i * 2)) + 1;
                                     //update nextHop
-                                    routing[i][1] = *(newRoute + (i * 2 + 1));
+                                    routing[i][1] = *(newRoute + ((i * 2) + 1));
                                     alteredRoute = TRUE;
 
                                } //  TODO fix this portion of the code cuz its breaking things somehow but im not really sure how
