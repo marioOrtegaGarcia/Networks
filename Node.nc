@@ -488,7 +488,7 @@ implementation {
              memcpy(newRoutingDt, newRoute, sizeof(newRoute));
 
              for(node = 1; node < 20; node++){
-                  if(*(newRoutingDt + (i * 2)) < routing[node][0]){
+                  if(*(newRoutingDt + (node * 2)) < routing[node][0]){
                        //update cost
                       routing[node][0] = *(newRoutingDt + (node * 2)) + 1;
                       //update nextHop
@@ -537,7 +537,7 @@ implementation {
 
         }
 
-        /* bool mergeRoute(uint8_t *newRoute){
+         bool mergeRoute(uint8_t *newRoute){
                      int i;
                      bool alteredRoute = FALSE;
                      //iterate over table
