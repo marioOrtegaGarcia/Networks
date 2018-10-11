@@ -387,20 +387,11 @@ implementation {
 
 
         void addNeighbor(uint8_t Neighbor) {
-                int i;
-                bool duplicate = FALSE;
-                 //see if src is logged already
-                           //we have logged this src already so return
-                           NeighborList[Neighbor] = MAX_NEIGHBOR_TTL;
-                           duplicate = TRUE;
-
-
-                     //dbg(GENERAL_CHANNEL, "DUPLICATE NEIGHBOR: %d\n", Neighbor);
-                     //signal CommandHandler.printNeighbors()
-                //dbg(GENERAL_CHANNEL, "Neighbor %d pushed\n", Neighbor);
-                //dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor);
-
+             if(Neighbor == 0)
+               dbg(GENERAL_CHANNEL, "ZERO SOURCE WTFFFFFFFFFFFFFFFF");
+             NeighborList[Neighbor] = MAX_NEIGHBOR_TTL;
         }
+
         void reduceNeighborsTTL() {
                 int i = 0;
                 for (i; i < NeighborListSize; i++) {
