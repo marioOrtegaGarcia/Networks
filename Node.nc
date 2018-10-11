@@ -508,8 +508,8 @@ implementation {
                                     routing[i][0] = *(newRoute + (i * 2)) + 1;
                                     //update nextHop
                                     routing[i][1] = *(newRoute + (i * 2 + 1));
-                                    alteredRoute = TRUE; */
-                               }
+                                    alteredRoute = TRUE; 
+                                } */
                                else {
                                     //dbg(GENERAL_CHANNEL, "Route is irrelevant\n");
                                     //route is irrelevant
