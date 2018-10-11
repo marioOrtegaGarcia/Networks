@@ -602,7 +602,7 @@ implementation {
                                     routing[i][1] = *(newRoute + (i * 2 + 1));
                                     alteredRoute = TRUE;
 
-                               }
+                               }/*
                                else if(*(newRoute + (i * 2 + 1)) == routing[i][1] && routing[i][1] != TOS_NODE_ID){
                                     //path cost may have increased
                                     //update cost
@@ -610,7 +610,7 @@ implementation {
                                     //update nextHop
                                     routing[i][1] = *(newRoute + (i * 2 + 1));
                                     alteredRoute = TRUE;
-                               }
+                               }*/
                                else {
                                     //dbg(GENERAL_CHANNEL, "Route is irrelevant\n");
                                     //route is irrelevant
