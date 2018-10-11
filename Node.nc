@@ -411,11 +411,8 @@ implementation {
         }
 
         bool destIsNeighbor(pack* recievedMsg) {
-                int i;
-                for (i = 0; i < NeighborListSize; i++) {
-                        if(NeighborList[i] > 0)
+                        if(NeighborList[recievedMsg->dest] > 0)
                             return 1;
-                }
                 return 0;
         }
 
