@@ -130,7 +130,7 @@ implementation {
         event void TableUpdateTimer.fired() {
 
              if(initialized == FALSE) {
-                  initialize();
+p                  initialize();
                   initialized = TRUE;
                   //signal CommandHandler.printNeighbors();
              } else {
@@ -207,7 +207,7 @@ implementation {
 
                         // Receiving DV Table
                         else if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV) {
-                             //dbg(GENERAL_CHANNEL, "CALLING MERGERROUTE!!\n");
+                             dbg(GENERAL_CHANNEL, "CALLING MERGERROUTE!!\n");
                              //signal CommandHandler.printRouteTable();
                              alteredRoute = mergeRoute((uint8_t*)recievedMsg->payload);
                              signal CommandHandler.printRouteTable();
