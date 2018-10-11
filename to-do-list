@@ -5,3 +5,7 @@ read 3.3.2
 NEED TO IMPLEMENT:
 *IMPORTANT:    need to add TTL for nodes in neighborlist INSTEAD OF clearNeighbors every Timer.fired()
                     - this is causing a synchronization issues where the routing table doesnt have access to all the neighbors when we print the tables
+
+*Merge Rout isnt merging the tables properly, need to reexamine how that is working. Look at the output and try and see what you can figure out
+
+*Need to call splitHorizon before we send table
