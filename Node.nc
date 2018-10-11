@@ -486,10 +486,11 @@ implementation {
 
              // Copy the data
              memcpy(newRoutingDt, newRoute, sizeof(newRoute));
+
              for(node = 1; node < 20; node++){
-                  if(newRoutingDt[node][0] < routing[node][0]){
+                  if(*(newRoutingDt + (i * 2)) < routing[node][0]){
                        //update cost
-                      routing[node][0] = newRoutingDt[node][0] + 1;
+                      routing[node][0] = *(newRoutingDt + (i * 2)) + 1;
                       //update nextHop
                       routing[node][1] = node;
                       return TRUE;
@@ -582,8 +583,8 @@ implementation {
         } */
 
         void splitHorizon(uint8_t nextHop){
-
                 uint8_t temp[255][2];
+
                 memcpy(temp, routing, sizeof(routing));
                 temp[nextHop][0] = MAX_HOP;
                 //makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, (uint8_t*)routing, sizeof(routing));
