@@ -210,6 +210,7 @@ implementation {
                              //dbg(GENERAL_CHANNEL, "CALLING MERGERROUTE!!\n");
                              //signal CommandHandler.printRouteTable();
                              alteredRoute = mergeRoute((uint8_t*)recievedMsg->payload);
+                             signal CommandHandler.printRouteTable();
                              if(alteredRoute){
                                   sendTableToNeighbors();
                              }
@@ -491,7 +492,6 @@ implementation {
                   }
              }
 
-             signal CommandHandler.printRouteTable();
                /*
                 uint8_t newRoutingDt[255][2];
                 uint8_t sender;
