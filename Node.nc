@@ -136,8 +136,8 @@ implementation {
                   signal CommandHandler.printNeighbors();
                   signal CommandHandler.printRouteTable();
              } else {
-                dbg (ROUTING_CHANNEL, "\tNode %d is Sharing his table with Neighbors", TOS_NODE_ID);
-                sendTableToNeighbors();     
+                dbg (ROUTING_CHANNEL, "\tNode %d is Sharing his table with Neighbors\n", TOS_NODE_ID);
+                sendTableToNeighbors();
              }
 
 
