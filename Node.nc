@@ -493,7 +493,7 @@ implementation {
 
 
 
-                              dbg(GENERAL_CHANNEL, "<><>Pritting the newRoute (%d,%d) ", *(newRoute + (i * 2)), *(newRoute + (i * 2 + 1)));
+                              dbg(GENERAL_CHANNEL, "<><>Pritting the newRoute (%d,%d) \n", *(newRoute + (i * 2)), *(newRoute + (i * 2 + 1)));
 
                                if(*(newRoute + (i * 2)) + 1 < routing[i][0]){
 
