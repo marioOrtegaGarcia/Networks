@@ -53,7 +53,7 @@ implementation {
         uint8_t NeighborListSize = 19;
         uint8_t MAX_NEIGHBOR_TTL = 20;
 
-        uint8_t NeighborList[NeighborListSize];
+        uint8_t NeighborList[19];
         uint8_t routing[255][2];
 
         typedef struct DVRtouple {
@@ -555,24 +555,10 @@ implementation {
         void splitHorizon(uint8_t nextHop){
 
                 uint8_t temp[255][2];
-
-                temp = routing[nextHop][0];
                 memcpy(temp, routing, sizeof(routing));
                 temp[nextHop][0] = MAX_HOP;
                 //makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, (uint8_t*)routing, sizeof(routing));
                 makePack(&sendPackage, TOS_NODE_ID, nextHop, 1, PROTOCOL_DV, nodeSeq, (uint8_t*)temp, sizeof(routing));
                 call Sender.send(sendPackage, nextHop);
-                //routing[nextHop][0] = temp;
-
-
-
-
-             /* int i;
-             for(i = 1; i < 20; ++i){
-                  if(nextHop == routing[i][1]){
-                      routing[i][0] = MAX_HOP;
-                      return;
-                  }
-             } */
         }
 }
