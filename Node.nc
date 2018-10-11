@@ -51,6 +51,7 @@ implementation {
         bool initialized = FALSE;
         uint8_t numroutes = 0;
         uint8_t NeighborListSize = 19;
+        uint8_t MAX_NEIGHBOR_TTL = 20;
 
 
         typedef struct DVRtouple {
@@ -78,6 +79,7 @@ implementation {
         void logPacket(pack* payload);
         bool hasSeen(pack* payload);
         void addNeighbor(uint8_t Neighbor);
+        void reduceNeighborsTTL();
         void relayToNeighbors(pack* recievedMsg);
         bool destIsNeighbor(pack* recievedMsg);
         void scanNeighbors();
@@ -87,8 +89,7 @@ implementation {
         void sendTableToNeighbors();
         void sendTableTo(uint8_t dest);
         void mergeTables(uint8_t* sharedTable);
-
-        void removeFromTable(uint8_t dest);
+        
         void sendDVRTable();
         bool mergeRoute(uint8_t* newRoute);
         void splitHorizon(uint8_t nextHop);
@@ -262,16 +263,16 @@ implementation {
 
         //  This are functions we are going to be implementing in the future.
         event void CommandHandler.printNeighbors() {
-                int i;
-                if(NeighborListSize !=  0) {
+                int i, count = 0;
                      dbg(GENERAL_CHANNEL, "NeighborList Size: %d\n", NeighborListSize);
                         for(i = 0; i < (NeighborListSize); i++) {
-                             if(NeighborList[i] > 0)
-                                dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, i;
+                             if(NeighborList[i] > 0){
+                                  dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, i;
+                                  count++;
+                             }
                         }
-                } else {
-                        dbg(NEIGHBOR_CHANNEL, "\tNeighbors List Empty\n");
-                }
+                        if(count = 0)
+                              dbg(GENERAL_CHANNEL, "Neighbor List is Empty\n");
         }
 
         /*
@@ -388,21 +389,24 @@ implementation {
                 int i;
                 bool duplicate = FALSE;
                  //see if src is logged already
-                 for(i = 0; i < NeighborListSize; ++i){
-                      if(NeighborList[i] == Neighbor){
                            //we have logged this src already so return
+                           NeighborList[Neighbor] = MAX_NEIGHBOR_TTL;
                            duplicate = TRUE;
-                      }
-                 }
-                if(duplicate == FALSE){
-                     call NeighborList.pushback(Neighbor);
-                } else {
+
+
                      //dbg(GENERAL_CHANNEL, "DUPLICATE NEIGHBOR: %d\n", Neighbor);
-                     //signal CommandHandler.printNeighbors();
-                }
+                     //signal CommandHandler.printNeighbors()
                 //dbg(GENERAL_CHANNEL, "Neighbor %d pushed\n", Neighbor);
                 //dbg(NEIGHBOR_CHANNEL, "\tNeighbors Discovered: %d\n", Neighbor);
 
+        }
+        void reduceNeighborsTTL() {
+                int i = 0;
+                for (i; i < NeighborListSize; i++) {
+                        if (NeighborList[i] > 0) {
+                                NeighborList[i] -= 1;
+                        }
+                }
         }
 
         //  sends message to all known neighbors in neighbor list; if list is empty, forwards to everyone within range using AM_BROADCAST_ADDR.
@@ -417,31 +421,20 @@ implementation {
         }
 
         bool destIsNeighbor(pack* recievedMsg) {
-                int i, size;
-                uint16_t loggedNeighbor;
-                uint16_t destination = recievedMsg->dest;
-
-                if(!call NeighborList.isEmpty()) {
-                        size = NeighborListSize;
-                        for(i = 0; i < size; i++) {
-                                loggedNeighbor = NeighborList[i];
-                                if( loggedNeighbor == destination)
-                                        return 1;
-                        }
-                }
+                if(NeighborList[i] > 0)
+                    return 1;
                 return 0;
         }
 
         //  Used for neighbor discovery, sends a Ping w/ TTL of 1 to AM_BROADCAST_ADDR.
         void scanNeighbors() {
+                int i;
                 if (!initialized) {
                         nodeSeq++;
                         makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, nodeSeq, "Looking-4-Neighbors", PACKET_MAX_PAYLOAD_SIZE);
                         call Sender.send(sendPackage, AM_BROADCAST_ADDR);
                 } else  {
-                        /*
-                                - Has tabel
-                        */
+                        reduceNeighborsTTL();
                 }
 
         }
@@ -460,14 +453,9 @@ implementation {
                 int i, j, neighbor;
                 bool contains;
                 dbg(ROUTING_CHANNEL, "\tMOTE(%d) Initializing DVR Table\n");
-                //signal CommandHandler.printNeighbors();
-                //Setting the default values of the table
-                // |     DVR Table Schema
-                // | Dest | Cost | Next Hop |
-                //routing[0][0] = TOS_NODE_ID;
 
                 // Setting all the Nodes in our pool/routing table to  MAX_HOP and setting their nextHop to our emlpty first cell
-                for(i = 1; i < 20; ++i) {
+                for(i = 1; i < 20; i++) {
                         routing[i][0] = 255;
                         routing[i][1] = 0;
                 }
@@ -478,11 +466,8 @@ implementation {
 
                 // Setting the cost to all my neighbors
                 for(j = 0; j < NeighborListSize; ++j) {
-                     //if current list item isnt 0
-                     //if(call NeighborList.get(j) != 0){
-                          neighbor = call NeighborList.get(j);
-                          insert(neighbor, 1, neighbor);
-//                     }
+                         if(NeighborList[j] > 0)
+                              insert(j, 1, j);
                 }
            }
              //signal CommandHandler.printNeighbors();
@@ -496,6 +481,7 @@ implementation {
         void sendTableToNeighbors() {
                 int i;
                 for (i = 0; i < NeighborListSize; i++)
+                    if(NeighborList[i] > 0)
                         sendTableTo(NeighborList[i]);
         }
 
@@ -524,59 +510,7 @@ implementation {
 
         }
         */
-        void removeFromTable(uint8_t dest){
-             initialize();
-             /*
-             int i;
-             //DVRTable* temp = DVTable;
 
-                for(i = 0; i < 19; i++) {
-
-
-                        if(temp->table[i]->dest  == dest) {
-                                temp->table[i]->dest = 0;
-                                temp->table[i]->cost = MAX_HOP;
-                                temp->table[i]->nextHop = 0;
-                        }
-                        */
-                }
-
-        //void *memcpy(void *str1, const void *str2, size_t n)
-        /*void sendDVRTable() {
-                uint8_t* payload; int i;
-                //memcpy(payload, routes[TOS_NODE_ID], sizeof(routes));
-                dbg(ROUTING_CHANNEL, "");
-                for(i = 0; i < NeighborListSize; ++i){
-                        //dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MAKING DV PACK\n");
-                        nodeSeq++;
-                        makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, (uint8_t*)routing, sizeof(routing));
-                        call Sender.send(sendPackage, sendPackage.dest);
-                        //dbg(GENERAL_CHANNEL,"sendDVRTable:FINISHED DV PACK\n");
-                }
-
-                void* payload;
-                int i;
-
-                payload = malloc(sizeof(DVTable));
-                        dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MEMCPY\n");
-                        dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: Size of Table is %d\n", sizeof(DVTable));
-                memcpy(&payload, &DVTable, sizeof(DVTable));
-                        dbg(GENERAL_CHANNEL,"TRYING TO Loop through sendDVRTable: NeighborList\n");
-                for(i = 0; i < NeighborListSize; ++i) {
-                                dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MAKING DV PACK\n");
-                                dbg(GENERAL_CHANNEL, "TRYING TO sendDVRTable: sending to Neighbor %d \n", call NeighborList.get(i));
-                        nodeSeq++;
-                        makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, DVTable, (uint8_t) sizeof(DVTable));
-
-                        sendPackage.src = TOS_NODE_ID;
-                        sendPackage.dest = call NeighborList.get(i);
-                        sendPackage.TTL = 1;
-                        sendPackage.seq = nodeSeq;
-                        sendPackage.protocol = PROTOCOL_DV;
-                        memcpy(sendPackage.payload, DVTable, sizeof(DVRTable));
-                                //dbg(GENERAL_CHANNEL,"sendDVRTable:FINISHED DV PACK\n");
-                        //call Sender.send(sendPackage, sendPackage.dest);
-        }*/
 
         //function provided in book
         bool mergeRoute(uint8_t *newRoute){
