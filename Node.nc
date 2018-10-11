@@ -128,8 +128,6 @@ implementation {
                      fired = TRUE;
                 }
 
-                //signal CommandHandler.printRouteTable();
-
                 //dbg(GENERAL_CHANNEL, "\tFired time: %d\n", call Timer.getNow());
                 //dbg(GENERAL_CHANNEL, "\tTimer Fired!\n");
         }
@@ -139,7 +137,7 @@ implementation {
              if(initialized == FALSE) {
                   initialize();
                   initialized = TRUE;
-                  signal CommandHandler.printNeighbors();
+                  //signal CommandHandler.printNeighbors();
                   //signal CommandHandler.printRouteTable();
              } else {
                 dbg (ROUTING_CHANNEL, "\tNode %d is Sharing his table with Neighbors\n", TOS_NODE_ID);
@@ -262,6 +260,14 @@ implementation {
                 call Sender.send(sendPackage, AM_BROADCAST_ADDR);
         }
 
+        /*
+██████  ██████  ██ ███    ██ ████████ ███████
+██   ██ ██   ██ ██ ████   ██    ██    ██
+██████  ██████  ██ ██ ██  ██    ██    ███████
+██      ██   ██ ██ ██  ██ ██    ██         ██
+██      ██   ██ ██ ██   ████    ██    ███████
+*/
+
         //  This are functions we are going to be implementing in the future.
         event void CommandHandler.printNeighbors() {
                 int i, count = 0;
@@ -275,15 +281,6 @@ implementation {
                         if(count == 0)
                               dbg(GENERAL_CHANNEL, "Neighbor List is Empty\n");
         }
-
-        /*
-        ██████  ██████  ██ ███    ██ ████████ ██████   ██████  ██    ██ ████████ ███████ ████████  █████  ██████  ██      ███████
-        ██   ██ ██   ██ ██ ████   ██    ██    ██   ██ ██    ██ ██    ██    ██    ██         ██    ██   ██ ██   ██ ██      ██
-        ██████  ██████  ██ ██ ██  ██    ██    ██████  ██    ██ ██    ██    ██    █████      ██    ███████ ██████  ██      █████
-        ██      ██   ██ ██ ██  ██ ██    ██    ██   ██ ██    ██ ██    ██    ██    ██         ██    ██   ██ ██   ██ ██      ██
-        ██      ██   ██ ██ ██   ████    ██    ██   ██  ██████   ██████     ██    ███████    ██    ██   ██ ██████  ███████ ███████
-        */
-
 
         event void CommandHandler.printRouteTable() {
                 int i;
@@ -384,8 +381,6 @@ implementation {
 ██   ████ ███████ ██  ██████  ██   ██ ██████   ██████  ██   ██     ██████  ██ ███████  ██████  ██████    ████   ███████ ██   ██    ██
 */
 
-
-
         void addNeighbor(uint8_t Neighbor) {
              if(Neighbor == 0)
                dbg(GENERAL_CHANNEL, "ZERO SOURCE WTFFFFFFFFFFFFFFFF");
@@ -397,7 +392,10 @@ implementation {
                 for (i; i < NeighborListSize; i++) {
                         if (NeighborList[i] > 0) {
                                 NeighborList[i] -= 1;
+                                if (NeighborList[i] == 0)
+                                        dbg (NEIGHBOR_CHANNEL, "\t Node %d Dropped from the Network", i);
                         }
+
                 }
         }
 
@@ -482,30 +480,9 @@ implementation {
 
         //void *memcpy(void *str1, const void *str2, size_t n)
         void sendTableTo(uint8_t dest) {
-                uint8_t* payload;
                 nodeSeq++;
                 splitHorizon(dest);
         }
-        /*
-        void mergeTables(uint8_t* sharedTable) {
-                int i, j;
-
-                // Using Dijkstra's Algorithm to
-                for (i = 0; i < 19; i++) {
-                        for (j = 0; j < 19; ++j) {
-                                // Dest are same and our Distance is larger
-                                if ((*(sharedTable + (i * 3 + 1)) + 1) < routing[j][1] && *(sharedTable + (i * 3)) == routing[j][0]) {
-                                        // Update Cost and Next Hop
-                                        routing[j][1] = *(sharedTable + (i * 3 + 1)) + 1;
-                                        routing[j][2] = *(sharedTable + (i * 3 + 2));
-                                }
-                        }
-                }
-
-
-        }
-        */
-
 
         //function provided in book
         bool mergeRoute(uint8_t *newRoute){
@@ -516,7 +493,7 @@ implementation {
                              dbg(ROUTING_CHANNEL, "Checking for Node: %d\n", i);
                               //compare cost of newRoute to cost of current route
                               //TODO this portion almost works but check the output and see what you can figure out
-                               if(*(newRoute + (i * 2)) + 1 <= routing[i][0]){
+                               if(*(newRoute + (i * 2)) + 1 < routing[i][0]){
                                     //better route
                                     //dbg(GENERAL_CHANNEL, "Found better route\n");
                                     //update cost
@@ -526,20 +503,20 @@ implementation {
                                     alteredRoute = TRUE;
 
                                } //  TODO fix this portion of the code cuz its breaking things somehow but im not really sure how
-                               /* else if(*(newRoute + (i * 2)) + 1 == routing[i][0] && i != TOS_NODE_ID){
+                                else if(*(newRoute + (i * 2 + 1)) == routing[i][1] && i != TOS_NODE_ID){
                                     //path cost may have increased
                                     //update cost
                                     routing[i][0] = *(newRoute + (i * 2)) + 1;
                                     //update nextHop
                                     routing[i][1] = *(newRoute + (i * 2 + 1));
                                     alteredRoute = TRUE;
-                               } */
+                               }
                                else {
                                     //dbg(GENERAL_CHANNEL, "Route is irrelevant\n");
                                     //route is irrelevant
                                }
                      }
-                     //signal CommandHandler.printRouteTable();
+                     signal CommandHandler.printRouteTable();
                      return alteredRoute;
         }
 
