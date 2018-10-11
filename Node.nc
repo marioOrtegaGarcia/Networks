@@ -490,7 +490,7 @@ implementation {
              for(node = 1; node < 20; node++){
                   if(*(newRoutingDt + (i * 2)) < routing[node][0]){
                        //update cost
-                      routing[node][0] = *(newRoutingDt + (i * 2)) + 1;
+                      routing[node][0] = *(newRoutingDt + (node * 2)) + 1;
                       //update nextHop
                       routing[node][1] = node;
                       return TRUE;
