@@ -480,6 +480,7 @@ implementation {
 
 
         bool mergeRoute(uint8_t *newRoute){
+/*
               uint8_t newRoutingDt[255][2];
              uint8_t sender;
              int node;
@@ -488,7 +489,7 @@ implementation {
              memcpy(newRoutingDt, newRoute, sizeof(newRoute));
 
              for(node = 1; node < 20; node++){
-                  if(*(newRoutingDt + (node * 2)) < routing[node][0]){
+                  if((uint8_t)*(newRoutingDt + (node * 2)) < routing[node][0]){
                        //update cost
                       routing[node][0] = *(newRoutingDt + (node * 2)) + 1;
                       //update nextHop
@@ -496,8 +497,8 @@ implementation {
                       return TRUE;
                   }
              }
+*/
 
-/*
                 uint8_t newRoutingDt[255][2];
                 uint8_t sender;
                 int node;
@@ -536,7 +537,7 @@ implementation {
                 }
 
         }
-
+/*
          bool mergeRoute(uint8_t *newRoute){
                      int i;
                      bool alteredRoute = FALSE;
@@ -580,7 +581,9 @@ implementation {
                      }
                      signal CommandHandler.printRouteTable();
                      return alteredRoute;
-        } */
+                     */
+     //   }
+
 
         void splitHorizon(uint8_t nextHop){
                 uint8_t temp[255][2];
