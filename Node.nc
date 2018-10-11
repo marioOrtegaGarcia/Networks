@@ -272,7 +272,7 @@ implementation {
                                   count++;
                              }
                         }
-                        if(count = 0)
+                        if(count == 0)
                               dbg(GENERAL_CHANNEL, "Neighbor List is Empty\n");
         }
 
