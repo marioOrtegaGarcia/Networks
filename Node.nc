@@ -467,8 +467,8 @@ implementation {
                 //check neighborlist against table to see if each neighbor has been listed before
                 for(j = 0; j < call NeighborList.size(); ++j){
                      //if current list item isnt 0
-                     if(call NeighborList.get(i) != 0){
-                          neighbor = call NeighborList.get(i);
+                     if(call NeighborList.get(j) != 0){
+                          neighbor = call NeighborList.get(j);
                           insert(neighbor, 1, neighbor);
                      }
                 }
