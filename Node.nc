@@ -480,7 +480,7 @@ implementation {
 
 
         bool mergeRoute(uint8_t *newRoute){
-             /* uint8_t newRoutingDt[255][2];
+              uint8_t newRoutingDt[255][2];
              uint8_t sender;
              int node;
 
@@ -494,9 +494,9 @@ implementation {
                       routing[node][1] = node;
                       return TRUE;
                   }
-             } */
+             }
 
-
+/*
                 uint8_t newRoutingDt[255][2];
                 uint8_t sender;
                 int node;
