@@ -26,7 +26,7 @@ implementation {
     components new AMReceiverC(AM_PACK) as GeneralReceive;
 
     components new ListC(pack, 64) as PackLogsC;
-    components new ListC(uint16_t, 64) as NeighborListC;
+    //components new ListC(uint16_t, 64) as NeighborListC;
     //components new DVRTableC(uint8_t) as DVRTableC;
     /*
      * Testing timer format from online Presentation
@@ -43,7 +43,7 @@ implementation {
     Node.Receive -> GeneralReceive;
 
     Node.PackLogs -> PackLogsC;
-    Node.NeighborList -> NeighborListC;
+    //Node.NeighborList -> NeighborListC;
     //Node.DVRTable -> DVRTableC;
 
     components ActiveMessageC;
