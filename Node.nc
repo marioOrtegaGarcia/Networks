@@ -606,15 +606,15 @@ implementation {
                                     routing[i][1] = *(newRoute + (i * 2 + 1));
                                     alteredRoute = TRUE;
 
-                               }/*  TODO fix this portion of the code cuz its breaking things somehow but im not really sure how
-                               else if(*(newRoute + (i * 2 + 1)) == routing[i][1] && routing[i][1] != TOS_NODE_ID){
+                               } //  TODO fix this portion of the code cuz its breaking things somehow but im not really sure how
+                               else if(*(newRoute + (i * 2) == routing[i][0] && i != TOS_NODE_ID){
                                     //path cost may have increased
                                     //update cost
                                     routing[i][0] = *(newRoute + (i * 2)) + 1;
                                     //update nextHop
                                     routing[i][1] = *(newRoute + (i * 2 + 1));
                                     alteredRoute = TRUE;
-                               }*/
+                               }
                                else {
                                     //dbg(GENERAL_CHANNEL, "Route is irrelevant\n");
                                     //route is irrelevant
