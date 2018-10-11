@@ -475,7 +475,7 @@ implementation {
 
         //void *memcpy(void *str1, const void *str2, size_t n)
         void sendTableTo(uint8_t dest) {
-                nodeSeq++;
+                /* nodeSeq++; */
                 splitHorizon(dest);
         }
 
@@ -566,7 +566,7 @@ implementation {
 
                 uint8_t temp[255][2];
                 memcpy(temp, routing, sizeof(routing));
-                temp[nextHop][0] = MAX_HOP;
+                //temp[nextHop][0] = MAX_HOP;
                 //makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, (uint8_t*)routing, sizeof(routing));
                 makePack(&sendPackage, TOS_NODE_ID, nextHop, 1, PROTOCOL_DV, nodeSeq, (uint8_t*)temp, sizeof(routing));
                 call Sender.send(sendPackage, nextHop);
