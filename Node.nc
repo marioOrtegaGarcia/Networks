@@ -502,13 +502,13 @@ implementation {
                 for (node = 1; node < 20; node++) {
                         //Update Cheaper Links
                         if (newRoutingDt[node][0] + 1 < routing[node][0]) {
-                                dbg(ROUTING_CHANNEL, "Update Cheaper Links");
+                                dbg(ROUTING_CHANNEL, "Update Cheaper Links\n");
                                routing[node][0] = newRoutingDt[node][0] + 1;
                                routing[node][1] = sender;
                         }
                         //Update Similar Links (Same Cost)
                         else if (newRoutingDt[node][0] + 1 == routing[node][0] && node != TOS_NODE_ID ) {
-                                dbg(ROUTING_CHANNEL, "Update Similar Links");
+                                dbg(ROUTING_CHANNEL, "Update Similar Links\n");
                                 routing[node][1] = sender;
                         } else {
                                 //Drop Expensive ones
