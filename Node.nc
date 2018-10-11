@@ -142,7 +142,6 @@ implementation {
              } else {
                 dbg (ROUTING_CHANNEL, "\tNode %d is Sharing his table with Neighbors\n", TOS_NODE_ID);
                 sendTableToNeighbors();
-                signal CommandHandler.printRouteTable();
              }
 
 
@@ -495,6 +494,7 @@ implementation {
                               //compare cost of newRoute to cost of current route
                               //TODO this portion almost works but check the output and see what you can figure out
                                if(*(newRoute + (i * 2)) + 1 < routing[i][0]){
+
                                     //better route
                                     //dbg(GENERAL_CHANNEL, "Found better route\n");
                                     //update cost
@@ -505,6 +505,7 @@ implementation {
 
                                } //  TODO fix this portion of the code cuz its breaking things somehow but im not really sure how
                                 else if(*(newRoute + (i * 2 + 1)) == routing[i][1] && i != TOS_NODE_ID){
+                                        dbg(ROUTING_CHANNEL, "Getting into trouble");
                                     //path cost may have increased
                                     //update cost
                                     routing[i][0] = *(newRoute + (i * 2)) + 1;
