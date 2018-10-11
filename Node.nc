@@ -501,14 +501,14 @@ implementation {
                                     alteredRoute = TRUE;
 
                                } //  TODO fix this portion of the code cuz its breaking things somehow but im not really sure how
-                                else if(*(newRoute + (i * 2 + 1)) == routing[i][1] && i != TOS_NODE_ID){
+                                /* else if(*(newRoute + (i * 2 + 1)) == routing[i][1] && i != TOS_NODE_ID){
                                         dbg(ROUTING_CHANNEL, "Getting into trouble");
                                     //path cost may have increased
                                     //update cost
                                     routing[i][0] = *(newRoute + (i * 2)) + 1;
                                     //update nextHop
                                     routing[i][1] = *(newRoute + (i * 2 + 1));
-                                    alteredRoute = TRUE;
+                                    alteredRoute = TRUE; */
                                }
                                else {
                                     //dbg(GENERAL_CHANNEL, "Route is irrelevant\n");
