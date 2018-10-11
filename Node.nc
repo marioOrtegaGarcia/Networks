@@ -510,8 +510,11 @@ implementation {
                         else if (newRoutingDt[node][0] + 1 == routing[node][0] && node != TOS_NODE_ID ) {
                                 dbg(ROUTING_CHANNEL, "Update Similar Links");
                                 routing[node][1] = sender;
-                        } else {}
-                        //Drop Expensive ones
+                        } else {
+                                //Drop Expensive ones
+                        }
+
+                        signal CommandHandler.printRouteTable();
                 }
         }
 
