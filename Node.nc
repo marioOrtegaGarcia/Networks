@@ -515,7 +515,7 @@ implementation {
                                     //route is irrelevant
                                }
                      }
-                     //signal CommandHandler.printRouteTable();
+                     signal CommandHandler.printRouteTable();
                      return alteredRoute;
         }
 
