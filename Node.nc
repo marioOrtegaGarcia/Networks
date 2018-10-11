@@ -603,7 +603,7 @@ implementation {
                                     alteredRoute = TRUE;
 
                                }
-                               else if(*(newRoute + (i * 2 + 1)) == routing[i][1]){
+                               else if(*(newRoute + (i * 2 + 1)) == routing[i][1] && routing[i][1] != TOS_NODE_ID){
                                     //path cost may have increased
                                     //update cost
                                     routing[i][0] = *(newRoute + (i * 2)) + 1;
