@@ -617,8 +617,8 @@ implementation {
                 int temp;
                 temp = routing[nextHop][0];
                 routing[nextHop][0] = MAX_HOP;
-                makePack(&sendPackage, TOS_NODE_ID, dest, 1, PROTOCOL_DV, nodeSeq, (uint8_t*)routing, sizeof(routing));
-                call Sender.send(sendPackage, dest);
+                makePack(&sendPackage, TOS_NODE_ID, nextHop, 1, PROTOCOL_DV, nodeSeq, (uint8_t*)routing, sizeof(routing));
+                call Sender.send(sendPackage, nextHop);
                 routing[nextHop][0] = temp;
              /* int i;
              for(i = 1; i < 20; ++i){
