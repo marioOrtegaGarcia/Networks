@@ -492,7 +492,7 @@ implementation {
                 // Copy the data
                 memcpy(newRoutingDt, newRoute, sizeof(newRoute));
 
-                for (node = 1; node < 20; node+=) {
+                for (node = 1; node < 20; node++) {
                         if (newRoutingDt[node][0] == 0) {
                                 sender = node;
                         }
