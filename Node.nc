@@ -499,7 +499,7 @@ implementation {
                 }
 
                 //Loop Through Nodes
-                for (node = 1; node < 20; node+=) {
+                for (node = 1; node < 20; node++) {
                         //Update Cheaper Links
                         if (newRoutingDt[node][0] + 1 < routing[node][0]) {
                                 dbg(ROUTING_CHANNEL, "Update Cheaper Links");
@@ -510,7 +510,7 @@ implementation {
                         else if (newRoutingDt[node][0] + 1 == routing[node][0] && node != TOS_NODE_ID ) {
                                 dbg(ROUTING_CHANNEL, "Update Similar Links");
                                 routing[node][1] = sender;
-                        }
+                        } else {}
                         //Drop Expensive ones
                 }
         }
