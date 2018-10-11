@@ -488,6 +488,7 @@ implementation {
                       routing[node][0] = newRoutingDt[node][0] + 1;
                       //update nextHop
                       routing[node][1] = node;
+                      return TRUE;
                   }
              }
 
