@@ -205,6 +205,7 @@ implementation {
                         // Receiving DV Table
                         else if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV) {
                              //dbg(GENERAL_CHANNEL, "CALLING MERGERROUTE!!\n");
+                             signal CommandHandler.printRouteTable();
                              alteredRoute = mergeRoute((uint8_t*)recievedMsg->payload);
                              if(alteredRoute){
                                   sendTableToNeighbors();
