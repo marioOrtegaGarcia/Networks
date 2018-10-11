@@ -466,19 +466,20 @@ implementation {
                 // | Dest | Cost | Next Hop |
                 //routing[0][0] = TOS_NODE_ID;
 
-
+                // Setting all the Nodes in our pool/routing table to  MAX_HOP and setting their nextHop to our emlpty first cell
                 for(i = 1; i < 20; ++i) {
-                        routing[i][0] = MAX_HOP;
+                        routing[i][0] = 255;
                         routing[i][1] = 0;
                 }
 
+                // Setting the cost for SELF
                 routing[TOS_NODE_ID][0] = 0;
                 routing[TOS_NODE_ID][1] = TOS_NODE_ID;
 
-                //check neighborlist against table to see if each neighbor has been listed before
+                // Setting the cost to all my neighbors
                 for(j = 0; j < call NeighborList.size(); ++j) {
                      //if current list item isnt 0
-                     if(call NeighborList.get(j) != 0){
+                     if(call NeighborList.size(j) != 0){
                           neighbor = call NeighborList.get(j);
                           insert(neighbor, 1, neighbor);
                      }
