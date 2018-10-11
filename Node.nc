@@ -86,10 +86,7 @@ implementation {
         void initialize();
         void insert(uint8_t dest, uint8_t cost, uint8_t nextHop);
         void sendTableToNeighbors();
-        void sendTableTo(uint8_t dest);
-        void mergeTables(uint8_t* sharedTable);
 
-        void sendDVRTable();
         bool mergeRoute(uint8_t* newRoute);
         void splitHorizon(uint8_t nextHop);
 
@@ -470,19 +467,32 @@ implementation {
                 int i;
                 for (i = 0; i < NeighborListSize; i++)
                     if(NeighborList[i] > 0)
-                        sendTableTo(NeighborList[i]);
+                        splitHorizon(NeighborList[i]);
         }
 
         //void *memcpy(void *str1, const void *str2, size_t n)
-        void sendTableTo(uint8_t dest) {
-                /* nodeSeq++; */
-                splitHorizon(dest);
-        }
 
         //function provided in book
 
 
         bool mergeRoute(uint8_t *newRoute){
+             uint8_t newRoutingDt[255][2];
+             uint8_t sender;
+             int node;
+
+             // Copy the data
+             memcpy(newRoutingDt, newRoute, sizeof(newRoute));
+             for(node = 1; node < 20; node++){
+                  if(newRoutingDt[node][0] < routing[node][0]){
+                       //update cost
+                      routing[i][0] = newRoutingDt[node][0] + 1;
+                      //update nextHop
+                      routing[i][1] = node;
+                  }
+             }
+
+             signal CommandHandler.printRouteTable();
+               /*
                 uint8_t newRoutingDt[255][2];
                 uint8_t sender;
                 int node;
@@ -515,6 +525,7 @@ implementation {
 
                         signal CommandHandler.printRouteTable();
                 }
+                */
         }
 
         /* bool mergeRoute(uint8_t *newRoute){
