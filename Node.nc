@@ -492,7 +492,10 @@ implementation {
                 // Copy the data
                 memcpy(newRoutingDt, newRoute, sizeof(newRoute));
 
+
+
                 for (node = 1; node < 20; node++) {
+                        dbg(ROUTING_CHANNEL, "(%d,%d)\n", newRoutingDt[node][0],newRoutingDt[node][1]);
                         if (newRoutingDt[node][0] == 0) {
                                 sender = node;
                         }
