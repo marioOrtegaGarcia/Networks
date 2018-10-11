@@ -593,11 +593,11 @@ implementation {
                      int i;
                      bool alteredRoute = FALSE;
                      //iterate over table
-                     for(i = 1; i < 20; i++){
+                     for(i = 1; i < 20; ++i){
                              dbg(ROUTING_CHANNEL, "Checking for Node: %d\n", i);
                               //compare cost of newRoute to cost of current route
                               //TODO this portion almost works but check the output and see what you can figure out
-                               if(*(newRoute + (i * 2)) + 1 < routing[i][0]){
+                               if(*(newRoute + (i * 2)) + 1 <= routing[i][0]){
                                     //better route
                                     //dbg(GENERAL_CHANNEL, "Found better route\n");
                                     //update cost
