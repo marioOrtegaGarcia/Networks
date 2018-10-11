@@ -158,6 +158,10 @@ implementation {
                 bool alteredRoute = FALSE;
                 recievedMsg = (pack *)payload;
 
+                if (recievedMsg->protocol == PROTOCOL_DV) {
+                        dbg(GENERAL_CHANNEL, "Recieved DV Packet\n");
+                }
+
                 if (len == sizeof(pack)) {
                         //  Dead Packet: Timed out
                         if (recievedMsg->TTL == 0) {
@@ -510,7 +514,11 @@ implementation {
                 //Loop Through Nodes
                 for (node = 1; node < 20; node++) {
                         //Update Cheaper Links
+
+
+
                         if (newRoutingDt[node][0] + 1 < routing[node][0]) {
+                                dbg(GENERAL_CHANNEL, "Update Link (%d,%d)\n", newRoutingDt[node][0],newRoutingDt[node][1]);
                                 dbg(ROUTING_CHANNEL, "Update Cheaper Links\n");
                                routing[node][0] = newRoutingDt[node][0] + 1;
                                routing[node][1] = sender;
@@ -525,7 +533,7 @@ implementation {
 
                         signal CommandHandler.printRouteTable();
                 }
-                
+
         }
 
         /* bool mergeRoute(uint8_t *newRoute){
