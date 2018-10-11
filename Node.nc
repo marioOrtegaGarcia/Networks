@@ -30,7 +30,8 @@ module Node {
 
         uses interface List <pack> as PackLogs;
 
-        uses interface List <uint16_t> as NeighborList;
+        //uses interface List <uint16_t> as NeighborList;
+        //uses interface List <NeighborNode> as NeighborList;
 
         uses interface Random as Random;
 
@@ -49,6 +50,7 @@ implementation {
         bool fired = FALSE;
         bool initialized = FALSE;
         uint8_t numroutes = 0;
+        uint8_t NeighborListSize = 19;
 
 
         typedef struct DVRtouple {
@@ -56,12 +58,15 @@ implementation {
            uint8_t cost;
            uint8_t nextHop;
         } DVRtouple;
+
+
         /*
         typedef struct DVRTable {
                 DVRtouple* table[19];
         } DVRTable;
         */
         //DVRTable* DVTable;
+        uint8_t NeighborList[NeighborListSize];
         uint8_t routing[255][2];
         //DVRTable table;
 
@@ -76,7 +81,6 @@ implementation {
         void relayToNeighbors(pack* recievedMsg);
         bool destIsNeighbor(pack* recievedMsg);
         void scanNeighbors();
-        void clearNeighbors();
         //DV Table Functions
         void initialize();
         void insert(uint8_t dest, uint8_t cost, uint8_t nextHop);
@@ -259,10 +263,11 @@ implementation {
         //  This are functions we are going to be implementing in the future.
         event void CommandHandler.printNeighbors() {
                 int i;
-                if(call NeighborList.size() !=  0) {
-                     dbg(GENERAL_CHANNEL, "NeighborList Size: %d\n", call NeighborList.size());
-                        for(i = 0; i < (call NeighborList.size()); i++) {
-                                dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, call  NeighborList.get(i));
+                if(NeighborListSize !=  0) {
+                     dbg(GENERAL_CHANNEL, "NeighborList Size: %d\n", NeighborListSize);
+                        for(i = 0; i < (NeighborListSize); i++) {
+                             if(NeighborList[i] > 0)
+                                dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, i;
                         }
                 } else {
                         dbg(NEIGHBOR_CHANNEL, "\tNeighbors List Empty\n");
@@ -380,13 +385,11 @@ implementation {
 
 
         void addNeighbor(uint8_t Neighbor) {
-             //why BUG BUG BUG maybe
-                int size = call NeighborList.size();
                 int i;
                 bool duplicate = FALSE;
                  //see if src is logged already
-                 for(i = 0; i < size; ++i){
-                      if(call NeighborList.get(i) == Neighbor){
+                 for(i = 0; i < NeighborListSize; ++i){
+                      if(NeighborList[i] == Neighbor){
                            //we have logged this src already so return
                            duplicate = TRUE;
                       }
@@ -419,9 +422,9 @@ implementation {
                 uint16_t destination = recievedMsg->dest;
 
                 if(!call NeighborList.isEmpty()) {
-                        size = call NeighborList.size();
+                        size = NeighborListSize;
                         for(i = 0; i < size; i++) {
-                                loggedNeighbor = call NeighborList.get(i);
+                                loggedNeighbor = NeighborList[i];
                                 if( loggedNeighbor == destination)
                                         return 1;
                         }
@@ -431,19 +434,16 @@ implementation {
 
         //  Used for neighbor discovery, sends a Ping w/ TTL of 1 to AM_BROADCAST_ADDR.
         void scanNeighbors() {
-                nodeSeq++;
-                makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, nodeSeq, "Looking-4-Neighbors", PACKET_MAX_PAYLOAD_SIZE);
-                call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-        }
-
-//why packlogs and not neighborlist
-        void clearNeighbors() {
-                int size;
-                size = call NeighborList.size();
-                while (size > 1) {
-                        call NeighborList.popfront();
-                        size--;
+                if (!initialized) {
+                        nodeSeq++;
+                        makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, nodeSeq, "Looking-4-Neighbors", PACKET_MAX_PAYLOAD_SIZE);
+                        call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+                } else  {
+                        /*
+                                - Has tabel
+                        */
                 }
+
         }
 
         /*
@@ -477,12 +477,12 @@ implementation {
                 routing[TOS_NODE_ID][1] = TOS_NODE_ID;
 
                 // Setting the cost to all my neighbors
-                for(j = 0; j < call NeighborList.size(); ++j) {
+                for(j = 0; j < NeighborListSize; ++j) {
                      //if current list item isnt 0
-                     if(call NeighborList.size(j) != 0){
+                     //if(call NeighborList.get(j) != 0){
                           neighbor = call NeighborList.get(j);
                           insert(neighbor, 1, neighbor);
-                     }
+//                     }
                 }
            }
              //signal CommandHandler.printNeighbors();
@@ -495,8 +495,8 @@ implementation {
 
         void sendTableToNeighbors() {
                 int i;
-                for (i = 0; i < call NeighborList.size(); i++)
-                        sendTableTo(call NeighborList.get(i));
+                for (i = 0; i < NeighborListSize; i++)
+                        sendTableTo(NeighborList[i]);
         }
 
         //void *memcpy(void *str1, const void *str2, size_t n)
@@ -546,7 +546,7 @@ implementation {
                 uint8_t* payload; int i;
                 //memcpy(payload, routes[TOS_NODE_ID], sizeof(routes));
                 dbg(ROUTING_CHANNEL, "");
-                for(i = 0; i < call NeighborList.size(); ++i){
+                for(i = 0; i < NeighborListSize; ++i){
                         //dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MAKING DV PACK\n");
                         nodeSeq++;
                         makePack(&sendPackage, TOS_NODE_ID, call NeighborList.get(i), 1, PROTOCOL_DV, nodeSeq, (uint8_t*)routing, sizeof(routing));
@@ -562,7 +562,7 @@ implementation {
                         dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: Size of Table is %d\n", sizeof(DVTable));
                 memcpy(&payload, &DVTable, sizeof(DVTable));
                         dbg(GENERAL_CHANNEL,"TRYING TO Loop through sendDVRTable: NeighborList\n");
-                for(i = 0; i < call NeighborList.size(); ++i) {
+                for(i = 0; i < NeighborListSize; ++i) {
                                 dbg(GENERAL_CHANNEL,"TRYING TO sendDVRTable: MAKING DV PACK\n");
                                 dbg(GENERAL_CHANNEL, "TRYING TO sendDVRTable: sending to Neighbor %d \n", call NeighborList.get(i));
                         nodeSeq++;
