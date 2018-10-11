@@ -138,7 +138,7 @@ implementation {
                   initialize();
                   initialized = TRUE;
                   //signal CommandHandler.printNeighbors();
-                  //signal CommandHandler.printRouteTable();
+                  signal CommandHandler.printRouteTable();
              } else {
                 dbg (ROUTING_CHANNEL, "\tNode %d is Sharing his table with Neighbors\n", TOS_NODE_ID);
                 sendTableToNeighbors();
@@ -516,7 +516,7 @@ implementation {
                                     //route is irrelevant
                                }
                      }
-                     signal CommandHandler.printRouteTable();
+                     //signal CommandHandler.printRouteTable();
                      return alteredRoute;
         }
 
