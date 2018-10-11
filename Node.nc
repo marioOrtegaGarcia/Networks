@@ -607,7 +607,7 @@ implementation {
                                     alteredRoute = TRUE;
 
                                } //  TODO fix this portion of the code cuz its breaking things somehow but im not really sure how
-                               else if(*(newRoute + (i * 2) == routing[i][0] && i != TOS_NODE_ID){
+                               else if(*(newRoute + (i * 2)) == routing[i][0] && i != TOS_NODE_ID){
                                     //path cost may have increased
                                     //update cost
                                     routing[i][0] = *(newRoute + (i * 2)) + 1;
