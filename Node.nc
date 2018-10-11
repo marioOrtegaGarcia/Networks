@@ -117,7 +117,7 @@ implementation {
                 // We might wanna remove this since the timer fires fro every 25 seconds to 35 Seconds
                 uint32_t t0, dt;
                 //dbg(GENERAL_CHANNEL, "//////////////////////////////////////////////////////////////////////////////////////\n");
-                //signal CommandHandler.printNeighbors();
+                signal CommandHandler.printNeighbors();
                 //clearNeighbors();
                 scanNeighbors();
 
@@ -140,7 +140,7 @@ implementation {
                   initialize();
                   initialized = TRUE;
                   signal CommandHandler.printNeighbors();
-                  signal CommandHandler.printRouteTable();
+                  //signal CommandHandler.printRouteTable();
              } else {
                 dbg (ROUTING_CHANNEL, "\tNode %d is Sharing his table with Neighbors\n", TOS_NODE_ID);
                 sendTableToNeighbors();
@@ -191,7 +191,7 @@ implementation {
                                 call Sender.send(sendPackage, AM_BROADCAST_ADDR);
 
                                 //signal CommandHandler.printNeighbors();
-                                signal CommandHandler.printRouteTable();
+                                //signal CommandHandler.printRouteTable();
                                 return msg;
                         }
 
@@ -548,7 +548,7 @@ implementation {
                                     //route is irrelevant
                                }
                      }
-                     signal CommandHandler.printRouteTable();
+                     //signal CommandHandler.printRouteTable();
                      return alteredRoute;
         }
 
