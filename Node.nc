@@ -136,7 +136,6 @@ implementation {
              } else {
                 dbg (GENERAL_CHANNEL, "\tNode %d is Sharing his table with Neighbors\n", TOS_NODE_ID);
                 sendTableToNeighbors();
-                signal CommandHandler.printRouteTable();
              }
 
 
@@ -582,5 +581,7 @@ implementation {
                 //nodeSeq++??
                 makePack(&sendPackage, TOS_NODE_ID, nextHop, 1, PROTOCOL_DV, nodeSeq, (uint8_t*)temp, sizeof(routing));
                 call Sender.send(sendPackage, nextHop);
+                dbg(GENERAL_CHANNEL, "sent dv packet!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+
         }
 }
