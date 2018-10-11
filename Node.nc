@@ -134,7 +134,7 @@ implementation {
                      initialized = TRUE;
                   //signal CommandHandler.printNeighbors();
              } else {
-                dbg (ROUTING_CHANNEL, "\tNode %d is Sharing his table with Neighbors\n", TOS_NODE_ID);
+                dbg (GENERAL_CHANNEL, "\tNode %d is Sharing his table with Neighbors\n", TOS_NODE_ID);
                 sendTableToNeighbors();
                 signal CommandHandler.printRouteTable();
              }
@@ -478,7 +478,7 @@ implementation {
 
         bool mergeRoute(uint8_t *newRoute){
              uint8_t newRoutingDt[255][2];
-             uint8_t sender;
+             /* uint8_t sender; */
              int node;
 
              // Copy the data
@@ -577,8 +577,9 @@ implementation {
 
                 uint8_t temp[255][2];
                 memcpy(temp, routing, sizeof(routing));
-                //temp[nextHop][0] = MAX_HOP;
+                temp[nextHop][0] = MAX_HOP;
                 //makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, (uint8_t*)routing, sizeof(routing));
+                //nodeSeq++??
                 makePack(&sendPackage, TOS_NODE_ID, nextHop, 1, PROTOCOL_DV, nodeSeq, (uint8_t*)temp, sizeof(routing));
                 call Sender.send(sendPackage, nextHop);
         }
