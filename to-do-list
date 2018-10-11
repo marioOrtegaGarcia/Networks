@@ -9,3 +9,5 @@ NEED TO IMPLEMENT:
 *Merge Rout isnt merging the tables properly, need to reexamine how that is working. Look at the output and try and see what you can figure out
 
 *Need to call splitHorizon before we send table
+
+* i left comments for you in mergerRoute to point out what needs to be looked at

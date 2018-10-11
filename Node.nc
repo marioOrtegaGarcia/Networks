@@ -593,6 +593,7 @@ implementation {
                      for(i = 1; i < 20; ++i){
                              dbg(ROUTING_CHANNEL, "Checking for Node: %d\n", i);
                               //compare cost of newRoute to cost of current route
+                              //TODO this portion almost works but check the output and see what you can figure out
                                if(*(newRoute + (i * 2)) + 1 < routing[i][0]){
                                     //better route
                                     //dbg(GENERAL_CHANNEL, "Found better route\n");
@@ -602,7 +603,7 @@ implementation {
                                     routing[i][1] = *(newRoute + (i * 2 + 1));
                                     alteredRoute = TRUE;
 
-                               }/*
+                               }/*  TODO fix this portion of the code cuz its breaking things somehow but im not really sure how
                                else if(*(newRoute + (i * 2 + 1)) == routing[i][1] && routing[i][1] != TOS_NODE_ID){
                                     //path cost may have increased
                                     //update cost
