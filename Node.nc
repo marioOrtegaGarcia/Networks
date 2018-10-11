@@ -611,7 +611,7 @@ implementation {
                                     alteredRoute = TRUE;
                                }
                                else {
-                                    dbg(GENERAL_CHANNEL, "Route is irrelevant\n");
+                                    //dbg(GENERAL_CHANNEL, "Route is irrelevant\n");
                                     //route is irrelevant
                                }
                      }
