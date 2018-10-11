@@ -582,7 +582,8 @@ implementation {
                 //nodeSeq++??
                 makePack(&sendPackage, TOS_NODE_ID, nextHop, 1, PROTOCOL_DV, nodeSeq, (uint8_t*)temp, sizeof(routing));
                 call Sender.send(sendPackage, nextHop);
-                dbg(GENERAL_CHANNEL, "sent dv packet!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+               dbg(GENERAL_CHANNEL, "sent dv packet!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+               signal CommandHandler.printRouteTable();
 
         }
 }
