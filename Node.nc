@@ -53,6 +53,8 @@ implementation {
         uint8_t NeighborListSize = 19;
         uint8_t MAX_NEIGHBOR_TTL = 20;
 
+        uint8_t NeighborList[NeighborListSize];
+        uint8_t routing[255][2];
 
         typedef struct DVRtouple {
            uint8_t dest;
@@ -67,8 +69,7 @@ implementation {
         } DVRTable;
         */
         //DVRTable* DVTable;
-        uint8_t NeighborList[NeighborListSize];
-        uint8_t routing[255][2];
+
         //DVRTable table;
 
         //  Here we can lis all the neighbors for this mote
@@ -421,8 +422,11 @@ implementation {
         }
 
         bool destIsNeighbor(pack* recievedMsg) {
-                if(NeighborList[i] > 0)
-                    return 1;
+                int i;
+                for (i = 0; i < NeighborListSize; i++) {
+                        if(NeighborList[i] > 0)
+                            return 1;
+                }
                 return 0;
         }
 
