@@ -485,9 +485,9 @@ implementation {
              for(node = 1; node < 20; node++){
                   if(newRoutingDt[node][0] < routing[node][0]){
                        //update cost
-                      routing[i][0] = newRoutingDt[node][0] + 1;
+                      routing[node][0] = newRoutingDt[node][0] + 1;
                       //update nextHop
-                      routing[i][1] = node;
+                      routing[node][1] = node;
                   }
              }
 
