@@ -69,9 +69,7 @@ implementation {
         } DVRTable;
         */
         //DVRTable* DVTable;
-
         //DVRTable table;
-
         //  Here we can lis all the neighbors for this mote
         //  We getting an error with neighbors
 
@@ -492,10 +490,8 @@ implementation {
                 // Copy the data
                 memcpy(newRoutingDt, newRoute, sizeof(newRoute));
 
-
-
                 for (node = 1; node < 20; node++) {
-                        dbg(ROUTING_CHANNEL, "(%d,%d)\n", newRoutingDt[node][0],newRoutingDt[node][1]);
+                        dbg(GENERAL_CHANNEL, "(%d,%d)\n", newRoutingDt[node][0],newRoutingDt[node][1]);
                         if (newRoutingDt[node][0] == 0) {
                                 sender = node;
                         }
