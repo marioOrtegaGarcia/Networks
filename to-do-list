@@ -2,11 +2,6 @@ read 3.3.2
 
 *****DVRTable can be added to payload through memcpy()*****
 
-CONDITIONS TO SEND ROUTING UPDATE:
-  * periodic update - every so often
-  * triggered update - when node notices a link failure or a neighbor causes it to change one of its routes. Can detect failure if periodic update is not received for X cycles.
-
-  1. send table through payload    - COMPLETE
-  2. implement updateTable         - COMPLETE
-  3. incorporate dijkstras algo
-  4. implement print table func
+NEED TO IMPLEMENT:
+*IMPORTANT:    need to add TTL for nodes in neighborlist INSTEAD OF clearNeighbors every Timer.fired()
+                    - this is causing a synchronization issues where the routing table doesnt have access to all the neighbors when we print the tables
