@@ -112,7 +112,7 @@ implementation {
                 uint32_t t0, dt;
                 //dbg(GENERAL_CHANNEL, "//////////////////////////////////////////////////////////////////////////////////////\n");
                 signal CommandHandler.printNeighbors();
-                clearNeighbors();
+                //clearNeighbors();
                 scanNeighbors();
 
                 t0 = 15000 + call Random.rand32() % 1000;
@@ -357,7 +357,6 @@ implementation {
                                 }
                         }
                 }
-
                 return 0;
         }
 
