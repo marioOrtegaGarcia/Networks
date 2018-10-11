@@ -117,7 +117,7 @@ implementation {
 
                 t0 = 15000 + call Random.rand32() % 1000;
                 dt = 25000 + (call Random.rand32() % 10000);
-                if(fired == FALSE){
+                if(!fired){
                      call TableUpdateTimer.startPeriodicAt(t0, dt);
                      fired = TRUE;
                 }
@@ -443,12 +443,14 @@ implementation {
         }
 
         /*
-                                        ██████  ██    ██ ██████      ████████  █████  ██████  ██      ███████
-                                        ██   ██ ██    ██ ██   ██        ██    ██   ██ ██   ██ ██      ██
-                                        ██   ██ ██    ██ ██████         ██    ███████ ██████  ██      █████
-                                        ██   ██  ██  ██  ██   ██        ██    ██   ██ ██   ██ ██      ██
-                                        ██████    ████   ██   ██        ██    ██   ██ ██████  ███████ ███████
+        ██████  ██    ██     ████████  █████  ██████  ██      ███████
+        ██   ██ ██    ██        ██    ██   ██ ██   ██ ██      ██
+        ██   ██ ██    ██        ██    ███████ ██████  ██      █████
+        ██   ██  ██  ██         ██    ██   ██ ██   ██ ██      ██
+        ██████    ████          ██    ██   ██ ██████  ███████ ███████
         */
+
+
 
         void initialize() {
                 int i, j, neighbor;
@@ -459,17 +461,18 @@ implementation {
                 // |     DVR Table Schema
                 // | Dest | Cost | Next Hop |
                 //routing[0][0] = TOS_NODE_ID;
+
+
+                for(i = 1; i < 20; ++i) {
+                        routing[i][0] = MAX_HOP;
+                        routing[i][1] = 0;
+                }
+
                 routing[TOS_NODE_ID][0] = 0;
                 routing[TOS_NODE_ID][1] = TOS_NODE_ID;
 
-                for(i = 1; i < 20; ++i){
-                     if(i != TOS_NODE_ID){
-                          routing[i][0] = MAX_HOP;
-                          routing[i][1] = 0;
-                     }
-                }
                 //check neighborlist against table to see if each neighbor has been listed before
-                for(j = 0; j < call NeighborList.size(); ++j){
+                for(j = 0; j < call NeighborList.size(); ++j) {
                      //if current list item isnt 0
                      if(call NeighborList.get(j) != 0){
                           neighbor = call NeighborList.get(j);
@@ -617,6 +620,7 @@ implementation {
                                     //route is irrelevant
                                }
                      }
+                     signal CommandHandler.printRouteTable();
                      return alteredRoute;
         }
 
