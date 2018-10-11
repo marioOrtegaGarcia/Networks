@@ -89,7 +89,7 @@ implementation {
         void sendTableToNeighbors();
         void sendTableTo(uint8_t dest);
         void mergeTables(uint8_t* sharedTable);
-        
+
         void sendDVRTable();
         bool mergeRoute(uint8_t* newRoute);
         void splitHorizon(uint8_t nextHop);
@@ -267,7 +267,7 @@ implementation {
                      dbg(GENERAL_CHANNEL, "NeighborList Size: %d\n", NeighborListSize);
                         for(i = 0; i < (NeighborListSize); i++) {
                              if(NeighborList[i] > 0){
-                                  dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, i;
+                                  dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, i);
                                   count++;
                              }
                         }
