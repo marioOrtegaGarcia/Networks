@@ -482,7 +482,40 @@ implementation {
         }
 
         //function provided in book
+
+
         bool mergeRoute(uint8_t *newRoute){
+                uint8_t newRoutingDt[255][2];
+                uint8_t sender;
+                int node;
+
+                // Copy the data
+                memcpy(newRoutingDt, newRoute, sizeof(newRoute));
+
+                for (node = 1; node < 20; node+=) {
+                        if (newRoutingDt[node][0] == 0) {
+                                sender = node;
+                        }
+                }
+
+                //Loop Through Nodes
+                for (node = 1; node < 20; node+=) {
+                        //Update Cheaper Links
+                        if (newRoutingDt[node][0] + 1 < routing[node][0]) {
+                                dbg(ROUTING_CHANNEL, "Update Cheaper Links");
+                               routing[node][0] = newRoutingDt[node][0] + 1;
+                               routing[node][1] = sender;
+                        }
+                        //Update Similar Links (Same Cost)
+                        else if (newRoutingDt[node][0] + 1 == routing[node][0] && node != TOS_NODE_ID ) {
+                                dbg(ROUTING_CHANNEL, "Update Similar Links");
+                                routing[node][1] = sender;
+                        }
+                        //Drop Expensive ones
+                }
+        }
+
+        /* bool mergeRoute(uint8_t *newRoute){
                      int i;
                      bool alteredRoute = FALSE;
                      //iterate over table
@@ -492,21 +525,24 @@ implementation {
                               //TODO this portion almost works but check the output and see what you can figure out
 
 
-
+                              dbg(GENERAL_CHANNEL, "%d",sizeof(uint8_t));
                               dbg(GENERAL_CHANNEL, "<><>Pritting the newRoute (%d,%d) @%d \n", *(newRoute + (i * 2)), *(newRoute + (i * 2) + 1), i);
+
 
                                if(*(newRoute + (i * 2)) + 1 < routing[i][0]){
 
                                     //better route
                                     //dbg(GENERAL_CHANNEL, "Found better route\n");
                                     //update cost
+
                                     routing[i][0] = *(newRoute + (i * 2)) + 1;
                                     //update nextHop
+
                                     routing[i][1] = *(newRoute + ((i * 2) + 1));
                                     alteredRoute = TRUE;
 
                                } //  TODO fix this portion of the code cuz its breaking things somehow but im not really sure how
-                                /* else if(*(newRoute + (i * 2 + 1)) == routing[i][1] && i != TOS_NODE_ID){
+                                else if(*(newRoute + (i * 2 + 1)) == routing[i][1] && i != TOS_NODE_ID){
                                         dbg(ROUTING_CHANNEL, "Getting into trouble");
                                     //path cost may have increased
                                     //update cost
@@ -514,7 +550,7 @@ implementation {
                                     //update nextHop
                                     routing[i][1] = *(newRoute + (i * 2 + 1));
                                     alteredRoute = TRUE;
-                                } */
+                                }
                                else {
                                     //dbg(GENERAL_CHANNEL, "Route is irrelevant\n");
                                     //route is irrelevant
@@ -522,7 +558,7 @@ implementation {
                      }
                      signal CommandHandler.printRouteTable();
                      return alteredRoute;
-        }
+        } */
 
         void splitHorizon(uint8_t nextHop){
 
