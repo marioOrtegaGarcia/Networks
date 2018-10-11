@@ -56,11 +56,11 @@ implementation {
         uint8_t NeighborList[19];
         uint8_t routing[255][2];
 
-        typedef struct DVRtouple {
+        /* typedef struct DVRtouple {
            uint8_t dest;
            uint8_t cost;
            uint8_t nextHop;
-        } DVRtouple;
+        } DVRtouple; */
 
 
         /*
@@ -476,8 +476,8 @@ implementation {
 
 
         bool mergeRoute(uint8_t *newRoute){
-             uint8_t newRoutingDt[255][2];
-             /* uint8_t sender; */
+             /* uint8_t newRoutingDt[255][2];
+             uint8_t sender;
              int node;
 
              // Copy the data
@@ -490,9 +490,9 @@ implementation {
                       routing[node][1] = node;
                       return TRUE;
                   }
-             }
+             } */
 
-               /*
+
                 uint8_t newRoutingDt[255][2];
                 uint8_t sender;
                 int node;
@@ -525,7 +525,7 @@ implementation {
 
                         signal CommandHandler.printRouteTable();
                 }
-                */
+                
         }
 
         /* bool mergeRoute(uint8_t *newRoute){
