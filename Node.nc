@@ -213,7 +213,7 @@ implementation {
                              dbg(GENERAL_CHANNEL, "CALLING MERGERROUTE!!\n");
                              //signal CommandHandler.printRouteTable();
                              alteredRoute = mergeRoute((uint8_t*)recievedMsg->payload);
-                             signal CommandHandler.printRouteTable();
+                             //signal CommandHandler.printRouteTable();
                              if(alteredRoute){
                                   sendTableToNeighbors();
                              }
@@ -497,14 +497,23 @@ implementation {
                       return TRUE;
                   }
              }
-*/
+             */
+               uint8_t newRoutingDt[255][2];
+               uint8_t sender;
+               int node, i;
+               memcpy(newRoutingDt, newRoute, sizeof(newRoute));
 
-                uint8_t newRoutingDt[255][2];
-                uint8_t sender;
-                int node;
+               dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table~~~~~~~\n", TOS_NODE_ID);
+               dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
+               dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
+               for (i = 0; i < 20; i++) {
+                    dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", i, newRoutingDt[node][0], newRoutingDt[node][1]);
+               }
+               signal CommandHandler.printRouteTable();
+
+
 
                 // Copy the data
-                memcpy(newRoutingDt, newRoute, sizeof(newRoute));
 
                 for (node = 1; node < 20; node++) {
                         dbg(GENERAL_CHANNEL, "(%d,%d)\n", newRoutingDt[node][0],newRoutingDt[node][1]);
@@ -533,7 +542,7 @@ implementation {
                                 //Drop Expensive ones
                         }
 
-                        signal CommandHandler.printRouteTable();
+                        //signal CommandHandler.printRouteTable();
                 }
 
         }
@@ -595,7 +604,7 @@ implementation {
                 makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, (uint8_t*)temp, sizeof(routing));
                 call Sender.send(sendPackage, nextHop);
                //dbg(GENERAL_CHANNEL, "sent dv packet!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
-               signal CommandHandler.printRouteTable();
+               //signal CommandHandler.printRouteTable();
 
         }
 }
