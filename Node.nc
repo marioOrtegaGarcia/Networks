@@ -544,7 +544,7 @@ implementation {
              }
              signal CommandHandler.printRouteTable();
 
-             
+             return false;
         }
           /*
           //original
