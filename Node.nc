@@ -506,7 +506,7 @@ implementation {
                dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table~~~~~~~\n", TOS_NODE_ID);
                dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
                dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
-               for (i = 0; i < 20; i++) {
+               for (i = 0; i < 20; i+=2) {
                     dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", i, *(newRoute+(i * 2)), *(newRoute+(i * 2)));
                }
                signal CommandHandler.printRouteTable();
