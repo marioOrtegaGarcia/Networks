@@ -212,7 +212,7 @@ implementation {
                         else if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV) {
                              dbg(GENERAL_CHANNEL, "CALLING MERGERROUTE!!\n");
                              //signal CommandHandler.printRouteTable();
-                             alteredRoute = mergeRoute((uint8_t*)recievedMsg->payload);
+                             alteredRoute = mergeRoute(&recievedMsg->payload);
                              //signal CommandHandler.printRouteTable();
                              if(alteredRoute){
                                   sendTableToNeighbors();
@@ -535,7 +535,7 @@ implementation {
         bool mergeRoute(uint8_t *newRoute){
              int node, i;
              bool alteredRoute = FALSE;
-             /*
+
              dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table~~~~~~~\n", TOS_NODE_ID);
              dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
              dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
@@ -543,7 +543,7 @@ implementation {
                   dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", i, *(newRoute+(i * 2)), *(newRoute+(i * 2)));
              }
              signal CommandHandler.printRouteTable();
-             */
+
              return alteredRoute;
         }
           /*
@@ -566,13 +566,14 @@ implementation {
              int i;
              uint8_t * tablePtr = NULL;
              tablePtr = &routing[0][0];
-
+             /*
              dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's ORIGINAL Routing Table~~~~~~~\n", TOS_NODE_ID);
              dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
              dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
              for (i = 0; i < 20; i++) {
                   dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", i, *(tablePtr+(i * 2)), *(tablePtr+(i * 2 + 1)));
              }
+             */
 
              //signal CommandHandler.printRouteTable();
              nodeSeq++;
