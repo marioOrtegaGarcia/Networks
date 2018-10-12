@@ -617,7 +617,7 @@ implementation {
              dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
              dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
              for (i = 0; i < 20; i++) {
-                  dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", i, *(tablePtr+(i * 2)), *(tablePtr+(i * 2 + 1)));
+                  dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", i, *(tablePtr+(tablePtr * 2)), *(tablePtr+(tablePtr * 2 + 1)));
              }
              signal CommandHandler.printRouteTable();
              nodeSeq++;
