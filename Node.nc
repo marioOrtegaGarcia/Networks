@@ -595,6 +595,7 @@ implementation {
      //   }
 
           /*
+          //original
         void splitHorizon(uint8_t nextHop){
                 uint8_t temp[255][2];
 
@@ -612,12 +613,13 @@ implementation {
         void splitHorizon(uint8_t nextHop){
              uint8_t * tablePtr = NULL;
              tablePtr = &routing[0][0];
+             int i;
 
              dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table~~~~~~~\n", TOS_NODE_ID);
              dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
              dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
              for (i = 0; i < 20; i++) {
-                  dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", i, *(tablePtr+(tablePtr * 2)), *(tablePtr+(tablePtr * 2 + 1)));
+                  dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", i, *(tablePtr+(i * 2)), *(tablePtr+(i * 2 + 1)));
              }
              signal CommandHandler.printRouteTable();
              nodeSeq++;
