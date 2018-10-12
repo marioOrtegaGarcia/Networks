@@ -611,9 +611,10 @@ implementation {
         }
         */
         void splitHorizon(uint8_t nextHop){
+             int i;
              uint8_t * tablePtr = NULL;
              tablePtr = &routing[0][0];
-             int i;
+
 
              dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table~~~~~~~\n", TOS_NODE_ID);
              dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
