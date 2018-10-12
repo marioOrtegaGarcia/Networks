@@ -507,7 +507,7 @@ implementation {
                dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
                dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
                for (i = 0; i < 20; i++) {
-                    dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", i, newRoutingDt[node][0], newRoutingDt[node][1]);
+                    dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", i, *(newRoute+(i * 2)), *(newRoute+(i * 2)));
                }
                signal CommandHandler.printRouteTable();
 
