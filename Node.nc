@@ -478,26 +478,9 @@ implementation {
 
         //function provided in book
 
-
-        bool mergeRoute(uint8_t *newRoute){
 /*
-              uint8_t newRoutingDt[255][2];
-             uint8_t sender;
-             int node;
+        bool mergeRoute(uint8_t *newRoute){
 
-             // Copy the data
-             memcpy(newRoutingDt, newRoute, sizeof(newRoute));
-
-             for(node = 1; node < 20; node++){
-                  if((uint8_t)*(newRoutingDt + (node * 2)) < routing[node][0]){
-                       //update cost
-                      routing[node][0] = *(newRoutingDt + (node * 2)) + 1;
-                      //update nextHop
-                      routing[node][1] = node;
-                      return TRUE;
-                  }
-             }
-             */
 
                uint8_t newRoutingDt[255][2];
                uint8_t sender;
@@ -530,7 +513,7 @@ implementation {
 
 
                         if (newRoutingDt[node][0] + 1 < routing[node][0]) {
-                                dbg(GENERAL_CHANNEL, "Update Link (%d,%d)\n", newRoutingDt[node][0],newRoutingDt[node][1]);
+                                dbg(GENERAL_CHANNEL, "Update Link %d(%d,%d)\n", node,newRoutingDt[node][0],newRoutingDt[node][1]);
                                 dbg(ROUTING_CHANNEL, "Update Cheaper Links\n");
                                routing[node][0] = newRoutingDt[node][0] + 1;
                                routing[node][1] = sender;
@@ -547,53 +530,22 @@ implementation {
                 }
 
         }
-/*
-         bool mergeRoute(uint8_t *newRoute){
-                     int i;
-                     bool alteredRoute = FALSE;
-                     //iterate over table
-                     for(i = 1; i < 20; ++i){
-                             dbg(ROUTING_CHANNEL, "Checking for Node: %d\n", i);
-                              //compare cost of newRoute to cost of current route
-                              //TODO this portion almost works but check the output and see what you can figure out
+        */
 
+        bool mergeRoute(uint8_t *newRoute){
+             int node, i;
+             memcpy(newRoutingDt, newRoute, sizeof(newRoute));
 
-                              dbg(GENERAL_CHANNEL, "%d",sizeof(uint8_t));
-                              dbg(GENERAL_CHANNEL, "<><>Pritting the newRoute (%d,%d) @%d \n", *(newRoute + (i * 2)), *(newRoute + (i * 2) + 1), i);
+             dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table~~~~~~~\n", TOS_NODE_ID);
+             dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
+             dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
+             for (i = 0; i < 20; i++) {
+                  dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", i, *(newRoute+(i * 2)), *(newRoute+(i * 2)));
+             }
+             signal CommandHandler.printRouteTable();
 
-
-                               if(*(newRoute + (i * 2)) + 1 < routing[i][0]){
-
-                                    //better route
-                                    //dbg(GENERAL_CHANNEL, "Found better route\n");
-                                    //update cost
-
-                                    routing[i][0] = *(newRoute + (i * 2)) + 1;
-                                    //update nextHop
-
-                                    routing[i][1] = *(newRoute + ((i * 2) + 1));
-                                    alteredRoute = TRUE;
-
-                               } //  TODO fix this portion of the code cuz its breaking things somehow but im not really sure how
-                                else if(*(newRoute + (i * 2 + 1)) == routing[i][1] && i != TOS_NODE_ID){
-                                        dbg(ROUTING_CHANNEL, "Getting into trouble");
-                                    //path cost may have increased
-                                    //update cost
-                                    routing[i][0] = *(newRoute + (i * 2)) + 1;
-                                    //update nextHop
-                                    routing[i][1] = *(newRoute + (i * 2 + 1));
-                                    alteredRoute = TRUE;
-                                }
-                               else {
-                                    //dbg(GENERAL_CHANNEL, "Route is irrelevant\n");
-                                    //route is irrelevant
-                               }
-                     }
-                     signal CommandHandler.printRouteTable();
-                     return alteredRoute;
-                     */
-     //   }
-
+             
+        }
           /*
           //original
         void splitHorizon(uint8_t nextHop){
