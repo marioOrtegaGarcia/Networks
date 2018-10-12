@@ -503,15 +503,15 @@ implementation {
                uint8_t sender;
                int node, i;
                memcpy(newRoutingDt, newRoute, sizeof(newRoute));
-               /*
+
                dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table~~~~~~~\n", TOS_NODE_ID);
                dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
                dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
                for (i = 0; i < 20; i++) {
                     dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", i, *(newRoute+(i * 2)), *(newRoute+(i * 2)));
                }
-               signal CommandHandler.printRouteTable();
-               */
+               //signal CommandHandler.printRouteTable();
+
 
 
                 // Copy the data
@@ -616,13 +616,13 @@ implementation {
              tablePtr = &routing[0][0];
 
 
-             dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table~~~~~~~\n", TOS_NODE_ID);
+             dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's ORIGINAL Routing Table~~~~~~~\n", TOS_NODE_ID);
              dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
              dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
              for (i = 0; i < 20; i++) {
                   dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", i, *(tablePtr+(i * 2)), *(tablePtr+(i * 2 + 1)));
              }
-             signal CommandHandler.printRouteTable();
+             //signal CommandHandler.printRouteTable();
              nodeSeq++;
              makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, tablePtr, sizeof(routing));
              call Sender.send(sendPackage, nextHop);
