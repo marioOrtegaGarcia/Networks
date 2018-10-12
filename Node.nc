@@ -134,7 +134,7 @@ implementation {
                      initialized = TRUE;
                   //signal CommandHandler.printNeighbors();
              } else {
-                dbg (GENERAL_CHANNEL, "\tNode %d is Sharing his table with Neighbors\n", TOS_NODE_ID);
+                //dbg (GENERAL_CHANNEL, "\tNode %d is Sharing his table with Neighbors\n", TOS_NODE_ID);
                 sendTableToNeighbors();
              }
 
@@ -516,7 +516,7 @@ implementation {
                 // Copy the data
 
                 for (node = 1; node < 20; node++) {
-                        dbg(GENERAL_CHANNEL, "(%d,%d)\n", newRoutingDt[node][0],newRoutingDt[node][1]);
+                        //dbg(GENERAL_CHANNEL, "(%d,%d)\n", newRoutingDt[node][0],newRoutingDt[node][1]);
                         if (newRoutingDt[node][0] == 0) {
                                 sender = node;
                         }
