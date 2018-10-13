@@ -497,7 +497,7 @@ implementation {
                   if((cost + 1) < routing[node][1] || nextHop == routing[node][2] && node != TOS_NODE_ID){
                        routing[node][0] = node;
                        routing[node][1] = cost + 1;
-                       routing[node][2] = node;
+                       routing[node][2] = nextHop;
                        alteredRoute = TRUE;
                   }
              }
