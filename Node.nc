@@ -54,7 +54,7 @@ implementation {
         uint8_t MAX_NEIGHBOR_TTL = 20;
 
         uint8_t NeighborList[19];
-        uint8_t routing[255][2];
+        uint8_t routing[255][3];
 
         /* typedef struct DVRtouple {
            uint8_t dest;
@@ -286,7 +286,7 @@ implementation {
                 dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Routing Table~~~~~~~\n", TOS_NODE_ID);
                 dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
                 for (i = 0; i < 20; i++) {
-                        dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", i, routing[i][0], routing[i][1]);
+                        dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", routing[i][0], routing[i][1], routing[i][2]);
                 }
         }
 
@@ -445,13 +445,15 @@ implementation {
 
                 // Setting all the Nodes in our pool/routing table to  MAX_HOP and setting their nextHop to our emlpty first cell
                 for(i = 1; i < 20; i++) {
-                        routing[i][0] = 255;
-                        routing[i][1] = 0;
+                         routing[i][0] = 0;
+                        routing[i][1] = 255;
+                        routing[i][2] = 0;
                 }
 
                 // Setting the cost for SELF
-                routing[TOS_NODE_ID][0] = 0;
-                routing[TOS_NODE_ID][1] = TOS_NODE_ID;
+                routing[TOS_NODE_ID][0] = TOS_NODE_ID;
+                routing[TOS_NODE_ID][1] = 0;
+                routing[TOS_NODE_ID][2] = TOS_NODE_ID;
 
                 // Setting the cost to all my neighbors
                 for(j = 0; j < NeighborListSize; ++j) {
@@ -463,8 +465,9 @@ implementation {
 
         void insert(uint8_t dest, uint8_t cost, uint8_t nextHop) {
                 //input data to a touple
-                routing[dest][0] = cost;
-                routing[dest][1] = nextHop;
+                routing[dest][0] = dest;
+                routing[dest][1] = cost;
+                routing[dest][2] = nextHop;
         }
 
         void sendTableToNeighbors() {
@@ -473,64 +476,6 @@ implementation {
                     if(NeighborList[i] > 0)
                         splitHorizon(NeighborList[i]);
         }
-
-        //void *memcpy(void *str1, const void *str2, size_t n)
-
-        //function provided in book
-
-/*
-        bool mergeRoute(uint8_t *newRoute){
-
-
-               uint8_t newRoutingDt[255][2];
-               uint8_t sender;
-               int node, i;
-               memcpy(newRoutingDt, newRoute, sizeof(newRoute));
-
-               dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table~~~~~~~\n", TOS_NODE_ID);
-               dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
-               dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
-               for (i = 0; i < 20; i++) {
-                    dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", i, *(newRoute+(i * 2)), *(newRoute+(i * 2)));
-               }
-               //signal CommandHandler.printRouteTable();
-
-
-
-                // Copy the data
-
-                for (node = 1; node < 20; node++) {
-                        //dbg(GENERAL_CHANNEL, "(%d,%d)\n", newRoutingDt[node][0],newRoutingDt[node][1]);
-                        if (newRoutingDt[node][0] == 0) {
-                                sender = node;
-                        }
-                }
-
-                //Loop Through Nodes
-                for (node = 1; node < 20; node++) {
-                        //Update Cheaper Links
-
-
-
-                        if (newRoutingDt[node][0] + 1 < routing[node][0]) {
-                                dbg(GENERAL_CHANNEL, "Update Link %d(%d,%d)\n", node,newRoutingDt[node][0],newRoutingDt[node][1]);
-                                dbg(ROUTING_CHANNEL, "Update Cheaper Links\n");
-                               routing[node][0] = newRoutingDt[node][0] + 1;
-                               routing[node][1] = sender;
-                        }
-                        //Update Similar Links (Same Cost)
-                        else if (newRoutingDt[node][0] + 1 == routing[node][0] && node != TOS_NODE_ID ) {
-                                dbg(ROUTING_CHANNEL, "Update Similar Links\n");
-                                routing[node][1] = sender;
-                        } else {
-                                //Drop Expensive ones
-                        }
-
-                        signal CommandHandler.printRouteTable();
-                }
-
-        }
-        */
 
         bool mergeRoute(uint8_t* newRoute){
              int j, i;
@@ -549,27 +494,13 @@ implementation {
 
              return alteredRoute;
         }
-          /*
-          //original
-        void splitHorizon(uint8_t nextHop){
-                uint8_t temp[255][2];
 
-                memcpy(temp, routing, sizeof(routing));
-                temp[nextHop][0] = MAX_HOP;
-                //makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, (uint8_t*)routing, sizeof(routing));
-                nodeSeq++;
-                makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, (uint8_t*)temp, sizeof(routing));
-                call Sender.send(sendPackage, nextHop);
-               //dbg(GENERAL_CHANNEL, "sent dv packet!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
-               //signal CommandHandler.printRouteTable();
-
-        }
-        */
         void splitHorizon(uint8_t nextHop){
              int i;
              uint8_t * tablePtr = NULL;
-             uint8_t newTable[NeighborListSize][2];
              tablePtr = &routing[0][0];
+
+             //send table row by row
              /*
              dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's ORIGINAL Routing Table~~~~~~~\n", TOS_NODE_ID);
              dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
@@ -580,6 +511,7 @@ implementation {
              */
 
              //signal CommandHandler.printRouteTable();
+
              nodeSeq++;
              makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, tablePtr, sizeof(routing));
              call Sender.send(sendPackage, nextHop);
