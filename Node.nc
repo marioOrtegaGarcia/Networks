@@ -487,7 +487,7 @@ implementation {
 
 
              for (i = 0; i < 20; i++) {
-                  dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", *(newRoute+(i * 2)), *(newRoute+(i * 2) + 1), *(newRoute+(i * 2) + 2));
+                  dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", *(newRoute+(i * 3)), *(newRoute+(i * 3) + 1), *(newRoute+(i * 3) + 2));
              }
 
              signal CommandHandler.printRouteTable();
