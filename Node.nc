@@ -568,6 +568,7 @@ implementation {
         void splitHorizon(uint8_t nextHop){
              int i;
              uint8_t * tablePtr = NULL;
+             uint8_t newTable[maxNodes][2] = {{0}};
              tablePtr = &routing[0][0];
              /*
              dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's ORIGINAL Routing Table~~~~~~~\n", TOS_NODE_ID);
