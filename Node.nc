@@ -478,16 +478,26 @@ implementation {
         }
 
         bool mergeRoute(uint8_t* newRoute){
-             int j, i;
+             int node, i;
              bool alteredRoute = FALSE;
 
              dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table~~~~~~~\n", TOS_NODE_ID);
              dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
              dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
-
-
              for (i = 0; i < 7; i++) {
                   dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", *(newRoute+(i * 3)), *(newRoute+(i * 3) + 1), *(newRoute+(i * 3) + 2));
+             }
+
+             for(i = 0; i < 20; i++){
+                  node = *(newRoute + (i * 3));
+                  cost = *(newRoute + (i * 3) + 1);
+                  nextHop = *(newRoute + (i * 3) + 2);
+                  if((cost + 1) < routing[node][1] || nextHop == routing[node][2]){
+                       routing[node][0] = node;
+                       routing[node][1] = cost;
+                       routing[node][2] = node;
+                       alteredRoute = TRUE;
+                  }
              }
 
              signal CommandHandler.printRouteTable();
@@ -502,13 +512,13 @@ implementation {
 
              //can send 7 rows at a time
              for(i = 0; i < 20; i++){
+                  //point to the next portion of the table and send to next node
                   if(i % 7 == 0){
                       tablePtr = &routing[i][0];
                       nodeSeq++;
                       makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, tablePtr, sizeof(routing));
                       call Sender.send(sendPackage, nextHop);
                   }
-
              }
              /*
              dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's ORIGINAL Routing Table~~~~~~~\n", TOS_NODE_ID);
