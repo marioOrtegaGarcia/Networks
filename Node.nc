@@ -478,7 +478,7 @@ implementation {
         }
 
         bool mergeRoute(uint8_t* newRoute){
-             int node, i;
+             int node, cost, nextHop, i;
              bool alteredRoute = FALSE;
 
              dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table~~~~~~~\n", TOS_NODE_ID);
