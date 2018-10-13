@@ -212,7 +212,7 @@ implementation {
                         else if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV) {
                              dbg(GENERAL_CHANNEL, "CALLING MERGERROUTE!!\n");
                              //signal CommandHandler.printRouteTable();
-                             alteredRoute = mergeRoute((uint8_t*)recievedMsg->payload, receiveMsg->src);
+                             alteredRoute = mergeRoute((uint8_t*)recievedMsg->payload, receivedMsg->src);
                              //signal CommandHandler.printRouteTable();
                              if(alteredRoute){
                                   sendTableToNeighbors();
@@ -498,7 +498,6 @@ implementation {
                        routing[node][0] = node;
                        routing[node][1] = cost + 1;
                        routing[node][2] = src;
-
                        alteredRoute = TRUE;
                   }
              }
