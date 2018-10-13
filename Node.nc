@@ -501,7 +501,7 @@ implementation {
              tablePtr = &routing[0][0];
 
              //can send 7 rows at a time
-             for(i = 0; i < 20; i++){
+             for(i = 1; i < 20; i++){
                   if(i % 7 == 0){
                       tablePtr = &routing[i][0];
                       nodeSeq++;
