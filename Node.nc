@@ -486,7 +486,7 @@ implementation {
              dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
 
 
-             for (i = 0; i < 20; i++) {
+             for (i = 0; i < 7; i++) {
                   dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", *(newRoute+(i * 3)), *(newRoute+(i * 3) + 1), *(newRoute+(i * 3) + 2));
              }
 
@@ -500,7 +500,16 @@ implementation {
              uint8_t * tablePtr = NULL;
              tablePtr = &routing[0][0];
 
-             //send table row by row
+             //can send 7 rows at a time
+             for(i = 0; i < 20; i++){
+                  if(i % 7 == 0){
+                      tablePtr = &routing[i][0];
+                      nodeSeq++;
+                      makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, tablePtr, sizeof(routing));
+                      call Sender.send(sendPackage, nextHop);
+                  }
+
+             }
              /*
              dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's ORIGINAL Routing Table~~~~~~~\n", TOS_NODE_ID);
              dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
@@ -512,9 +521,7 @@ implementation {
 
              //signal CommandHandler.printRouteTable();
 
-             nodeSeq++;
-             makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, tablePtr, sizeof(routing));
-             call Sender.send(sendPackage, nextHop);
+
 
         }
 }
