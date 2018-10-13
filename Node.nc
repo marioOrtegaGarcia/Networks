@@ -494,7 +494,7 @@ implementation {
                   nextHop = *(newRoute + (i * 3) + 2);
                   if((cost + 1) < routing[node][1] || nextHop == routing[node][2]){
                        routing[node][0] = node;
-                       routing[node][1] = cost;
+                       routing[node][1] = cost + 1;
                        routing[node][2] = node;
                        alteredRoute = TRUE;
                   }
