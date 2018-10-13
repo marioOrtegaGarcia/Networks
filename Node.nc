@@ -445,7 +445,7 @@ implementation {
 
                 // Setting all the Nodes in our pool/routing table to  MAX_HOP and setting their nextHop to our emlpty first cell
                 for(i = 1; i < 20; i++) {
-                         routing[i][0] = 0;
+                         routing[i][0] = i;
                         routing[i][1] = 255;
                         routing[i][2] = 0;
                 }
