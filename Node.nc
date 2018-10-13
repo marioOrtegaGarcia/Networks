@@ -212,7 +212,7 @@ implementation {
                         else if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV) {
                              dbg(GENERAL_CHANNEL, "CALLING MERGERROUTE!!\n");
                              //signal CommandHandler.printRouteTable();
-                             alteredRoute = mergeRoute(recievedMsg->payload);
+                             alteredRoute = mergeRoute((uint8_t*)recievedMsg->payload);
                              //signal CommandHandler.printRouteTable();
                              if(alteredRoute){
                                   sendTableToNeighbors();
@@ -568,7 +568,7 @@ implementation {
         void splitHorizon(uint8_t nextHop){
              int i;
              uint8_t * tablePtr = NULL;
-             uint8_t newTable[NeighborListSize][2] = {{0}};
+             uint8_t newTable[NeighborListSize][2];
              tablePtr = &routing[0][0];
              /*
              dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's ORIGINAL Routing Table~~~~~~~\n", TOS_NODE_ID);
