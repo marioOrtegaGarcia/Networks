@@ -87,7 +87,7 @@ implementation {
         void insert(uint8_t dest, uint8_t cost, uint8_t nextHop);
         void sendTableToNeighbors();
 
-        bool mergeRoute(uint8_t* newRoute);
+        bool mergeRoute(uint8_t* newRoute, uint8_t src);
         void splitHorizon(uint8_t nextHop);
 
 
@@ -212,7 +212,7 @@ implementation {
                         else if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV) {
                              dbg(GENERAL_CHANNEL, "CALLING MERGERROUTE!!\n");
                              //signal CommandHandler.printRouteTable();
-                             alteredRoute = mergeRoute((uint8_t*)recievedMsg->payload);
+                             alteredRoute = mergeRoute((uint8_t*)recievedMsg->payload, receiveMsg->src);
                              //signal CommandHandler.printRouteTable();
                              if(alteredRoute){
                                   sendTableToNeighbors();
@@ -477,7 +477,7 @@ implementation {
                         splitHorizon(NeighborList[i]);
         }
 
-        bool mergeRoute(uint8_t* newRoute){
+        bool mergeRoute(uint8_t* newRoute, uint8_t src){
              int node, cost, nextHop, i, j;
              bool alteredRoute = FALSE;
 
@@ -497,12 +497,8 @@ implementation {
                   if((cost + 1) < routing[node][1] || nextHop == routing[node][2] && node != TOS_NODE_ID){
                        routing[node][0] = node;
                        routing[node][1] = cost + 1;
+                       routing[node][2] = src;
 
-                       for(j = 0; j < NeighborListSize; j++){
-                            if(nextHop == NeighborList[i]){
-                                 routing[node][2] = nextHop;
-                            }
-                       }
                        alteredRoute = TRUE;
                   }
              }
