@@ -489,7 +489,9 @@ implementation {
                          dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", *(newRoute+(i * 3)), *(newRoute+(i * 3) + 1), *(newRoute+(i * 3) + 2));
              }
 
-             for(i = 0; i < 20; i++){
+
+
+             for(i = 0; i < 20; i++) {
 
                   node = *(newRoute + (i * 3));
                   cost = *(newRoute + (i * 3) + 1);
@@ -497,7 +499,12 @@ implementation {
                   if((cost + 1) < routing[node][1] || nextHop == routing[node][2] && node != TOS_NODE_ID){
                        routing[node][0] = node;
                        routing[node][1] = cost + 1;
-                       routing[node][2] = src;
+                       for(j = 0; j < NeighborListSize; j++){
+                            if(src == NeighborList[i]){
+                                 routing[node][2] = src;
+                            }
+                       }
+
                        alteredRoute = TRUE;
                   }
              }
