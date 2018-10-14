@@ -507,7 +507,6 @@ implementation {
 
                                   alteredRoute = TRUE;
                           }
-                  }
 
 
 
@@ -522,7 +521,7 @@ implementation {
                           routing[node][2] = src;
 
                           alteredRoute = TRUE;*/
-                  } 
+                  }
              }
 
              signal CommandHandler.printRouteTable();
