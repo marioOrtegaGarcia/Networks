@@ -517,8 +517,8 @@ implementation {
              for(i = 0; i < 20; i++){
                   //point to the next portion of the table and send to next node
                   if(i % 7 == 0){
-                          if (routing[i][0] == nextHop)
-                                *(tablePtr + (i*3) + 1) = MAX_HOP;
+                        //  if (routing[i][0] == nextHop)
+                        //        *(tablePtr + (i*3) + 1) = MAX_HOP;
                       tablePtr = &routing[i][0];
                       nodeSeq++;
                       makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, tablePtr, sizeof(routing));
