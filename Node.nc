@@ -494,8 +494,9 @@ implementation {
                   node = *(newRoute + (i * 3));
                   cost = *(newRoute + (i * 3) + 1);
                   nextHop = *(newRoute + (i * 3) + 2);
-
-                  if((cost + 1) < routing[node][1] && nextHop != 0 || nextHop == routing[node][2] && node != TOS_NODE_ID && nextHop != 0) {
+                  if (cost == 255)
+                        cost--;
+                  if((cost + 1) < routing[node][1] || nextHop == routing[node][2] && node != TOS_NODE_ID && nextHop != 0) {
                        routing[node][0] = node;
                        routing[node][1] = cost + 1;
                        routing[node][2] = src;
