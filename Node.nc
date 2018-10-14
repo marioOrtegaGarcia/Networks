@@ -495,7 +495,7 @@ implementation {
                   cost = *(newRoute + (i * 3) + 1);
                   nextHop = *(newRoute + (i * 3) + 2);
 
-                  if((cost + 1) < routing[node][1] || nextHop == routing[node][2] && node != TOS_NODE_ID && nextHop != 0) {
+                  if((cost + 1) < routing[node][1] && nextHop != 0 || nextHop == routing[node][2] && node != TOS_NODE_ID && nextHop != 0) {
                        routing[node][0] = node;
                        routing[node][1] = cost + 1;
                        routing[node][2] = src;
@@ -519,7 +519,7 @@ implementation {
                   //point to the next portion of the table and send to next node
                   if(i % 7 == 0){
                           if (routing[i][0] == nextHop)
-                                *(tablePtr + (i*3) + 1) = 255;
+                                *(tablePtr + (i*3) + 1) = MAX_HOP;
                       tablePtr = &routing[i][0];
                       nodeSeq++;
                       makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, tablePtr, sizeof(routing));
