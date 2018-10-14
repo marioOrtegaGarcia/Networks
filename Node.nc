@@ -501,7 +501,7 @@ implementation {
                      nextHop = *(newRoute + (i * 3) + 2);
 
                      // These are unset rows in out new table
-                     if (node == routing[node][0] && nextHop !=0 && cost != 255) {
+                     if (node == routing[i][0] && nextHop !=0 && cost != 255) {
                              if ((cost + 1) < routing[i][1]) {
                                      routing[i][0] = node;
                                      routing[i][1] = cost + 1;
