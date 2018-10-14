@@ -498,14 +498,31 @@ implementation {
                   node = *(newRoute + (i * 3));
                   cost = *(newRoute + (i * 3) + 1);
                   nextHop = *(newRoute + (i * 3) + 2);
-                  // First we exclude unset values, and  insert values that have a lesser cost or inser values that have the same nextHop/TOS_NODE_ID/ anf nodeID is not mine
+                  // These are unset rows in out new table
+                  if (nextHop !=0 && cost != 255) {
+                          if ((cost + 1) < routing[node][1] {
+                                  routing[node][0] = node;
+                                  routing[node][1] = cost + 1;
+                                  routing[node][2] = src;
+
+                                  alteredRoute = TRUE;
+                          }
+                  }
+
+
+
+
+
+
+
+                  /* // First we exclude unset values, and  insert values that have a lesser cost or inser values that have the same nextHop/TOS_NODE_ID/ anf nodeID is not mine
                   if ((nextHop != 0 || cost != 255) && (((cost + 1) < routing[node][1]) || (nextHop == routing[node][2] && node == routing[node][0] && node != TOS_NODE_ID))) {
                           routing[node][0] = node;
                           routing[node][1] = cost + 1;
                           routing[node][2] = src;
 
                           alteredRoute = TRUE;
-                  }
+                  } */
              }
 
              signal CommandHandler.printRouteTable();
