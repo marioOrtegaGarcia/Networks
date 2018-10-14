@@ -521,8 +521,8 @@ implementation {
                           routing[node][1] = cost + 1;
                           routing[node][2] = src;
 
-                          alteredRoute = TRUE;
-                  } */
+                          alteredRoute = TRUE;*/
+                  } 
              }
 
              signal CommandHandler.printRouteTable();
