@@ -472,7 +472,7 @@ implementation {
 
         void sendTableToNeighbors() {
                 int i;
-                for (i = 0; i < NeighborListSize; i++)
+                for (i = 1; i < NeighborListSize; i++)
                     if(NeighborList[i] > 0)
                         splitHorizon(NeighborList[i]);
         }
