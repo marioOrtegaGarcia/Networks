@@ -490,12 +490,13 @@ implementation {
                          dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", *(newRoute+(i * 3)), *(newRoute+(i * 3) + 1), *(newRoute+(i * 3) + 2));
              }
 
-             for(i = *(newRoute + (2 * 3)); *(newRoute + (7 * 3)) < 20; i++) {
+             for(i = 1; i < 20; i++) {
                   node = *(newRoute + (i * 3));
                   cost = *(newRoute + (i * 3) + 1);
                   nextHop = *(newRoute + (i * 3) + 2);
-                  if (cost == 255)
-                        cost--;
+                  if (cost == 255) {
+                        cost == 244;
+                  }
                   if((cost + 1) < routing[node][1] || nextHop == routing[node][2] && node != TOS_NODE_ID && nextHop != 0) {
                        routing[node][0] = node;
                        routing[node][1] = cost + 1;
