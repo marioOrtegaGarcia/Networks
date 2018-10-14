@@ -485,16 +485,21 @@ implementation {
              dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
              dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
 
+
+             // Here we read the first 7 indexes of the Incoming table
              for (i = 0; i < 7; i++) {
+                     // There is no node with an TOS_NODE_ID so we exclude it from the print
                   if(*(newRoute+(i * 3)) != 0)
                          dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", *(newRoute+(i * 3)), *(newRoute+(i * 3) + 1), *(newRoute+(i * 3) + 2));
              }
 
+             // When inserting the partitioned DV tables to ours we want to iterate through all of the notes to compare them to our table
              for(i = 1; i < 20; i++) {
                   node = *(newRoute + (i * 3));
                   cost = *(newRoute + (i * 3) + 1);
                   nextHop = *(newRoute + (i * 3) + 2);
-                  if ((nextHop != 0 || cost != 255) && (((cost + 1) < routing[node][1]) || (nextHop == routing[node][2] && node != TOS_NODE_ID))) {
+                  // First we exclude unset values, and  insert values that have a lesser cost or inser values that have the same nextHop/TOS_NODE_ID/ anf nodeID is not mine
+                  if ((nextHop != 0 || cost != 255) && (((cost + 1) < routing[node][1]) || (nextHop == routing[node][2] && node == routing[node][0] && node != TOS_NODE_ID))) {
                           routing[node][0] = node;
                           routing[node][1] = cost + 1;
                           routing[node][2] = src;
