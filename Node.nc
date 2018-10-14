@@ -502,7 +502,7 @@ implementation {
 
                      // These are unset rows in out new table
                      if (nextHop !=0 && cost != 255) {
-                             if ((cost + 1) < routing[node][1] {
+                             if ((cost + 1) < routing[node][1]) {
                                      routing[node][0] = node;
                                      routing[node][1] = cost + 1;
                                      routing[node][2] = src;
