@@ -494,7 +494,6 @@ implementation {
              }
 
              // When inserting the partitioned DV tables to ours we want to iterate through all of the notes to compare them to our table
-             for (j = 0; j < 7; i++) {
              for(i = 1; i < 20; i++) {
                      // Saving values for cleaner Code
                      node = *(newRoute + (i * 3));
@@ -502,17 +501,18 @@ implementation {
                      nextHop = *(newRoute + (i * 3) + 2);
 
                      // These are unset rows in out new table
-                     if (node == routing[j][1] && nextHop !=0 && cost != 255) {
-                             if (((cost + 1) < routing[j][1]) || (node == routing[j][0] && nextHop == routing[j][2])) {
-                                     routing[j][0] = node;
-                                     routing[j][1] = cost + 1;
-                                     routing[j][2] = src;
+                     if (node == routing[i][1] && nextHop !=0 && cost != 255) {
+                             if (((cost + 1) < routing[i][1]) || (node == routing[i][0] && nextHop == routing[i][2])) {
+                                     routing[i][0] = node;
+                                     routing[i][1] = cost + 1;
+                                     routing[i][2] = src;
 
                                      alteredRoute = TRUE;
                              }
                      }
              }
-}
+
+
 
 
 
