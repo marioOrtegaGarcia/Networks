@@ -548,7 +548,7 @@ implementation {
              //can send 7 rows at a time
              for(i = 0; i < 20; i++) {
                      //Poison Reverse --  make the new path cost of where we sending to to MAX HOP NOT 255
-                     if (nextHop == routing[i][2])
+                   if (nextHop == routing[i][0])
                            *(tablePtr + (i*3) + 1) = 255;
                   //point to the next portion of the table and send to next node
                   if(i % 7 == 0){
