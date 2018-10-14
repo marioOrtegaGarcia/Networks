@@ -495,20 +495,22 @@ implementation {
 
              // When inserting the partitioned DV tables to ours we want to iterate through all of the notes to compare them to our table
              for(i = 1; i < 20; i++) {
-                  node = *(newRoute + (i * 3));
-                  cost = *(newRoute + (i * 3) + 1);
-                  nextHop = *(newRoute + (i * 3) + 2);
-                  // These are unset rows in out new table
-                  if (nextHop !=0 && cost != 255) {
-                          if ((cost + 1) < routing[node][1] {
-                                  routing[node][0] = node;
-                                  routing[node][1] = cost + 1;
-                                  routing[node][2] = src;
+                     // Saving values for cleaner Code
+                     node = *(newRoute + (i * 3));
+                     cost = *(newRoute + (i * 3) + 1);
+                     nextHop = *(newRoute + (i * 3) + 2);
 
-                                  alteredRoute = TRUE;
-                          }
+                     // These are unset rows in out new table
+                     if (nextHop !=0 && cost != 255) {
+                             if ((cost + 1) < routing[node][1] {
+                                     routing[node][0] = node;
+                                     routing[node][1] = cost + 1;
+                                     routing[node][2] = src;
 
-
+                                     alteredRoute = TRUE;
+                             }
+                     }
+             }
 
 
 
@@ -521,8 +523,7 @@ implementation {
                           routing[node][2] = src;
 
                           alteredRoute = TRUE;*/
-                  }
-             }
+
 
              signal CommandHandler.printRouteTable();
 
