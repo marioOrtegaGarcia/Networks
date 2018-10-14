@@ -478,7 +478,7 @@ implementation {
         }
 
         bool mergeRoute(uint8_t* newRoute, uint8_t src){
-             int node, cost, nextHop, i, j;
+             int node, cost, nextHop, i;
              bool alteredRoute = FALSE;
 
              dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table~~~~~~~\n", TOS_NODE_ID);
@@ -489,18 +489,16 @@ implementation {
                          dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", *(newRoute+(i * 3)), *(newRoute+(i * 3) + 1), *(newRoute+(i * 3) + 2));
              }
 
-
-
              for(i = 0; i < 20; i++) {
-
                   node = *(newRoute + (i * 3));
                   cost = *(newRoute + (i * 3) + 1);
                   nextHop = *(newRoute + (i * 3) + 2);
+
                   if((cost + 1) < routing[node][1] || nextHop == routing[node][2] && node != TOS_NODE_ID){
                        routing[node][0] = node;
                        routing[node][1] = cost + 1;
                        for(j = 0; j < NeighborListSize; j++){
-                            if(src == NeighborList[i]){
+                            if(src == NeighborList[j]){
                                  routing[node][2] = src;
                             }
                        }
