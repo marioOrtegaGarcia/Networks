@@ -497,12 +497,12 @@ implementation {
                   if (cost == 255) {
                         cost == 244;
                   }
-                  if((cost + 1) < routing[node][1] || nextHop == routing[node][2] && node != TOS_NODE_ID && nextHop != 0) {
-                       routing[node][0] = node;
-                       routing[node][1] = cost + 1;
-                       routing[node][2] = src;
+                  if (nextHop != 0 && ((cost + 1) < routing[node][1]) || (nextHop == routing[node][2] && node != TOS_NODE_ID)) {
+                          routing[node][0] = node;
+                          routing[node][1] = cost + 1;
+                          routing[node][2] = src;
 
-                       alteredRoute = TRUE;
+                          alteredRoute = TRUE;
                   }
              }
 
