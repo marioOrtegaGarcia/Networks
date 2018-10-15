@@ -565,7 +565,7 @@ implementation {
 
         }
 
-        void sendTablePartition(uint8_t* PoisonTable, startNode, uint8_t endNode) {
+        void sendTablePartition(uint8_t* PoisonTable, uint8_t startNode, uint8_t endNode) {
                 uint8_t i, node, cost, nextHop;
                 uint8_t * tablePtr = NULL;
                 tablePtr = PoisonTable;
