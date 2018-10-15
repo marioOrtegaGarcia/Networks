@@ -504,6 +504,7 @@ implementation {
                      // These are unset rows in out new table
                      if (node == routing[i][0] /*&& nextHop !=0*/ && cost != 255) {
                              if ((cost + 1) < routing[i][1]) {
+                                  dbg(GENERAL_CHANNEL, "\tRewriting route for node %d\n", node)
                                      routing[i][0] = node;
                                      routing[i][1] = cost + 1;
                                      routing[i][2] = src;
