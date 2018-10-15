@@ -519,12 +519,6 @@ implementation {
                      }
              }
 
-
-
-
-
-
-
                   /* // First we exclude unset values, and  insert values that have a lesser cost or inser values that have the same nextHop/TOS_NODE_ID/ anf nodeID is not mine
                   if ((nextHop != 0 || cost != 255) && (((cost + 1) < routing[node][1]) ||
                   (nextHop == routing[node][2] && node == routing[node][0] && node != TOS_NODE_ID))) {
@@ -554,6 +548,13 @@ implementation {
                   if(i % 7 == 0){
                       tablePtr = &routing[i][0];
                       nodeSeq++;
+                      dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table PART %d~~~~~~~\n", TOS_NODE_ID, TOP(ROUND(i/7)));
+                      dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
+                      dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
+
+                      dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", *(routing+(i * 3)), *(routing+(i * 3) + 1), *(routing+(i * 3) + 2));
+
+
                       makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, tablePtr, sizeof(routing));
                       call Sender.send(sendPackage, nextHop);
                   }
