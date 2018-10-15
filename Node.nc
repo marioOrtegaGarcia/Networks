@@ -135,7 +135,7 @@ implementation {
                      initialized = TRUE;
                   //signal CommandHandler.printNeighbors();
              } else {
-                //dbg (GENERAL_CHANNEL, "\tNode %d is Sharing his table with Neighbors\n", TOS_NODE_ID);
+                dbg (GENERAL_CHANNEL, "\tNode %d is Sharing his table with Neighbors\n", TOS_NODE_ID);
                 sendTableToNeighbors();
              }
 
