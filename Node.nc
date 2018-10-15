@@ -89,6 +89,7 @@ implementation {
 
         bool mergeRoute(uint8_t* newRoute, uint8_t src);
         void splitHorizon(uint8_t nextHop);
+        void sendTablePartition(uint8_t* PoisonTable, uint8_t startNode, uint8_t endNode);
 
 
         //  Node boot time calls
@@ -534,6 +535,7 @@ implementation {
              return alteredRoute;
         }
 
+        // Used when sending DV Tables to Neighbors, nextHop is the Neighbor we are sending to
         void splitHorizon(uint8_t nextHop){
              int i;
              uint8_t * tablePtr = NULL;
@@ -543,22 +545,13 @@ implementation {
              dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
              dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
 
-             //can send 7 rows at a time
-             for(i = 0; i < 20; i++) {
-                     //Poison Reverse --  make the new path cost of where we sending to to MAX HOP NOT 255
-                   if (nextHop == routing[i][0])
+             for (i = 0; i < 20; i++) {
+                     // Setting Poison Reverse
+                     if (nextHop == routing[i][0])
                            *(tablePtr + (i*3) + 1) = 255;
-                  //point to the next portion of the table and send to next node
-                  if(i % 7 == 0){
-                      tablePtr = &routing[i][0];
-                      nodeSeq++;
-
-                      dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d\n", routing[i][0], routing[i][1], routing[i][2]);
-
-                      makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, tablePtr, sizeof(routing));
-                      call Sender.send(sendPackage, nextHop);
-                  }
              }
+
+             sendTablePartition(tablePtr, 1, 19);
              /*
              dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's ORIGINAL Routing Table~~~~~~~\n", TOS_NODE_ID);
              dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
@@ -570,7 +563,29 @@ implementation {
 
              //signal CommandHandler.printRouteTable();
 
-
-
         }
+
+        void sendTablePartition(uint8_t* PoisonTable, startNode, uint8_t endNode) {
+                uint8_t i, node, cost, nextHop;
+                uint8_t * tablePtr = NULL;
+                tablePtr = PoisonTable;
+
+                for (i = startNode-1; i < endNode+1 ; i++) {
+                        if(i % 7 == 0){
+                                //point to the next portion of the table and send to next node
+                                tablePtr = &routing[i][0];
+                                node = *(tablePtr + (i * 3));
+                                cost = *(tablePtr + (i * 3) + 1);
+                                nextHop = *(tablePtr + (i * 3) + 2);
+
+
+                            dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d\n", node, cost, nextHop);
+
+                            nodeSeq++;
+                            makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, tablePtr, sizeof(routing));
+                            call Sender.send(sendPackage, nextHop);
+                        }
+                }
+        }
+
 }
