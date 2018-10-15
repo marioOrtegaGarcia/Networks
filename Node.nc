@@ -135,7 +135,7 @@ implementation {
                      initialized = TRUE;
                   //signal CommandHandler.printNeighbors();
              } else {
-                dbg (GENERAL_CHANNEL, "\tNode %d is Sharing his table with Neighbors\n", TOS_NODE_ID);
+                //dbg (GENERAL_CHANNEL, "\tNode %d is Sharing his table with Neighbors\n", TOS_NODE_ID);
                 sendTableToNeighbors();
              }
 
@@ -502,7 +502,7 @@ implementation {
                      nextHop = *(newRoute + (i * 3) + 2);
 
                      // These are unset rows in out new table
-                     if (node == routing[i][0] /*&& nextHop !=0*/ && cost != 255) {
+                     if (node == routing[i][0] /*&& nextHop !=0 && cost != 255*/) {
                              if ((cost + 1) < routing[i][1]) {
                                   dbg(GENERAL_CHANNEL, "\tRewriting route for node %d\n", node);
                                      routing[i][0] = node;
