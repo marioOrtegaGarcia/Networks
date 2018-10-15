@@ -548,7 +548,7 @@ implementation {
                   if(i % 7 == 0){
                       tablePtr = &routing[i][0];
                       nodeSeq++;
-                      dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table PART %d~~~~~~~\n", TOS_NODE_ID, TOP(ROUND(i/7)));
+                      dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table PART %d~~~~~~~\n", TOS_NODE_ID, (uint8_t)(i/7));
                       dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
                       dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
 
