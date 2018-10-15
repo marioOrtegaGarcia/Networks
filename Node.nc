@@ -574,9 +574,9 @@ implementation {
                 dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table~~~~~~~\n", TOS_NODE_ID);
                  dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
                 for (i = 0; i < 7; i++) {
-                     dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", *(PoisonTable+(i * 2)), *(PoisonTable+(i * 2) + 1), *(PoisonTable+(i * 2) + 2));
+                     dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", *(tablePtr+(i * 3)), *(tablePtr+(i * 3) + 1), *(tablePtr+(i * 3) + 2));
                 }
-                
+
                 for (i = startNode-1; i < endNode+1 ; i++) {
                         if(i % 7 == 0){
                                 //point to the next portion of the table and send to next node
