@@ -539,6 +539,10 @@ implementation {
              uint8_t * tablePtr = NULL;
              tablePtr = &routing[0][0];
 
+             dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table PART %d~~~~~~~\n", TOS_NODE_ID, (uint8_t)(i/7));
+             dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
+             dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
+
              //can send 7 rows at a time
              for(i = 0; i < 20; i++) {
                      //Poison Reverse --  make the new path cost of where we sending to to MAX HOP NOT 255
@@ -548,15 +552,8 @@ implementation {
                   if(i % 7 == 0){
                       tablePtr = &routing[i][0];
                       nodeSeq++;
-                      dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table PART %d~~~~~~~\n", TOS_NODE_ID, (uint8_t)(i/7));
-                      dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
-                      dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
 
-                      dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d\n",
-                      &(routing+(i * 3)), 
-                       &(routing+(i * 3) + 1),
-                        &(routing+(i * 3) + 2));
-
+                      dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d\n", routing[i][0], routing[i][1], routing[i][2]);
 
                       makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, tablePtr, sizeof(routing));
                       call Sender.send(sendPackage, nextHop);
