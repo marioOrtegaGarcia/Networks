@@ -89,7 +89,6 @@ implementation {
 
         bool mergeRoute(uint8_t* newRoute, uint8_t src);
         void splitHorizon(uint8_t nextHop);
-        void sendTablePartition(uint8_t* PoisonTable, uint8_t startNode, uint8_t endNode);
 
 
         //  Node boot time calls
@@ -502,7 +501,7 @@ implementation {
                      nextHop = *(newRoute + (i * 3) + 2);
 
                      // These are unset rows in out new table
-                     if (node == routing[i][0] /*&& nextHop !=0 && cost != 255*/) {
+                     if (node == routing[i][0] && nextHop !=0 && cost != 255) {
                              if ((cost + 1) < routing[i][1]) {
                                   dbg(GENERAL_CHANNEL, "\tRewriting route for node %d ---------------------\n", node);
                                      routing[i][0] = node;
@@ -541,19 +540,27 @@ implementation {
              int i;
              uint8_t * tablePtr = NULL;
              tablePtr = &routing[0][0];
-             /*
+
              dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table PART %d~~~~~~~\n", TOS_NODE_ID, (uint8_t)(i/7));
              dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
              dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
-             */
 
-             for (i = 0; i < 20; i++) {
-                     // Setting Poison Reverse
-                     if (nextHop == routing[i][0])
+             //can send 7 rows at a time
+             for(i = 0; i < 20; i++) {
+                     //Poison Reverse --  make the new path cost of where we sending to to MAX HOP NOT 255
+                   if (nextHop == routing[i][0])
                            *(tablePtr + (i*3) + 1) = 255;
-             }
+                  //point to the next portion of the table and send to next node
+                  if(i % 7 == 0){
+                      tablePtr = &routing[i][0];
+                      nodeSeq++;
 
-             sendTablePartition(tablePtr, (uint8_t)1, (uint8_t)19);
+                      dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d\n", routing[i][0], routing[i][1], routing[i][2]);
+
+                      makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, tablePtr, sizeof(routing));
+                      call Sender.send(sendPackage, nextHop);
+                  }
+             }
              /*
              dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's ORIGINAL Routing Table~~~~~~~\n", TOS_NODE_ID);
              dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
@@ -565,37 +572,7 @@ implementation {
 
              //signal CommandHandler.printRouteTable();
 
+
+
         }
-
-        void sendTablePartition(uint8_t* PoisonTable, uint8_t startNode, uint8_t endNode) {
-                uint8_t i, node, cost, nextHop;
-                uint8_t * tablePtr = NULL;
-                tablePtr = PoisonTable;
-
-                /*
-                dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table~~~~~~~\n", TOS_NODE_ID);
-                 dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
-                for (i = 0; i < 7; i++) {
-                     dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d\n", *(tablePtr+(i * 3)), *(tablePtr+(i * 3) + 1), *(tablePtr+(i * 3) + 2));
-                }
-                */
-
-                for (i = startNode-1; i < endNode+1 ; i++) {
-                        if(i % 7 == 0){
-                                //point to the next portion of the table and send to next node
-                                tablePtr = &routing[i][0];
-                                node = *(tablePtr + (i * 3));
-                                cost = *(tablePtr + (i * 3) + 1);
-                                nextHop = *(tablePtr + (i * 3) + 2);
-
-
-                            //dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d\n", node, cost, nextHop);
-
-                            nodeSeq++;
-                            makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, tablePtr, sizeof(routing));
-                            call Sender.send(sendPackage, nextHop);
-                        }
-                }
-        }
-
 }
