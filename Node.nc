@@ -552,7 +552,10 @@ implementation {
                       dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
                       dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
 
-                      dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", *(routing+(i * 3)), *(routing+(i * 3) + 1), *(routing+(i * 3) + 2));
+                      dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d\n",
+                      &(routing+(i * 3)), 
+                       &(routing+(i * 3) + 1),
+                        &(routing+(i * 3) + 2));
 
 
                       makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, tablePtr, sizeof(routing));
