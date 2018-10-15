@@ -540,10 +540,11 @@ implementation {
              int i;
              uint8_t * tablePtr = NULL;
              tablePtr = &routing[0][0];
-
+             /*
              dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table PART %d~~~~~~~\n", TOS_NODE_ID, (uint8_t)(i/7));
              dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
              dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
+             */
 
              for (i = 0; i < 20; i++) {
                      // Setting Poison Reverse
@@ -570,6 +571,12 @@ implementation {
                 uint8_t * tablePtr = NULL;
                 tablePtr = PoisonTable;
 
+                dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table~~~~~~~\n", TOS_NODE_ID);
+                 dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
+                for (i = 0; i < 7; i++) {
+                     dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", *(PoisonTable+(i * 2)), *(PoisonTable+(i * 2) + 1), *(PoisonTable+(i * 2) + 2));
+                }
+                
                 for (i = startNode-1; i < endNode+1 ; i++) {
                         if(i % 7 == 0){
                                 //point to the next portion of the table and send to next node
