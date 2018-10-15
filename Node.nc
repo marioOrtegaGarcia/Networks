@@ -551,7 +551,7 @@ implementation {
                            *(tablePtr + (i*3) + 1) = 255;
              }
 
-             sendTablePartition(tablePtr, 1, 19);
+             sendTablePartition(tablePtr, (uint8_t)1, (uint8_t)19);
              /*
              dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's ORIGINAL Routing Table~~~~~~~\n", TOS_NODE_ID);
              dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
