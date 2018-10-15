@@ -541,8 +541,7 @@ implementation {
              uint8_t * tablePtr = NULL;
              tablePtr = &routing[0][0];
 
-             dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table PART %d~~~~~~~\n", TOS_NODE_ID, (uint8_t)(i/7));
-             dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
+             dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table PART~~~~~~~\n", TOS_NODE_ID);
              dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
 
              //can send 7 rows at a time
