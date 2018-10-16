@@ -546,7 +546,7 @@ implementation {
              //can send 7 rows at a time
              for(i = 0; i < 20; i++) {
                      //Poison Reverse --  make the new path cost of where we sending to to MAX HOP NOT 255
-                   if (nextHop == routing[i][0])
+                   if (nextHop == i)
                            *(poisonTbl + (i*3) + 1) = 25;
 
                   /* dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d\n", routing[i][0], routing[i][1], routing[i][2]); */
