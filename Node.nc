@@ -483,7 +483,7 @@ implementation {
         bool mergeRoute(uint8_t* newRoute, uint8_t src){
              int node, cost, nextHop, i, j;
              bool alteredRoute = FALSE;
-             dbg(GENERAL_CHANNEL, "\t~~~~~~~My, Mote %d's, Neighbors~~~~~~~\n", TOS_NODE_ID);
+             dbg(GENERAL_CHANNEL, "\t~~~~~~~My, Mote %d's, Neighbors~~~~~~~MR\n", TOS_NODE_ID);
              signal CommandHandler.printNeighbors();
              dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table~~~~~~~\n", src);
              dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
@@ -579,6 +579,11 @@ implementation {
                 memcpy(poisonTbl, &routing, sizeof(routing));
                 startofPoison = poisonTbl;
                 //poisonTbl = &routing[0][0];
+
+
+                dbg(GENERAL_CHANNEL, "\t~~~~~~~My, Mote %d's, Neighbors~~~~~~~sH\n", TOS_NODE_ID);
+                signal CommandHandler.printNeighbors();
+
 
                                 for (i = 0; i < 20; i++) {
                                         if (NeighborList[i] > 0) {
