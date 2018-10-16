@@ -114,7 +114,7 @@ implementation {
                 //clearNeighbors();
                 scanNeighbors();
 
-                t0 = 15000 + call Random.rand32() % 1000;
+                t0 = 20000 + call Random.rand32() % 1000;
                 dt = 25000 + (call Random.rand32() % 10000);
                 if(!fired){
                      call TableUpdateTimer.startPeriodicAt(t0, dt);
