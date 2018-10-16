@@ -501,12 +501,16 @@ implementation {
                      nextHop = *(newRoute + (i * 3) + 2);
 
                      //This should jump to the node we should be on, this doesnt work cause we are using i as the comparator for our incoming table
+                     /*
                      if (i != node && node != 0) {
                              j = node;
                      } else {
                              j = i;
                      }
-
+                    */
+                    if(node != 0){
+                         j = node;
+                    }
                      // These are unset rows in out new table
                      if (node == routing[j][0] && nextHop !=0 && cost != 255) {
                              dbg(GENERAL_CHANNEL, "\t Mote %d  Being Evaluated for Shorter Cost---------------------\n", node);
