@@ -502,9 +502,36 @@ implementation {
                          dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", *(newRoute+(i * 3)), *(newRoute+(i * 3) + 1), *(newRoute+(i * 3) + 2));
              }
 
+             // Using double forLoop instead of one, outer Iterated through routing, inner going through newRoute
+            for (i = 0; i < 20; i++) {
+                    for (j = 0; j < 7; j++) {
+                            // Saving values for cleaner Code
+                            node = *(newRoute + (j * 3));
+                            cost = *(newRoute + (j * 3) + 1);
+                            nextHop = *(newRoute + (j * 3) + 2);
+
+                            if (node == routing[i][0] && !(nextHop == 0 && cost == 255)) {
+                                    if ((cost+1)<routing[i][1]) {
+                                            dbg(GENERAL_CHANNEL, "\tRewriting route for node %d: %d < %d ---------------------\n", node, cost + 1, routing[i][1]);
+                                            routing[i][0] = node;
+                                            routing[i][1] = cost + 1;
+                                            routing[i][2] = src;
+
+                                            alteredRoute = TRUE;
+                                            signal CommandHandler.printRouteTable
+                                    }
+                            }
+                            // Making sure the cost to us is still 0
+                            if (TOS_NODE_ID == routing[i][0]) {
+                                    routing[i][0] = TOS_NODE_ID;
+                                    routing[i][1] = 0;
+                                    routing[i][2] = TOS_NODE_ID;
+                            }
+                    }
+            }
+
              // When inserting the partitioned DV tables to ours we want to iterate through all of the notes to compare them to our table
-             /* i = newRoute; */
-             for(i = 0; i < 20; i++) {
+             /* for(i = 0; i < 20; i++) {
                      // Saving values for cleaner Code
                      node = *(newRoute + (i * 3));
                      cost = *(newRoute + (i * 3) + 1);
@@ -537,7 +564,7 @@ implementation {
                              routing[i][1] = 0;
                              routing[i][2] = TOS_NODE_ID;
                      }
-             }
+             } */
 
 
 
