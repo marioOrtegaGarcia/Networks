@@ -569,6 +569,22 @@ implementation {
                     poisonTbl = poisonTbl + 3;
              }
 
+
+             for (i = 0; i < 20; i++) {
+                     if (NeighborList[i] > 0) {
+                             *(poisonTbl + (i*3) + 0) = i;
+                             *(poisonTbl + (i*3) + 1) = 1;
+                             *(poisonTbl + (i*3) + 2) = i;
+                             routing[i][0] = i;
+                             routing[i][1] = 1;
+                             routing[i][2] = i;
+
+
+                     }
+             }
+
+
+
              dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Table after splitHorizon, Table sent to %d(Should't be poison reversed)~~~~~~~\n", TOS_NODE_ID, nextHop);
              dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
              for (i = 0; i < 20; i++) {
