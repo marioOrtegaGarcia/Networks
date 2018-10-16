@@ -474,7 +474,7 @@ implementation {
                 int i;
                 for (i = 1; i < NeighborListSize; i++)
                     if(NeighborList[i] > 0)
-                        splitHorizon(NeighborList[i]);
+                        splitHorizon(i);
         }
 
         bool mergeRoute(uint8_t* newRoute, uint8_t src){
