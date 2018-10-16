@@ -539,7 +539,7 @@ implementation {
         void splitHorizon(uint8_t nextHop){
              int i;
              uint8_t * tablePtr = NULL;
-             uint8_t * tablePtrOr = routing;
+             uint8_t * tablePtrOr = &routing;
              tabelPtr = malloc(sizeof(routing));
              memcpy(tablePtr, tablePtrOr, sizeof(routing));
              //tablePtr = &routing[0][0];
