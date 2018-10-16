@@ -539,7 +539,8 @@ implementation {
         void splitHorizon(uint8_t nextHop){
              int i;
              uint8_t * tablePtr = NULL;
-             tablePtr = &routing[0][0];
+             memcpy(tablePtr, routing, sizeof(routing));
+             //tablePtr = &routing[0][0];
 
              //can send 7 rows at a time
              for(i = 0; i < 20; i++) {
