@@ -182,7 +182,7 @@ implementation {
                                 call Sender.send(sendPackage, AM_BROADCAST_ADDR);
 
                                 //signal CommandHandler.printNeighbors();
-                                //signal CommandHandler.printRouteTable();
+                                signal CommandHandler.printRouteTable();
                                 return msg;
                         }
 
@@ -521,7 +521,7 @@ implementation {
                                             alteredRoute = TRUE;
                                     }
                             }
-                            signal CommandHandler.printRouteTable();
+                            //signal CommandHandler.printRouteTable();
                             // Making sure the cost to us is still 0
                             if (TOS_NODE_ID == routing[i][0]) {
                                     routing[i][0] = TOS_NODE_ID;
