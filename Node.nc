@@ -476,12 +476,12 @@ implementation {
 
         void updateTable(pack* recievedMsg){
              int i;
-             bool alteredRoute = FALSE:
+             bool alteredRoute = FALSE;
              for(i = 0; i < NeighborListSize; i++){
                   alteredRoute = mergeRoute(recievedMsg->payload, uint8_t src);
                   if(alteredRoute == TRUE){
                        sendTableToNeighbors();
-                       alteredRoute = FALSE:
+                       alteredRoute = FALSE;
                   }
              }
         }
