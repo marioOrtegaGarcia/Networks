@@ -508,9 +508,9 @@ implementation {
                              j = i;
                      }
                     */
-                    if(node != 0){
-                         j = node;
-                    }
+                    if(node == 0){
+                         continue;
+                    } else j = node;
                      // These are unset rows in out new table
                      if (node == routing[j][0] && nextHop !=0 && cost != 255) {
                              dbg(GENERAL_CHANNEL, "\t Mote %d  Being Evaluated for Shorter Cost---------------------\n", node);
