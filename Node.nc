@@ -456,7 +456,7 @@ implementation {
                 routing[TOS_NODE_ID][2] = TOS_NODE_ID;
 
                 // Setting the cost to all my neighbors
-                for(j = 0; j < NeighborListSize; ++j) {
+                for(j = 1; j < NeighborListSize; j++) {
                          if(NeighborList[j] > 0)
                               insert(j, 1, j);
                 }
