@@ -460,8 +460,8 @@ implementation {
                          if(NeighborList[j] > 0)
                               insert(j, 1, j);
                 }
-                dbg(GENERAL_CHANNEL, "\t~~~~~~~My, Mote %d's, Neighbors~~~~~~~initialize\n", TOS_NODE_ID);
-                signal CommandHandler.printNeighbors();
+                /* dbg(GENERAL_CHANNEL, "\t~~~~~~~My, Mote %d's, Neighbors~~~~~~~initialize\n", TOS_NODE_ID);
+                signal CommandHandler.printNeighbors(); */
            }
 
         void insert(uint8_t dest, uint8_t cost, uint8_t nextHop) {
