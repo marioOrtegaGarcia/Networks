@@ -502,7 +502,7 @@ implementation {
 
                 alteredRoute = TRUE;*/
         bool mergeRoute(uint8_t* newRoute, uint8_t src){
-               int node, cost, nexHop, i;
+               int node, cost, nextHop, i;
                bool alteredRoute = FALSE;
 
                for(i = 0; i < 7; i++){
