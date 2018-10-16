@@ -478,7 +478,7 @@ implementation {
              int i;
              bool alteredRoute = FALSE;
              for(i = 0; i < NeighborListSize; i++){
-                  alteredRoute = mergeRoute(recievedMsg->payload, recievedMsg->src);
+                  alteredRoute = mergeRoute((uint8_t*)recievedMsg->payload, recievedMsg->src);
                   if(alteredRoute == TRUE){
                        sendTableToNeighbors();
                        alteredRoute = FALSE;
