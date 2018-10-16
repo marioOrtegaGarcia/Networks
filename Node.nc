@@ -492,16 +492,16 @@ implementation {
              bool alteredRoute = FALSE;
              /* dbg(GENERAL_CHANNEL, "\t~~~~~~~My, Mote %d's, Neighbors~~~~~~~MR\n", TOS_NODE_ID);
              signal CommandHandler.printNeighbors(); */
-             dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table~~~~~~~\n", src);
-             dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
+             /* dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table~~~~~~~\n", src);
+             dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n"); */
 
 
              // Here we read the first 7 indexes of the Incoming table
-             for (i = 0; i < 7; i++) {
+             /* for (i = 0; i < 7; i++) {
                      // There is no node with an TOS_NODE_ID so we exclude it from the print
                   if(*(newRoute+(i * 3)) != 0)
                          dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", *(newRoute+(i * 3)), *(newRoute+(i * 3) + 1), *(newRoute+(i * 3) + 2));
-             }
+             } */
 
              // Using double forLoop instead of one, outer Iterated through routing, inner going through newRoute
             for (i = 0; i < 20; i++) {
@@ -513,7 +513,7 @@ implementation {
 
                             if (node == routing[i][0]) {
                                     if ((cost+1)<routing[i][1]) {
-                                            dbg(GENERAL_CHANNEL, "\tRewriting route for node %d: %d < %d ---------------------\n", node, cost + 1, routing[i][1]);
+                                            /* dbg(GENERAL_CHANNEL, "\tRewriting route for node %d: %d < %d ---------------------\n", node, cost + 1, routing[i][1]); */
                                             routing[i][0] = node;
                                             routing[i][1] = cost + 1;
                                             routing[i][2] = src;
