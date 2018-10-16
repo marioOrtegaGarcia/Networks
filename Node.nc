@@ -541,8 +541,14 @@ implementation {
              uint8_t * tablePtr = NULL;
              tablePtr = &routing[0][0];
 
-             /* dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Sending Routing Table PART~~~~~~~\n", TOS_NODE_ID);
-             dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n"); */
+             dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Sending Routing Table PART~~~~~~~\n", TOS_NODE_ID);
+             dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
+             for (i = 0; i < 20; i++) {
+                     dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d\n", *(tablePtr + (i * 3)), *(tablePtr + (i * 3) + 1), *(tablePtr + (i * 3) + 2));
+             }
+
+
+
 
              //can send 7 rows at a time
              for(i = 0; i < 20; i++) {
@@ -555,7 +561,6 @@ implementation {
                   if(i % 7 == 0){
                       tablePtr = &routing[i][0];
                       nodeSeq++;
-
 
                       makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, tablePtr, sizeof(routing));
                       call Sender.send(sendPackage, nextHop);
