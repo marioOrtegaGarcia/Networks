@@ -543,16 +543,20 @@ implementation {
              memcpy(poisonTbl, &routing, sizeof(routing));
              //poisonTbl = &routing[0][0];
 
-             //can send 7 rows at a time
+             //Applying Poison reverse then attemting to partition table
              for(i = 0; i < 20; i++) {
                      //Poison Reverse --  make the new path cost of where we sending to to MAX HOP NOT 255
                    if (nextHop == i)
                            *(poisonTbl + (i*3) + 1) = 25;
+             }
 
+
+             //can send 7 rows at a time
+             for(i = 0; i < 20; i++) {
                   /* dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d\n", routing[i][0], routing[i][1], routing[i][2]); */
                   //point to the next portion of the table and send to next node
                   if(i % 7 == 0){
-                      poisonTbl = &routing[i][0];
+                      poisonTbl = poisonTbl + (7*3);
                       nodeSeq++;
 
                       makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, poisonTbl, sizeof(routing));
