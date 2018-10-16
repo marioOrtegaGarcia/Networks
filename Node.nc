@@ -565,9 +565,6 @@ implementation {
                              routing[i][2] = TOS_NODE_ID;
                      }
              } */
-
-
-
              return alteredRoute;
         }
 
