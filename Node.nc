@@ -87,7 +87,6 @@ implementation {
         void insert(uint8_t dest, uint8_t cost, uint8_t nextHop);
         void sendTableToNeighbors();
 
-        void updateTable(pack* recievedMsg);
         bool mergeRoute(uint8_t* newRoute, uint8_t src);
         void splitHorizon(uint8_t nextHop);
 
@@ -213,14 +212,11 @@ implementation {
                         else if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV) {
                              dbg(GENERAL_CHANNEL, "CALLING MERGERROUTE!!\n");
                              //signal CommandHandler.printRouteTable();
-                             updateTable(recievedMsg);
-                             /*
                              alteredRoute = mergeRoute((uint8_t*)recievedMsg->payload, (uint8_t)recievedMsg->src);
                              //signal CommandHandler.printRouteTable();
                              if(alteredRoute){
                                   sendTableToNeighbors();
                              }
-                             */
                              return msg;
                         }
 
@@ -474,18 +470,6 @@ implementation {
                 routing[dest][2] = nextHop;
         }
 
-        void updateTable(pack* recievedMsg){
-             int i;
-             bool alteredRoute = FALSE;
-             for(i = 0; i < NeighborListSize; i++){
-                  alteredRoute = mergeRoute((uint8_t*)recievedMsg->payload, recievedMsg->src);
-                  if(alteredRoute == TRUE){
-                       sendTableToNeighbors();
-                       alteredRoute = FALSE;
-                  }
-             }
-        }
-
         void sendTableToNeighbors() {
                 int i;
                 for (i = 1; i < NeighborListSize; i++)
@@ -501,31 +485,7 @@ implementation {
                 routing[node][2] = src;
 
                 alteredRoute = TRUE;*/
-        bool mergeRoute(uint8_t* newRoute, uint8_t src){
-               int node, cost, nextHop, i;
-               bool alteredRoute = FALSE;
 
-               for(i = 0; i < 7; i++){
-                    node = *(newRoute + (i * 3));
-                    cost = *(newRoute + (i * 3) + 1);
-                    nextHop = *(newRoute + (i * 3) + 2);
-
-                    if(cost + 1 < routing[node][1]){
-                         routing[node][0] = node;
-                         routing[node][1] = cost + 1;
-                         routing[node][2] = src;
-                         alteredRoute = TRUE;
-                    }
-                    else if(nextHop == routing[node][2]){
-                         routing[node][0] = node;
-                         routing[node][1] = cost + 1;
-                         routing[node][2] = src;
-                         alteredRoute = TRUE;
-                    }
-               }
-               return alteredRoute;
-        }
-     /*
         bool mergeRoute(uint8_t* newRoute, uint8_t src){
              int node, cost, nextHop, i, j;
              bool alteredRoute = FALSE;
@@ -581,7 +541,7 @@ implementation {
 
              return alteredRoute;
         }
-        */
+
 
         // Used when sending DV Tables to Neighbors, nextHop is the Neighbor we are sending to
         void splitHorizon(uint8_t nextHop){
