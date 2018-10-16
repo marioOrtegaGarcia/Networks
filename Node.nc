@@ -504,7 +504,7 @@ implementation {
 
              // When inserting the partitioned DV tables to ours we want to iterate through all of the notes to compare them to our table
              node = *(newRoute);
-             for(i = node; i < node + 7; i++) {
+             for(i = node; i < (node 7 * 3); i++) {
                      // Saving values for cleaner Code
 
                      cost = *(newRoute + (i * 3) + 1);
