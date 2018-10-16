@@ -548,9 +548,17 @@ implementation {
         // Used when sending DV Tables to Neighbors, nextHop is the Neighbor we are sending to
         void splitHorizon(uint8_t nextHop){
                 int i, j;
+                // Using two pointer to keep track of our first node
+                uint8_t* startofPoison;
                 uint8_t* poisonTbl = NULL;
+
+                // Allocating size to store the item
                 poisonTbl = malloc(sizeof(routing));
+                startofPoison = malloc(sizeof(routing));
+
+                // Copying routing table data bit-by-bit onto poisonTbl and memory location of the start of Neighbor
                 memcpy(poisonTbl, &routing, sizeof(routing));
+                startofPoison = poisonTbl;
                 //poisonTbl = &routing[0][0];
 
                 //Go through table once and Insert Poison aka MAX_HOP
@@ -559,27 +567,25 @@ implementation {
                                 *(poisonTbl + (i*3) + 1) = 25;//Poison Reverse --  make the new path cost of where we sending to to MAX HOP NOT 255
 
              //Since Payload is too big we will send it in parts
-             for(i = 1; i < 20; i++) {
+             for(i = 0; i < 20; i++) { // Needs to start at 0 to be able to send the first table
                   //point to the next portion of the table and send to next node
                   if(i % 7 == 0){
                       nodeSeq++;
                       makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, poisonTbl, sizeof(routing));
                       call Sender.send(sendPackage, nextHop);
                   }
-                    poisonTbl = poisonTbl + 3;
+                    poisonTbl += 3;
              }
 
 
              for (i = 0; i < 20; i++) {
                      if (NeighborList[i] > 0) {
-                             *(poisonTbl + (i*3) + 0) = i;
-                             *(poisonTbl + (i*3) + 1) = 1;
-                             *(poisonTbl + (i*3) + 2) = i;
+                             *(startofPoison + (i*3) + 0) = i;
+                             *(startofPoison + (i*3) + 1) = 1;
+                             *(startofPoison + (i*3) + 2) = i;
                              routing[i][0] = i;
                              routing[i][1] = 1;
                              routing[i][2] = i;
-
-
                      }
              }
 
