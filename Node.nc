@@ -494,7 +494,7 @@ implementation {
              }
 
              // When inserting the partitioned DV tables to ours we want to iterate through all of the notes to compare them to our table
-             for(i = 1; i < 20; i++) {
+             for(i = 0; i < 20; i++) {
                      // Saving values for cleaner Code
                      node = *(newRoute + (i * 3));
                      cost = *(newRoute + (i * 3) + 1);
@@ -538,24 +538,24 @@ implementation {
         // Used when sending DV Tables to Neighbors, nextHop is the Neighbor we are sending to
         void splitHorizon(uint8_t nextHop){
              int i;
-             uint8_t * tablePtr = NULL;
-             tablePtr = malloc(sizeof(routing));
-             memcpy(tablePtr, &routing, sizeof(routing));
-             //tablePtr = &routing[0][0];
+             uint8_t * poisonTbl = NULL;
+             poisonTbl = malloc(sizeof(routing));
+             memcpy(poisonTbl, &routing, sizeof(routing));
+             //poisonTbl = &routing[0][0];
 
              //can send 7 rows at a time
              for(i = 0; i < 20; i++) {
                      //Poison Reverse --  make the new path cost of where we sending to to MAX HOP NOT 255
                    if (nextHop == routing[i][0])
-                           *(tablePtr + (i*3) + 1) = 25;
+                           *(poisonTbl + (i*3) + 1) = 25;
 
                   /* dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d\n", routing[i][0], routing[i][1], routing[i][2]); */
                   //point to the next portion of the table and send to next node
                   if(i % 7 == 0){
-                      tablePtr = &routing[i][0];
+                      poisonTbl = &routing[i][0];
                       nodeSeq++;
 
-                      makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, tablePtr, sizeof(routing));
+                      makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, poisonTbl, sizeof(routing));
                       call Sender.send(sendPackage, nextHop);
                   }
              }
@@ -571,7 +571,7 @@ implementation {
              dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
              dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
              for (i = 0; i < 20; i++) {
-                  dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", i, *(tablePtr+(i * 2)), *(tablePtr+(i * 2 + 1)));
+                  dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", i, *(poisonTbl+(i * 2)), *(poisonTbl+(i * 2 + 1)));
              }
              */
 
