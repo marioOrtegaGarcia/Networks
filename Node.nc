@@ -556,11 +556,13 @@ implementation {
                   /* dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d\n", routing[i][0], routing[i][1], routing[i][2]); */
                   //point to the next portion of the table and send to next node
                   if(i % 7 == 0){
-                      poisonTbl = poisonTbl + (7*3);
                       nodeSeq++;
-
                       makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, poisonTbl, sizeof(routing));
                       call Sender.send(sendPackage, nextHop);
+                      if (i < 20) {
+                        poisonTbl = poisonTbl + (7*3);
+                      }
+
                   }
              }
 
