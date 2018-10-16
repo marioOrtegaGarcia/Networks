@@ -561,10 +561,21 @@ implementation {
                 startofPoison = poisonTbl;
                 //poisonTbl = &routing[0][0];
 
-                //Go through table once and Insert Poison aka MAX_HOP
-                for(i = 0; i < 20; i++)
-                        if (nextHop == i)
-                                *(poisonTbl + (i*3) + 1) = 25;//Poison Reverse --  make the new path cost of where we sending to to MAX HOP NOT 255
+                                for (i = 0; i < 20; i++) {
+                                        if (NeighborList[i] > 0) {
+                                                *(startofPoison + (i*3) + 0) = i;
+                                                *(startofPoison + (i*3) + 1) = 1;
+                                                *(startofPoison + (i*3) + 2) = i;
+                                                routing[i][0] = i;
+                                                routing[i][1] = 1;
+                                                routing[i][2] = i;
+                                        }
+                                }
+
+                                //Go through table once and Insert Poison aka MAX_HOP
+                                for(i = 0; i < 20; i++)
+                                        if (nextHop == i)
+                                                *(poisonTbl + (i*3) + 1) = 25;//Poison Reverse --  make the new path cost of where we sending to to MAX HOP NOT 255
 
              //Since Payload is too big we will send it in parts
              for(i = 0; i < 20; i++) { // Needs to start at 0 to be able to send the first table
@@ -576,20 +587,6 @@ implementation {
                   }
                     poisonTbl += 3;
              }
-
-
-             for (i = 0; i < 20; i++) {
-                     if (NeighborList[i] > 0) {
-                             *(startofPoison + (i*3) + 0) = i;
-                             *(startofPoison + (i*3) + 1) = 1;
-                             *(startofPoison + (i*3) + 2) = i;
-                             routing[i][0] = i;
-                             routing[i][1] = 1;
-                             routing[i][2] = i;
-                     }
-             }
-
-
 
              dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Table after splitHorizon, Table sent to %d(Should't be poison reversed)~~~~~~~\n", TOS_NODE_ID, nextHop);
              dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
