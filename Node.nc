@@ -504,7 +504,6 @@ implementation {
 
              // When inserting the partitioned DV tables to ours we want to iterate through all of the notes to compare them to our table
              i = newRoute;
-             for(i = 0; i < 20; i++) {
                      // Saving values for cleaner Code
                      node = *(newRoute + (i * 3));
                      cost = *(newRoute + (i * 3) + 1);
@@ -547,33 +546,26 @@ implementation {
 
         // Used when sending DV Tables to Neighbors, nextHop is the Neighbor we are sending to
         void splitHorizon(uint8_t nextHop){
-             int i;
-             uint8_t * poisonTbl = NULL;
-             poisonTbl = malloc(sizeof(routing));
-             memcpy(poisonTbl, &routing, sizeof(routing));
-             //poisonTbl = &routing[0][0];
+                int i, j;
+                uint8_t* poisonTbl = NULL;
+                poisonTbl = malloc(sizeof(routing));
+                memcpy(poisonTbl, &routing, sizeof(routing));
+                //poisonTbl = &routing[0][0];
 
-             //Applying Poison reverse then attemting to partition table
-             for(i = 0; i < 20; i++) {
-                     //Poison Reverse --  make the new path cost of where we sending to to MAX HOP NOT 255
-                   if (nextHop == i)
-                           *(poisonTbl + (i*3) + 1) = 25;
-             }
+                //Go through table once and Insert Poison aka MAX_HOP
+                for(i = 0; i < 20; i++)
+                        if (nextHop == i)
+                                *(poisonTbl + (i*3) + 1) = 25;//Poison Reverse --  make the new path cost of where we sending to to MAX HOP NOT 255
 
-
-             //can send 7 rows at a time
-             for(i = 0; i < 20; i++) {
-                  /* dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d\n", routing[i][0], routing[i][1], routing[i][2]); */
+             //Since Payload is too big we will send it in parts
+             for(i = 1; i < 20; i++) {
                   //point to the next portion of the table and send to next node
                   if(i % 7 == 0){
                       nodeSeq++;
                       makePack(&sendPackage, TOS_NODE_ID, nextHop, 2, PROTOCOL_DV, nodeSeq, poisonTbl, sizeof(routing));
                       call Sender.send(sendPackage, nextHop);
-                      if (i < 20) {
-                        poisonTbl = poisonTbl + (7*3);
-                      }
-
                   }
+                    poisonTbl = poisonTbl + 3;
              }
 
              dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Table after splitHorizon, Table sent to %d(Should't be poison reversed)~~~~~~~\n", TOS_NODE_ID, nextHop);
