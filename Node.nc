@@ -381,14 +381,18 @@ implementation {
         }
 
         void reduceNeighborsTTL() {
-                int i = 0;
-                for (i; i < NeighborListSize; i++) {
-                        if (NeighborList[i] > 0) {
+                int i;
+                for (i = 0; i < NeighborListSize; i++) {
+                        if (NeighborList[i] > 1) {
                                 NeighborList[i] -= 1;
-                                if (NeighborList[i] == 0)
-                                        dbg (NEIGHBOR_CHANNEL, "\t Node %d Dropped from the Network", i);
+                        } else if (NeighborList[i] == 1) {
+                                NeighborList[i] -= 1;
+                                nodeSeq++;
+                                makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, PROTOCOL_PING, nodeSeq, "Looking-4-Neighbors", PACKET_MAX_PAYLOAD_SIZE);
+                                call Sender.send(sendPackage, (uint8_t) i);
+                        } else {
+                                dbg (NEIGHBOR_CHANNEL, "\t Node %d Dropped from the Network", i);
                         }
-
                 }
         }
 
