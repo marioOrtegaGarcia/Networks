@@ -518,7 +518,7 @@ implementation {
                                             routing[i][2] = src;
 
                                             alteredRoute = TRUE;
-                                            signal CommandHandler.printRouteTable
+                                            signal CommandHandler.printRouteTable();
                                     }
                             }
                             // Making sure the cost to us is still 0
