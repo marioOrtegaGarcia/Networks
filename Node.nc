@@ -474,7 +474,7 @@ implementation {
                 int i;
                 for (i = 1; i < NeighborListSize; i++)
                     if(NeighborList[i] > 0)
-                        splitHorizon(i);
+                        splitHorizon((uint8_t)i); /* I am sending out counter i because that is the node ID and the actual value is the TTL */
         }
 
         bool mergeRoute(uint8_t* newRoute, uint8_t src){
