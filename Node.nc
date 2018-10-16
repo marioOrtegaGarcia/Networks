@@ -588,8 +588,8 @@ implementation {
                 //poisonTbl = &routing[0][0];
 
 
-                dbg(GENERAL_CHANNEL, "\t~~~~~~~My, Mote %d's, Neighbors~~~~~~~sH\n", TOS_NODE_ID);
-                signal CommandHandler.printNeighbors();
+                /* dbg(GENERAL_CHANNEL, "\t~~~~~~~My, Mote %d's, Neighbors~~~~~~~sH\n", TOS_NODE_ID);
+                signal CommandHandler.printNeighbors(); */
 
 
                                 for (i = 0; i < 20; i++) {
