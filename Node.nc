@@ -500,19 +500,21 @@ implementation {
                      cost = *(newRoute + (i * 3) + 1);
                      nextHop = *(newRoute + (i * 3) + 2);
 
-                     //This should jump to the node we should be on
+                     //This should jump to the node we should be on, this doesnt work cause we are using i as the comparator for our incoming table
                      if (i != node && node != 0) {
-                             i = node;
+                             j = node;
+                     } else {
+                             j = i;
                      }
 
                      // These are unset rows in out new table
-                     if (node == routing[i][0] && nextHop !=0 && cost != 255) {
+                     if (node == routing[j][0] && nextHop !=0 && cost != 255) {
                              dbg(GENERAL_CHANNEL, "\t Mote %d  Being Evaluated for Shorter Cost---------------------\n", node);
-                             if ((cost + 1) < routing[i][1]) {
+                             if ((cost + 1) < routing[j][1]) {
                                   dbg(GENERAL_CHANNEL, "\tRewriting route for node %d ---------------------\n", node);
-                                     routing[i][0] = node;
-                                     routing[i][1] = cost + 1;
-                                     routing[i][2] = src;
+                                     routing[j][0] = node;
+                                     routing[j][1] = cost + 1;
+                                     routing[j][2] = src;
 
                                      alteredRoute = TRUE;
                              }
