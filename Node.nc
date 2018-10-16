@@ -103,8 +103,6 @@ implementation {
                 call Timer.startPeriodicAt(t0, dt);
 
                 dbg(GENERAL_CHANNEL, "\tBooted\n");
-
-
         }
 
         //  This function is ran after t0 Milliseconds the node is alive, and fires every dt seconds.
@@ -128,7 +126,6 @@ implementation {
         }
 
         event void TableUpdateTimer.fired() {
-
              if(initialized == FALSE) {
                      initialize();
                      initialized = TRUE;
@@ -137,8 +134,6 @@ implementation {
                 //dbg (GENERAL_CHANNEL, "\tNode %d is Sharing his table with Neighbors\n", TOS_NODE_ID);
                 sendTableToNeighbors();
              }
-
-
         }
 
         //  Make sure all the Radios are turned on
@@ -211,7 +206,6 @@ implementation {
                         // Receiving DV Table
                         else if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV) {
                              dbg(GENERAL_CHANNEL, "CALLING MERGERROUTE!!\n");
-                             //signal CommandHandler.printRouteTable();
                              alteredRoute = mergeRoute((uint8_t*)recievedMsg->payload, (uint8_t)recievedMsg->src);
                              //signal CommandHandler.printRouteTable();
                              if(alteredRoute){
@@ -489,7 +483,7 @@ implementation {
         bool mergeRoute(uint8_t* newRoute, uint8_t src){
              int node, cost, nextHop, i, j;
              bool alteredRoute = FALSE;
-
+             signal CommandHandler.printNeighbors();
              dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table~~~~~~~\n", src);
              dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
              dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
