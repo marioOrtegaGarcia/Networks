@@ -512,7 +512,7 @@ implementation {
                             cost = *(newRoute + (j * 3) + 1);
                             nextHop = *(newRoute + (j * 3) + 2);
 
-                            if (node == routing[i][0] && !(nextHop == 0 && cost == 255)) {
+                            if (node == routing[i][0]) {
                                     if ((cost+1)<routing[i][1]) {
                                             dbg(GENERAL_CHANNEL, "\tRewriting route for node %d: %d < %d ---------------------\n", node, cost + 1, routing[i][1]);
                                             routing[i][0] = node;
