@@ -541,15 +541,6 @@ implementation {
              uint8_t * tablePtr = NULL;
              tablePtr = &routing[0][0];
 
-             dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Sending Routing Table PART~~~~~~~\n", TOS_NODE_ID);
-             dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
-             for (i = 0; i < 20; i++) {
-                     dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d\n", *(tablePtr + (i * 3)), *(tablePtr + (i * 3) + 1), *(tablePtr + (i * 3) + 2));
-             }
-
-
-
-
              //can send 7 rows at a time
              for(i = 0; i < 20; i++) {
                      //Poison Reverse --  make the new path cost of where we sending to to MAX HOP NOT 255
@@ -566,6 +557,13 @@ implementation {
                       call Sender.send(sendPackage, nextHop);
                   }
              }
+
+             dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Table after splitHorizon (Should't be poison reversed)~~~~~~~\n", TOS_NODE_ID);
+             dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
+             for (i = 0; i < 20; i++) {
+                     dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d\n", routing[i][0], routing[i][1], routing[i][2]);
+             }
+
              /*
              dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's ORIGINAL Routing Table~~~~~~~\n", TOS_NODE_ID);
              dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
