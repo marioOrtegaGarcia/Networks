@@ -520,7 +520,7 @@ implementation {
                      if (node == routing[j][0] && nextHop !=0 && cost != 255) {
                              dbg(GENERAL_CHANNEL, "\t Mote %d  Being Evaluated for Shorter Cost---------------------\n", node);
                              if ((cost + 1) < routing[j][1]) {
-                                  dbg(GENERAL_CHANNEL, "\tRewriting route for node %d ---------------------\n", node);
+                                  dbg(GENERAL_CHANNEL, "\tRewriting route for node %d: %d < %d ---------------------\n", node, cost + 1, routing[j][1]);
                                      routing[j][0] = node;
                                      routing[j][1] = cost + 1;
                                      routing[j][2] = src;
