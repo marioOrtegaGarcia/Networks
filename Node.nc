@@ -519,9 +519,9 @@ implementation {
                                             routing[i][2] = src;
 
                                             alteredRoute = TRUE;
-                                            signal CommandHandler.printRouteTable();
                                     }
                             }
+                            signal CommandHandler.printRouteTable();
                             // Making sure the cost to us is still 0
                             if (TOS_NODE_ID == routing[i][0]) {
                                     routing[i][0] = TOS_NODE_ID;
