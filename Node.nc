@@ -538,11 +538,9 @@ implementation {
         // Used when sending DV Tables to Neighbors, nextHop is the Neighbor we are sending to
         void splitHorizon(uint8_t nextHop){
              int i;
-             uint8_t * tablePtr, tablePtrOr;
-             tablePtr = NULL;
-             tablePtrOr = &routing;
-             tabelPtr = malloc(sizeof(routing));
-             memcpy(tablePtr, tablePtrOr, sizeof(routing));
+             uint8_t * tablePtr = NULL;
+             tablePtr = malloc(sizeof(routing));
+             memcpy(tablePtr, &routing, sizeof(routing));
              //tablePtr = &routing[0][0];
 
              //can send 7 rows at a time
