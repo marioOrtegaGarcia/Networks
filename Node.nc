@@ -87,6 +87,7 @@ implementation {
         void insert(uint8_t dest, uint8_t cost, uint8_t nextHop);
         void sendTableToNeighbors();
 
+        void updateTable(pack* recievedMsg);
         bool mergeRoute(uint8_t* newRoute, uint8_t src);
         void splitHorizon(uint8_t nextHop);
 
@@ -212,11 +213,14 @@ implementation {
                         else if(recievedMsg->dest == TOS_NODE_ID && recievedMsg->protocol == PROTOCOL_DV) {
                              dbg(GENERAL_CHANNEL, "CALLING MERGERROUTE!!\n");
                              //signal CommandHandler.printRouteTable();
+                             updateTable(recievedMsg);
+                             /*
                              alteredRoute = mergeRoute((uint8_t*)recievedMsg->payload, (uint8_t)recievedMsg->src);
                              //signal CommandHandler.printRouteTable();
                              if(alteredRoute){
                                   sendTableToNeighbors();
                              }
+                             */
                              return msg;
                         }
 
@@ -470,6 +474,18 @@ implementation {
                 routing[dest][2] = nextHop;
         }
 
+        void updateTable(pack* recievedMsg){
+             int i;
+             bool alteredRoute = FALSE:
+             for(i = 0; i < NeighborListSize; i++){
+                  alteredRoute = mergeRoute(recievedMsg->payload, uint8_t src);
+                  if(alteredRoute == TRUE){
+                       sendTableToNeighbors();
+                       alteredRoute = FALSE:
+                  }
+             }
+        }
+
         void sendTableToNeighbors() {
                 int i;
                 for (i = 1; i < NeighborListSize; i++)
@@ -477,6 +493,39 @@ implementation {
                         splitHorizon((uint8_t)i); /* I am sending out counter i because that is the node ID and the actual value is the TTL */
         }
 
+        /* // First we exclude unset values, and  insert values that have a lesser cost or inser values that have the same nextHop/TOS_NODE_ID/ anf nodeID is not mine
+        if ((nextHop != 0 || cost != 255) && (((cost + 1) < routing[node][1]) ||
+        (nextHop == routing[node][2] && node == routing[node][0] && node != TOS_NODE_ID))) {
+                routing[node][0] = node;
+                routing[node][1] = cost + 1;
+                routing[node][2] = src;
+
+                alteredRoute = TRUE;*/
+        bool mergeRoute(uint8_t* newRoute, uint8_t src){
+               int node, cost, nexHop, i;
+               bool alteredRoute = FALSE;
+
+               for(i = 0; i < 7; i++){
+                    node = *(newRoute + (i * 3));
+                    cost = *(newRoute + (i * 3) + 1);
+                    nextHop = *(newRoute + (i * 3) + 2);
+
+                    if(cost + 1 < routing[node][1]){
+                         routing[j][0] = node;
+                         routing[j][1] = cost + 1;
+                         routing[j][2] = src;
+                         alteredRoute = TRUE;
+                    }
+                    else if(nextHop == routing[node][2]){
+                         routing[j][0] = node;
+                         routing[j][1] = cost + 1;
+                         routing[j][2] = src;
+                         alteredRoute = TRUE;
+                    }
+               }
+               return alteredRoute;
+        }
+     /*
         bool mergeRoute(uint8_t* newRoute, uint8_t src){
              int node, cost, nextHop, i, j;
              bool alteredRoute = FALSE;
@@ -501,16 +550,12 @@ implementation {
                      nextHop = *(newRoute + (i * 3) + 2);
 
                      //This should jump to the node we should be on, this doesnt work cause we are using i as the comparator for our incoming table
-                     /*
                      if (i != node && node != 0) {
                              j = node;
                      } else {
                              j = i;
                      }
-                    */
-                    if(node == 0){
-                         continue;
-                    } else j = node;
+
                      // These are unset rows in out new table
                      if (node == routing[j][0] && nextHop !=0 && cost != 255) {
                              dbg(GENERAL_CHANNEL, "\t Mote %d  Being Evaluated for Shorter Cost---------------------\n", node);
@@ -532,20 +577,11 @@ implementation {
                      }
              }
 
-                  /* // First we exclude unset values, and  insert values that have a lesser cost or inser values that have the same nextHop/TOS_NODE_ID/ anf nodeID is not mine
-                  if ((nextHop != 0 || cost != 255) && (((cost + 1) < routing[node][1]) ||
-                  (nextHop == routing[node][2] && node == routing[node][0] && node != TOS_NODE_ID))) {
-                          routing[node][0] = node;
-                          routing[node][1] = cost + 1;
-                          routing[node][2] = src;
-
-                          alteredRoute = TRUE;*/
-
-
              signal CommandHandler.printRouteTable();
 
              return alteredRoute;
         }
+        */
 
         // Used when sending DV Tables to Neighbors, nextHop is the Neighbor we are sending to
         void splitHorizon(uint8_t nextHop){
