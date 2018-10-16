@@ -511,15 +511,15 @@ implementation {
                     nextHop = *(newRoute + (i * 3) + 2);
 
                     if(cost + 1 < routing[node][1]){
-                         routing[j][0] = node;
-                         routing[j][1] = cost + 1;
-                         routing[j][2] = src;
+                         routing[node][0] = node;
+                         routing[node][1] = cost + 1;
+                         routing[node][2] = src;
                          alteredRoute = TRUE;
                     }
                     else if(nextHop == routing[node][2]){
-                         routing[j][0] = node;
-                         routing[j][1] = cost + 1;
-                         routing[j][2] = src;
+                         routing[node][0] = node;
+                         routing[node][1] = cost + 1;
+                         routing[node][2] = src;
                          alteredRoute = TRUE;
                     }
                }
