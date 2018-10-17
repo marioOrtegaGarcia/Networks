@@ -385,6 +385,7 @@ implementation {
                 for (i = 0; i < NeighborListSize; i++) {
                         if(NeighborList[i] == 1) {
                                 NeighborList[i] -= 1;
+                                routing[i][1] = 255;
                                 dbg (NEIGHBOR_CHANNEL, "\t Node %d Dropped from the Network \n", i);
 
                                 // NeighborPing to neighbor we are dropppping
