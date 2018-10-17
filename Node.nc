@@ -584,30 +584,14 @@ implementation {
                 // Copying routing table data bit-by-bit onto poisonTbl and memory location of the start of Neighbor
                 memcpy(poisonTbl, &routing, sizeof(routing));
                 startofPoison = poisonTbl;
-                //poisonTbl = &routing[0][0];
-
 
                 /* dbg(GENERAL_CHANNEL, "\t~~~~~~~My, Mote %d's, Neighbors~~~~~~~sH\n", TOS_NODE_ID);
                 signal CommandHandler.printNeighbors(); */
 
-
-                                /* for (i = 0; i < 20; i++) {
-                                        if (NeighborList[i] > 0) {
-                                                if (routing[i][1] == 255) {
-                                                        *(startofPoison + (i*3) + 0) = i;
-                                                        *(startofPoison + (i*3) + 1) = 1;
-                                                        *(startofPoison + (i*3) + 2) = i;
-                                                        routing[i][0] = i;
-                                                        routing[i][1] = 1;
-                                                        routing[i][2] = i;
-                                                }
-                                        }
-                                } */
-
-                                //Go through table once and Insert Poison aka MAX_HOP
-                                for(i = 0; i < 20; i++)
-                                        if (nextHop == i)
-                                                *(poisonTbl + (i*3) + 1) = 25;//Poison Reverse --  make the new path cost of where we sending to to MAX HOP NOT 255
+                //Go through table once and Insert Poison aka MAX_HOP
+                for(i = 0; i < 20; i++)
+                        if (nextHop == i)
+                                *(poisonTbl + (i*3) + 1) = 25;//Poison Reverse --  make the new path cost of where we sending to to MAX HOP NOT 255
 
              //Since Payload is too big we will send it in parts
              for(i = 0; i < 20; i++) { // Needs to start at 0 to be able to send the first table
@@ -626,14 +610,14 @@ implementation {
                      dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d\n", routing[i][0], routing[i][1], routing[i][2]);
              } */
 
-             /*
-             dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's ORIGINAL Routing Table~~~~~~~\n", TOS_NODE_ID);
+             
+             dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Poison Routing Table~~~~~~~\n", TOS_NODE_ID);
              dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
              dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
              for (i = 0; i < 20; i++) {
                   dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", i, *(poisonTbl+(i * 2)), *(poisonTbl+(i * 2 + 1)));
              }
-             */
+
 
              //signal CommandHandler.printRouteTable();
 
