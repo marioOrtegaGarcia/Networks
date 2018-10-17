@@ -591,7 +591,7 @@ implementation {
                 signal CommandHandler.printNeighbors(); */
 
 
-                                for (i = 0; i < 20; i++) {
+                                /* for (i = 0; i < 20; i++) {
                                         if (NeighborList[i] > 0) {
                                                 if (routing[i][1] == 255) {
                                                         *(startofPoison + (i*3) + 0) = i;
@@ -602,7 +602,7 @@ implementation {
                                                         routing[i][2] = i;
                                                 }
                                         }
-                                }
+                                } */
 
                                 //Go through table once and Insert Poison aka MAX_HOP
                                 for(i = 0; i < 20; i++)
