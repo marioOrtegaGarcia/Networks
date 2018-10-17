@@ -493,7 +493,7 @@ implementation {
              bool alteredRoute = FALSE;
              /* dbg(GENERAL_CHANNEL, "\t~~~~~~~My, Mote %d's, Neighbors~~~~~~~MR\n", TOS_NODE_ID);
              signal CommandHandler.printNeighbors(); */
-             dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table~~~~~~~\n", src);
+             /* dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table~~~~~~~\n", src);
              dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
 
 
@@ -502,7 +502,7 @@ implementation {
                      // There is no node with an TOS_NODE_ID so we exclude it from the print
                   if(*(newRoute+(i * 3)) != 0)
                          dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", *(newRoute+(i * 3)), *(newRoute+(i * 3) + 1), *(newRoute+(i * 3) + 2));
-             }
+             } */
 
              // Using double forLoop instead of one, outer Iterated through routing, inner going through newRoute
             for (i = 0; i < 20; i++) {
