@@ -1,3 +1,14 @@
+THINGS TO FIX BEFORE PROJECT 3
+
+        * Receiving old packets multiple times (pings and ping replies)
+        * Dropping Node 6 makes other nodes dropped
+        *
+
+
+COMMENTS OF ERRORS
+
+        * The second packet we try to send isn't being Recieved which is fine since we are dropping  it, but for some reason every other node stops droppping from the network
+
 read 3.3.2
 
 *****DVRTable can be added to payload through memcpy()*****

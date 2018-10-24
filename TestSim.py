@@ -149,7 +149,7 @@ def main():
     s.runTime(10);
     s.moteOff(6);
     s.runTime(200);
-    s.ping(3, 6, "Hello, World");
+    s.ping(3, 6, "The World is flat");
     s.runTime(20);
     # s.ping(6, 3, "Hi!");
     # s.runTime(20);
@@ -157,7 +157,7 @@ def main():
     # s.runTime(10);
     # s.ping(1, 11, "Tralalalala");
     # s.runTime(10);
-    # s.neighborDMP(6);
+    s.neighborDMP(6);
 
 
 if __name__ == '__main__':

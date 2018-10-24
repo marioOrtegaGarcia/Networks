@@ -105,6 +105,16 @@ implementation {
                 dbg(GENERAL_CHANNEL, "\tBooted\n");
         }
 
+        /*
+████████ ██ ███    ███ ███████ ██████
+   ██    ██ ████  ████ ██      ██   ██
+   ██    ██ ██ ████ ██ █████   ██████
+   ██    ██ ██  ██  ██ ██      ██   ██
+   ██    ██ ██      ██ ███████ ██   ██
+*/
+
+
+
         //  This function is ran after t0 Milliseconds the node is alive, and fires every dt seconds.
         event void Timer.fired() {
                 // We might wanna remove this since the timer fires fro every 25 seconds to 35 Seconds
@@ -152,10 +162,6 @@ implementation {
                 pack* recievedMsg;
                 bool alteredRoute = FALSE;
                 recievedMsg = (pack *)payload;
-
-                /* if (recievedMsg->protocol == PROTOCOL_DV) {
-                        dbg(GENERAL_CHANNEL, "Recieved DV Packet\n");
-                } */
 
                 if (len == sizeof(pack)) {
                         //  Dead Packet: Timed out
@@ -402,7 +408,7 @@ implementation {
         //  sends message to all known neighbors in neighbor list; if list is empty, forwards to everyone within range using AM_BROADCAST_ADDR.
         void relayToNeighbors(pack* recievedMsg) {
                 if(destIsNeighbor(recievedMsg)) {
-                        dbg(NEIGHBOR_CHANNEL, "\tDeliver Message to Destination\n");
+                        /* dbg(NEIGHBOR_CHANNEL, "\tDeliver Message to Destination\n"); */
                         call Sender.send(sendPackage, recievedMsg->dest);
                 } else {
                         //dbg(NEIGHBOR_CHANNEL, "\tTrynna Forward To Neighbors\n");
@@ -461,8 +467,8 @@ implementation {
                          if(NeighborList[j] > 0)
                               insert(j, 1, j);
                 }
-                /* dbg(GENERAL_CHANNEL, "\t~~~~~~~My, Mote %d's, Neighbors~~~~~~~initialize\n", TOS_NODE_ID);
-                signal CommandHandler.printNeighbors(); */
+                dbg(GENERAL_CHANNEL, "\t~~~~~~~My, Mote %d's, Neighbors~~~~~~~initialize\n", TOS_NODE_ID);
+                signal CommandHandler.printNeighbors();
            }
 
         void insert(uint8_t dest, uint8_t cost, uint8_t nextHop) {
@@ -503,7 +509,6 @@ implementation {
                   if(*(newRoute+(i * 3)) != 0)
                          dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", *(newRoute+(i * 3)), *(newRoute+(i * 3) + 1), *(newRoute+(i * 3) + 2));
              } */
-
              // Using double forLoop instead of one, outer Iterated through routing, inner going through newRoute
             for (i = 0; i < 20; i++) {
                     for (j = 0; j < 7; j++) {
@@ -522,6 +527,15 @@ implementation {
                                             alteredRoute = TRUE;
                                     }
                             }
+
+                            /* for (i = 1; i < NeighborListSize; i++) {
+                                if(NeighborList[i] > 0) {
+                                        routing[i][0] = i;
+                                        routing[i][1] = 1;
+                                        routing[i][2] = i;
+
+                                }
+                            } */
                             //signal CommandHandler.printRouteTable();
                             // Making sure the cost to us is still 0
                             /* if (TOS_NODE_ID == routing[i][0]) {
@@ -611,7 +625,6 @@ implementation {
                      dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d\n", routing[i][0], routing[i][1], routing[i][2]);
              } */
 
-
              /* dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Poison Routing Table~~~~~~~\n", TOS_NODE_ID);
              dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
              dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
@@ -619,10 +632,7 @@ implementation {
                   dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", i, *(poisonTbl+(i * 3)), *(poisonTbl+(i * 3 + 1)));
              } */
 
-
              //signal CommandHandler.printRouteTable();
-
-
 
         }
 }
