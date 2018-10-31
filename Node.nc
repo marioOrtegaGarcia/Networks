@@ -45,6 +45,7 @@ module Node {
 implementation {
 
         pack sendPackage;
+        uint8_t poolSize =  9;
         uint16_t nodeSeq = 0;
         uint8_t MAX_HOP = 18;
         bool fired = FALSE;
@@ -89,6 +90,7 @@ implementation {
 
         bool mergeRoute(uint8_t* newRoute, uint8_t src);
         void splitHorizon(uint8_t nextHop);
+        uint8_t findNextHop(uint8_t dest);
 
 
         //  Node boot time calls
@@ -160,6 +162,7 @@ implementation {
         //  Handles all the Packs we are receiving.
         event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
                 pack* recievedMsg;
+                uint8_t nHop;
                 bool alteredRoute = FALSE;
                 recievedMsg = (pack *)payload;
 
@@ -178,23 +181,24 @@ implementation {
 
                         //  Ping to me
                         if (recievedMsg->protocol == PROTOCOL_PING && recievedMsg->dest == TOS_NODE_ID) {
-                                dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) -------------------------------------------------->>>>Ping: %s\n", recievedMsg->src, recievedMsg->dest,  recievedMsg->payload);
+                                dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) Ping Recieved Seq(%d): %s\n", recievedMsg->src, recievedMsg->dest,  recievedMsg->seq, recievedMsg->payload);
                                 logPacket(&sendPackage);
 
                                 // Sending Ping Reply
                                 nodeSeq++;
                                 makePack(&sendPackage, recievedMsg->dest, recievedMsg->src, MAX_TTL, PROTOCOL_PINGREPLY, nodeSeq, (uint8_t*)recievedMsg->payload, len);
                                 logPacket(&sendPackage);
-                                call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+                                nHop = findNextHop(recievedMsg->src);
+                                call Sender.send(sendPackage, nHop);
 
                                 //signal CommandHandler.printNeighbors();
-                                signal CommandHandler.printRouteTable();
+                                //signal CommandHandler.printRouteTable();
                                 return msg;
                         }
 
                         //  Ping Reply to me
                         else if (recievedMsg->protocol == PROTOCOL_PINGREPLY && recievedMsg->dest == TOS_NODE_ID) {
-                                dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) -------------------------------------------------->>>>Ping Reply: %s\n", recievedMsg->src, recievedMsg->dest, recievedMsg->payload);
+                                dbg(FLOODING_CHANNEL, "\tPackage(%d,%d) Ping Reply Recieved: %s\n", recievedMsg->src, recievedMsg->dest, recievedMsg->payload);
                                 logPacket(&sendPackage);
                                 return msg;
                         }
@@ -247,6 +251,14 @@ implementation {
                 dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Currrupted", recievedMsg->src, recievedMsg->dest);
                 return msg;
         }
+        /*
+        ██████  ██ ███    ██  ██████
+        ██   ██ ██ ████   ██ ██
+        ██████  ██ ██ ██  ██ ██   ███
+        ██      ██ ██  ██ ██ ██    ██
+        ██      ██ ██   ████  ██████
+        */
+
 
         //  This is how we send a Ping to one another
         event void CommandHandler.ping(uint16_t destination, uint8_t *payload) {
@@ -255,8 +267,13 @@ implementation {
                 dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Ping Sent\n", TOS_NODE_ID, destination);
                 makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL+5, PROTOCOL_PING, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
                 logPack(&sendPackage);
-                //logPacket(&sendPackage);
-                call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+                logPacket(&sendPackage);
+                if (!initialized) {
+                        call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+                } else {
+                        call Sender.send(sendPackage, findNextHop(destination));
+                }
+
         }
 
         /*
@@ -270,22 +287,24 @@ implementation {
         //  This are functions we are going to be implementing in the future.
         event void CommandHandler.printNeighbors() {
                 int i, count = 0;
-                     dbg(GENERAL_CHANNEL, "NeighborList Size: %d\n", NeighborListSize);
-                        for(i = 1; i < (NeighborListSize); i++) {
-                             if(NeighborList[i] > 0){
-                                  dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, i);
-                                  count++;
-                             }
+
+                dbg(NEIGHBOR_CHANNEL, "Mote %d's Size: %d\n", TOS_NODE_ID, NeighborListSize);
+                dbg(NEIGHBOR_CHANNEL, "\t~~~~~~~Neighbors~~~~~~~\n");
+                for(i = 1; i < (NeighborListSize); i++) {
+                        if(NeighborList[i] > 0) {
+                                dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, i);
+                                count++;
                         }
-                        if(count == 0)
-                              dbg(GENERAL_CHANNEL, "Neighbor List is Empty\n");
+                }
+                if(count == 0)
+                        dbg(NEIGHBOR_CHANNEL, "Neighbor List is Empty\n");
         }
 
         event void CommandHandler.printRouteTable() {
                 int i;
-                dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Routing Table~~~~~~~\n", TOS_NODE_ID);
+                dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Routing Table for loop cout till ... 9~~~~~~~\n", TOS_NODE_ID);
                 dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
-                for (i = 1; i < 20; i++) {
+                for (i = 1; i <= poolSize; i++) {
                         dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", routing[i][0], routing[i][1], routing[i][2]);
                 }
         }
@@ -296,16 +315,19 @@ implementation {
         event void CommandHandler.printDistanceVector(){
         }
 
-        event void CommandHandler.setTestServer(){
+        event void CommandHandler.setTestServer(uint8_t port){
         }
 
-        event void CommandHandler.setTestClient(){
+        event void CommandHandler.setTestClient(uint16_t  dest, uint8_t srcPort, uint8_t destPort, uint8_t num){
         }
 
         event void CommandHandler.setAppServer(){
         }
 
         event void CommandHandler.setAppClient(){
+        }
+        event void CommandHandler.closeConnection(uint16_t dest, uint8_t srcPort, uint8_t  destPort, uint8_t num) {
+
         }
 
         /*
@@ -389,10 +411,14 @@ implementation {
         void reduceNeighborsTTL() {
                 int i;
                 for (i = 0; i < NeighborListSize; i++) {
+
                         if(NeighborList[i] == 1) {
-                                NeighborList[i] -= 1;
+
+                                /* dbg (NEIGHBOR_CHANNEL, "\t Node %d Dropped from the Network \n", i); */
+
+                                NeighborList[i] = 0;
                                 routing[i][1] = 255;
-                                dbg (NEIGHBOR_CHANNEL, "\t Node %d Dropped from the Network \n", i);
+                                routing[i][2] = 0;
 
                                 // NeighborPing to neighbor we are dropppping
                                 nodeSeq++;
@@ -401,6 +427,8 @@ implementation {
                         }
                         if (NeighborList[i] > 1) {
                                 NeighborList[i] -= 1;
+                        } else {
+                                /* dbg (NEIGHBOR_CHANNEL, "\t Node %d Dropped from the Network \n", i); */
                         }
                 }
         }
@@ -412,7 +440,7 @@ implementation {
                         call Sender.send(sendPackage, recievedMsg->dest);
                 } else {
                         //dbg(NEIGHBOR_CHANNEL, "\tTrynna Forward To Neighbors\n");
-                        call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+                        call Sender.send(sendPackage, findNextHop(recievedMsg->dest));
                 }
         }
 
@@ -467,8 +495,8 @@ implementation {
                          if(NeighborList[j] > 0)
                               insert(j, 1, j);
                 }
-                dbg(GENERAL_CHANNEL, "\t~~~~~~~My, Mote %d's, Neighbors~~~~~~~initialize\n", TOS_NODE_ID);
-                signal CommandHandler.printNeighbors();
+                //dbg(GENERAL_CHANNEL, "\t~~~~~~~My, Mote %d's, Neighbors~~~~~~~initialize\n", TOS_NODE_ID);
+                //signal CommandHandler.printNeighbors();
            }
 
         void insert(uint8_t dest, uint8_t cost, uint8_t nextHop) {
@@ -518,7 +546,7 @@ implementation {
                             nextHop = *(newRoute + (j * 3) + 2);
 
                             if (node == routing[i][0]) {
-                                    if ((cost+1)<routing[i][1]) {
+                                    if ((cost+1) <= routing[i][1]) {
                                             /* dbg(GENERAL_CHANNEL, "\tRewriting route for node %d: %d < %d ---------------------\n", node, cost + 1, routing[i][1]); */
                                             routing[i][0] = node;
                                             routing[i][1] = cost + 1;
@@ -633,6 +661,18 @@ implementation {
              } */
 
              //signal CommandHandler.printRouteTable();
+
+        }
+
+        uint8_t findNextHop(uint8_t dest) {
+                int i;
+                uint8_t nHop;
+                for (i = 0; i <= poolSize; i++) {
+                        if (routing[i][0] == dest) {
+                                nHop = routing[i][2];
+                                return nHop;
+                        }
+                }
 
         }
 }

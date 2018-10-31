@@ -125,6 +125,15 @@ class TestSim:
     def routeDMP(self, destination):
         self.sendCMD(self.CMD_ROUTE_DUMP, destination, "routing command");
 
+    def newServer(self, target, port):
+        self.sendCMD(self.CMD_TEST_SERVER, target, "{0}".format(chr(port)));
+
+    def newClient(self, target, dest, srcPort, destPort, num):
+        self.sendCMD(self.CMD_TEST_CLIENT,  target,  "{0}{1}{2}{3}{4}".format(chr(dest), chr(srcPort), chr(destPort), chr(num & 0xFF), chr((num >> 8) & 0xFF)));
+
+    def clientClose(self, target, dest, srcPort, destPort):
+        self.sendCMD(self.CMD_CLOSE_CONNECTION, target, "{0}{1}{2}".format(chr(dest), chr(srcPort), chr(destPort)));
+
     def addChannel(self, channelName, out=sys.stdout):
         print 'Adding Channel', channelName;
         self.t.addChannel(channelName, out);
@@ -132,8 +141,9 @@ class TestSim:
 def main():
     s = TestSim();
     s.runTime(20);
-    #change this back to long_line.topo
+
     s.loadTopo("example.topo");
+    #s.loadTopo("long_line.topo");
     s.loadNoise("no_noise.txt");
     s.bootAll();
     #  Default Channels
@@ -142,14 +152,23 @@ def main():
     #  Channels for Project 1
     s.addChannel(s.NEIGHBOR_CHANNEL);
     s.addChannel(s.FLOODING_CHANNEL);
-
-
     s.runTime(30);
+
     s.ping(3, 6, "Hello, World");
     s.runTime(10);
+
     s.moteOff(6);
     s.runTime(200);
+
+    s.neighborDMP(3);
+    s.runTime(20);
+    s.neighborDMP(4);
+    s.runTime(55);
+
     s.ping(3, 6, "The World is flat");
+    s.runTime(20);
+
+    s.routeDMP(3);
     s.runTime(20);
     # s.ping(6, 3, "Hi!");
     # s.runTime(20);
@@ -158,7 +177,7 @@ def main():
     # s.ping(1, 11, "Tralalalala");
     # s.runTime(10);
     s.neighborDMP(6);
-
+    s.runTime(4);
 
 if __name__ == '__main__':
     main()
