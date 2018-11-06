@@ -136,8 +136,8 @@ implementation {
         }
 
         event void ListenTimer.fired() {
-             int newFd = call Transport.accept();
-             if(newFd != NULL){
+             //int newFd = call Transport.accept();
+             if((uint16_t)newFd != (uint16_t)NULL){
                   //add to list of accepted sockets
              }
              //for all sockets added
@@ -332,11 +332,11 @@ implementation {
 
         event void CommandHandler.setTestServer(uint8_t port) {
                 socket_addr_t socketAddr;
-                socket_t fd = call socket();
+                socket_t fd = call Transport.socket();
 
                 socketAddr.port = port;
                 socketAddr.addr = TOS_NODE_ID;
-                call bind(fd, socketAddr);
+                call Transport.bind(fd, socketAddr);
 
                 call ListenTimer.startPeriodicAt(30000);
 
