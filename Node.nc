@@ -137,9 +137,9 @@ implementation {
 
         event void ListenTimer.fired() {
              //int newFd = call Transport.accept();
-             if((uint16_t)newFd != (uint16_t)NULL){
+             //if((uint16_t)newFd != (uint16_t)NULL){
                   //add to list of accepted sockets
-             }
+             //}
              //for all sockets added
              //read data and print
         }
