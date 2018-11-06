@@ -30,6 +30,8 @@ module Node {
 
         uses interface CommandHandler;
 
+        uses interface Transport;
+
         uses interface List <pack> as PackLogs;
 
         //uses interface List <uint16_t> as NeighborList;

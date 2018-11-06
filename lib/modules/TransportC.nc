@@ -6,8 +6,8 @@ configuration TransportC{
 }
 
 implementation{
-     components new TransportP();
-     Transport = TransportP.Transport;
+     components TransportP;
+     Transport = TransportP;
 
-     
+
 }
