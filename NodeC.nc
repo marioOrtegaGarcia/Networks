@@ -66,7 +66,7 @@ implementation {
     components CommandHandlerC;
     Node.CommandHandler -> CommandHandlerC;
 
-    components TranpsportP;
+    components TransportP;
     Node.Transport -> TransportP;
 
 
