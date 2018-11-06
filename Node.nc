@@ -43,6 +43,8 @@ module Node {
 
         uses interface Timer<TMilli> as ListenTimer;
 
+        uses interface Timer<TMilli> as WriteTimer;
+
         //uses interface DVRTableC <uint8_t> as Table;
 }
 
@@ -138,6 +140,16 @@ implementation {
              }
              //for all sockets added
              //read data and print
+        }
+
+        event void WriteTimer.fired() {
+             /*
+             if all data in buffer has been writtin or buffer is empty
+                    create new data for buffer
+                    //data is from 0 to [transfer]
+               subtract the amount of data you were able to write(fd, buffer, buffer len)
+
+             */
         }
 
         //  Make sure all the Radios are turned on
@@ -329,6 +341,26 @@ implementation {
         }
 
         event void CommandHandler.setTestClient(uint16_t  dest, uint8_t srcPort, uint8_t destPort, uint8_t num){
+
+               socket_addr_t socketAddr;
+               socket_addr_t serverAddr;
+               socket_t fd = call Transport.socket();
+
+               //source info
+               socketAddr.addr = TOS_NODE_ID;
+               socketAddr.port = srcPort;
+
+               call Transport.bind(fd, *socketAddr);
+
+               //destination info
+               serverAddr.addr = dest;
+               serverAddr.port = destPort;
+
+               if(call Transport.connect(fd, *serverAddr) == SUCCESS){
+                    WriteTimer.startPeriodicAt(30000);
+                    //global variable amount of data equal to [transfer]
+               }
+
 
         }
 
