@@ -134,7 +134,7 @@ implementation {
         }
 
         event void ListenTimer.fired() {
-             int newFd = Transport.accept();
+             int newFd = call Transport.accept();
              if(newFd != NULL){
                   //add to list of accepted sockets
              }
@@ -342,6 +342,7 @@ implementation {
 
         event void CommandHandler.setTestClient(uint16_t  dest, uint8_t srcPort, uint8_t destPort, uint8_t num){
 
+          /*
                socket_addr_t socketAddr;
                socket_addr_t serverAddr;
                socket_t fd = call Transport.socket();
@@ -360,7 +361,7 @@ implementation {
                     WriteTimer.startPeriodicAt(30000);
                     //global variable amount of data equal to [transfer]
                }
-
+          */
 
         }
 
