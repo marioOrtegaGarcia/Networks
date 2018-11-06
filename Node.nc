@@ -336,9 +336,9 @@ implementation {
 
                 socketAddr.port = port;
                 socketAddr.addr = TOS_NODE_ID;
-                call Transport.bind(fd, socketAddr);
+                call Transport.bind(fd, *socketAddr);
 
-                call ListenTimer.startPeriodicAt(30000);
+                call ListenTimer.startOneShot(30000);
 
         }
 
