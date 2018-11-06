@@ -131,6 +131,15 @@ implementation {
              }
         }
 
+        event void ListenTimer.fired() {
+             int newFd = Transport.accept();
+             if(newFd != NULL){
+                  //add to list of accepted sockets
+             }
+             //for all sockets added
+             //read data and print
+        }
+
         //  Make sure all the Radios are turned on
         event void AMControl.startDone(error_t err)  {
                 if(err == SUCCESS)
