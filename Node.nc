@@ -9,9 +9,11 @@
 #include <Timer.h>
 #include "includes/command.h"
 #include "includes/packet.h"
+#include "includes/socket.h"
 #include "includes/CommandMsg.h"
 #include "includes/sendInfo.h"
 #include "includes/channels.h"
+
 //#include "includes/DVRTable.h"
 //  Tried using this am types header to add a flood address but not sure if it didn't work cause it wasn't compiling due code errors
 //#include "includes/am_types.h"
@@ -39,6 +41,8 @@ module Node {
 
         uses interface Timer<TMilli> as TableUpdateTimer;
 
+        uses interface Timer<TMilli> as ListenTimer;
+
         //uses interface DVRTableC <uint8_t> as Table;
 }
 
@@ -56,23 +60,7 @@ implementation {
 
         uint8_t NeighborList[19];
         uint8_t routing[255][3];
-
-        /* typedef struct DVRtouple {
-           uint8_t dest;
-           uint8_t cost;
-           uint8_t nextHop;
-        } DVRtouple; */
-
-
-        /*
-        typedef struct DVRTable {
-                DVRtouple* table[19];
-        } DVRTable;
-        */
-        //DVRTable* DVTable;
-        //DVRTable table;
-        //  Here we can lis all the neighbors for this mote
-        //  We getting an error with neighbors
+        socket_t socks[19];
 
         //  Prototypes
         void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
@@ -119,11 +107,7 @@ implementation {
 
         //  This function is ran after t0 Milliseconds the node is alive, and fires every dt seconds.
         event void Timer.fired() {
-                // We might wanna remove this since the timer fires fro every 25 seconds to 35 Seconds
                 uint32_t t0, dt;
-                //dbg(GENERAL_CHANNEL, "//////////////////////////////////////////////////////////////////////////////////////\n");
-                //signal CommandHandler.printNeighbors();
-                //clearNeighbors();
                 scanNeighbors();
 
                 t0 = 20000 + call Random.rand32() % 1000;
@@ -133,7 +117,6 @@ implementation {
                      fired = TRUE;
                 }
 
-                //dbg(GENERAL_CHANNEL, "\tFired time: %d\n", call Timer.getNow());
                 //dbg(GENERAL_CHANNEL, "\tTimer Fired!\n");
         }
 
@@ -149,7 +132,7 @@ implementation {
         }
 
         //  Make sure all the Radios are turned on
-        event void AMControl.startDone(error_t err){
+        event void AMControl.startDone(error_t err)  {
                 if(err == SUCCESS)
                         dbg(GENERAL_CHANNEL, "\tRadio On\n");
                 else
@@ -288,11 +271,10 @@ implementation {
         event void CommandHandler.printNeighbors() {
                 int i, count = 0;
 
-                dbg(NEIGHBOR_CHANNEL, "Mote %d's Size: %d\n", TOS_NODE_ID, NeighborListSize);
-                dbg(NEIGHBOR_CHANNEL, "\t~~~~~~~Neighbors~~~~~~~\n");
+                dbg(NEIGHBOR_CHANNEL, "\t~~~~~~~Mote %d's Neighbors~~~~~~~\n", TOS_NODE_ID);
                 for(i = 1; i < (NeighborListSize); i++) {
                         if(NeighborList[i] > 0) {
-                                dbg(NEIGHBOR_CHANNEL, "%d -> %d\n", TOS_NODE_ID, i);
+                                dbg(NEIGHBOR_CHANNEL, "\t\t   %d -> %d\n", TOS_NODE_ID, i);
                                 count++;
                         }
                 }
@@ -302,23 +284,43 @@ implementation {
 
         event void CommandHandler.printRouteTable() {
                 int i;
-                dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Routing Table for loop cout till ... 9~~~~~~~\n", TOS_NODE_ID);
+                dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Routing Table~~~~~~~\n", TOS_NODE_ID);
                 dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
                 for (i = 1; i <= poolSize; i++) {
                         dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", routing[i][0], routing[i][1], routing[i][2]);
                 }
         }
 
-        event void CommandHandler.printLinkState(){
+        event void CommandHandler.printLinkState() {
         }
 
-        event void CommandHandler.printDistanceVector(){
+        event void CommandHandler.printDistanceVector() {
         }
 
-        event void CommandHandler.setTestServer(uint8_t port){
+        /*
+        ████████  ██████ ██████
+           ██    ██      ██   ██
+           ██    ██      ██████
+           ██    ██      ██
+           ██     ██████ ██
+        */
+
+
+
+        event void CommandHandler.setTestServer(uint8_t port) {
+                socket_addr_t socketAddr;
+                socket_t fd = call socket();
+
+                socketAddr.port = port;
+                socketAddr.addr = TOS_NODE_ID;
+                call bind(fd, socketAddr);
+
+                call ListenTimer.startPeriodicAt(30000);
+
         }
 
         event void CommandHandler.setTestClient(uint16_t  dest, uint8_t srcPort, uint8_t destPort, uint8_t num){
+
         }
 
         event void CommandHandler.setAppServer(){
@@ -513,30 +515,10 @@ implementation {
                         splitHorizon((uint8_t)i); /* I am sending out counter i because that is the node ID and the actual value is the TTL */
         }
 
-        /* // First we exclude unset values, and  insert values that have a lesser cost or inser values that have the same nextHop/TOS_NODE_ID/ anf nodeID is not mine
-        if ((nextHop != 0 || cost != 255) && (((cost + 1) < routing[node][1]) ||
-        (nextHop == routing[node][2] && node == routing[node][0] && node != TOS_NODE_ID))) {
-                routing[node][0] = node;
-                routing[node][1] = cost + 1;
-                routing[node][2] = src;
-
-                alteredRoute = TRUE;*/
-
         bool mergeRoute(uint8_t* newRoute, uint8_t src){
              int node, cost, nextHop, i, j;
              bool alteredRoute = FALSE;
-             /* dbg(GENERAL_CHANNEL, "\t~~~~~~~My, Mote %d's, Neighbors~~~~~~~MR\n", TOS_NODE_ID);
-             signal CommandHandler.printNeighbors(); */
-             /* dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Incoming Routing Table~~~~~~~\n", src);
-             dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
 
-
-             // Here we read the first 7 indexes of the Incoming table
-             for (i = 0; i < 7; i++) {
-                     // There is no node with an TOS_NODE_ID so we exclude it from the print
-                  if(*(newRoute+(i * 3)) != 0)
-                         dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", *(newRoute+(i * 3)), *(newRoute+(i * 3) + 1), *(newRoute+(i * 3) + 2));
-             } */
              // Using double forLoop instead of one, outer Iterated through routing, inner going through newRoute
             for (i = 0; i < 20; i++) {
                     for (j = 0; j < 7; j++) {
@@ -555,22 +537,6 @@ implementation {
                                             alteredRoute = TRUE;
                                     }
                             }
-
-                            /* for (i = 1; i < NeighborListSize; i++) {
-                                if(NeighborList[i] > 0) {
-                                        routing[i][0] = i;
-                                        routing[i][1] = 1;
-                                        routing[i][2] = i;
-
-                                }
-                            } */
-                            //signal CommandHandler.printRouteTable();
-                            // Making sure the cost to us is still 0
-                            /* if (TOS_NODE_ID == routing[i][0]) {
-                                    routing[i][0] = TOS_NODE_ID;
-                                    routing[i][1] = 0;
-                                    routing[i][2] = TOS_NODE_ID;
-                            } */
                     }
             }
 
@@ -646,21 +612,6 @@ implementation {
                   }
                     poisonTbl += 3;
              }
-
-             /* dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Table after splitHorizon, Table sent to %d(Should't be poison reversed)~~~~~~~\n", TOS_NODE_ID, nextHop);
-             dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
-             for (i = 0; i < 20; i++) {
-                     dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d\n", routing[i][0], routing[i][1], routing[i][2]);
-             } */
-
-             /* dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Poison Routing Table~~~~~~~\n", TOS_NODE_ID);
-             dbg(GENERAL_CHANNEL, "\tCOMPARE ME COMPARE ME COMPARE ME COMPARE ME\n");
-             dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
-             for (i = 0; i < 20; i++) {
-                  dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", i, *(poisonTbl+(i * 3)), *(poisonTbl+(i * 3 + 1)));
-             } */
-
-             //signal CommandHandler.printRouteTable();
 
         }
 
