@@ -20,6 +20,8 @@ module TransportP{
 }
 
 implementation{
+
+     bool usedPorts[19] = {FALSE};
    /**
     * Get a socket if there is one available.
     * @Side Client/Server
@@ -29,7 +31,12 @@ implementation{
     *    a socket then return a NULL socket_t.
     */
    command socket_t socket(){
-
+        int i;
+        for(i = 0; i < 19; i++){
+             if(usedPorts[i] == FALSE)
+                    return i;
+        }
+        return NULL;
    }
 
    /**
