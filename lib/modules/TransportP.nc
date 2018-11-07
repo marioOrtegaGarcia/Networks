@@ -52,7 +52,12 @@ implementation{
     *       if you were unable to bind.
     */
    command error_t bind(socket_t fd, socket_addr_t *addr){
-
+           int i;
+           for(i = 0; i < 19; i++){
+                if(usedPorts[i] == fd)
+                       return 'SUCCESS';
+           }
+           return 'FAIL'
    }
 
    /**

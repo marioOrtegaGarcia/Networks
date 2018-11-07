@@ -374,6 +374,14 @@ implementation {
         }
         event void CommandHandler.closeConnection(uint16_t dest, uint8_t srcPort, uint8_t  destPort, uint8_t num) {
 
+                /* int i;
+                for (i = 0; i < 19; i++) {
+                        if (socks[i] == dest) {
+                        find fd associated with [client address], [srcPort], [destPort], [dest]
+                        close(fd)        
+                        }
+                } */
+
         }
 
         /*
