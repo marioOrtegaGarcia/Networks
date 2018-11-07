@@ -54,10 +54,11 @@ implementation{
    command error_t bind(socket_t fd, socket_addr_t *addr){
            int i;
            for(i = 0; i < 19; i++){
-                if(usedPorts[i] == fd)
-                       return 'SUCCESS';
+                if(usedPorts[i] == fd) {
+                        return SUCCESS;
+                }
            }
-           return 'FAIL'
+           return FAIL;
    }
 
    /**
