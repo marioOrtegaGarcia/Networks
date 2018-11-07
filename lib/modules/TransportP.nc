@@ -36,7 +36,7 @@ implementation{
              if(usedPorts[i] == FALSE)
                     return (socket_t)i;
         }
-        return NULL;
+        return (socket_t)NULL;
    }
 
    /**
