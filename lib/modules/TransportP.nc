@@ -17,12 +17,11 @@
 
 module TransportP {
         provides interface Transport;
-        uses interface Hashmap <socket_addr_t> as sockets;
+        uses interface Hashmap <socket_store_t> as sockets;
 }
 
 implementation {
-	uint8_t fdKeys = 0;
-        bool usedPorts[19] = {FALSE};
+	uint16_t fdKeys = 0;
 
         /**
          * Get a socket if there is one available.
@@ -32,13 +31,16 @@ implementation {
          *    associated with a socket. If you are unable to allocated
          *    a socket then return a NULL socket_t.
          */
-        command socket_t Transport.socket(){
-                int i;
-                for(i = 0; i < 19; i++) {
-                        if(usedPorts[i] == FALSE)
-                                return (socket_t)i;
-                }
-                return (socket_t)NULL;
+	 command socket_t Transport.socket(){
+		 int i;
+		fdKeys++;
+		if(fdKeys < 255) {
+			return (socket_t)fdKeys;
+		} else {
+			for(i = 0; i < 255; i++)
+			return (socket_t)i;
+		}
+	return (socket_t)NULL;
         }
 
         /**
@@ -54,14 +56,9 @@ implementation {
          *       if you were unable to bind.
          */
         command error_t Transport.bind(socket_t fd, socket_addr_t *addr)  {
-                int i;
-                for(i = 0; i < 19; i++) {
-                        if(i == fd) {
-
-                                return SUCCESS;
-                        }
-                }
-                return FAIL;
+		if(!call sockets.contains(fd))  return FAIL;
+		call sockets.insert(fd, );
+                return SUCCESS;
         }
 
         /**
