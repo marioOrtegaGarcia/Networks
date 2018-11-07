@@ -34,7 +34,7 @@ implementation{
         int i;
         for(i = 0; i < 19; i++){
              if(usedPorts[i] == FALSE)
-                    return i;
+                    return (socket_t)i;
         }
         return NULL;
    }
