@@ -64,7 +64,8 @@ implementation {
 
         uint8_t NeighborList[19];
         uint8_t routing[255][3];
-        socket_t socks[19];
+	socket_t fd;
+        socket_store_t socks[10];
 
         //  Prototypes
         void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
@@ -135,13 +136,30 @@ implementation {
              }
         }
 
+        /*
+        int newFd = accept();
+        if newFd not NULL_SOCKET
+        add to list of accepted sockets
+        for all sockets added
+        read data and print
+
+        */
         event void ListenTimer.fired() {
-             //int newFd = call Transport.accept();
-             //if((uint16_t)newFd != (uint16_t)NULL){
-                  //add to list of accepted sockets
-             //}
-             //for all sockets added
-             //read data and print
+          int i, newFd = accept(fd);
+          if(newFd != NULL){
+               for(i = 0; i < sizeof(socks)/sizeof(socks[0]); i++){
+                    dbg("",);
+               }
+          }
+
+		/* = call sockets.get(keys);
+
+             int newFd = call Transport.accept(); */
+             /* if((uint16_t)newFd != (uint16_t)NULL){
+                  add to list of accepted sockets
+             }
+             for all sockets added
+             read data and print */
         }
 
         event void WriteTimer.fired() {
@@ -378,7 +396,7 @@ implementation {
                 for (i = 0; i < 19; i++) {
                         if (socks[i] == dest) {
                         find fd associated with [client address], [srcPort], [destPort], [dest]
-                        close(fd)        
+                        close(fd);
                         }
                 } */
 

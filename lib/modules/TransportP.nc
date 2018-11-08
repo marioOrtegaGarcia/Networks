@@ -31,16 +31,19 @@ implementation {
          *    associated with a socket. If you are unable to allocated
          *    a socket then return a NULL socket_t.
          */
-	 command socket_t Transport.socket(){
-		 int i;
+	 command socket_t Transport.socket() {
+		int i;
+		socket_store_t newSocket;
 		fdKeys++;
-		if(fdKeys < 255) {
+		if(fdKeys < 10) {
+			call sockets.insert(fdKeys, newSocket);
 			return (socket_t)fdKeys;
 		} else {
-			for(i = 0; i < 255; i++)
-			return (socket_t)i;
+			for(i = 0; i < 10; i++)
+				if(!call sockets.contains(i))
+					return (socket_t)i;
 		}
-	return (socket_t)NULL;
+	     return (socket_t)NULL;
         }
 
         /**
@@ -56,9 +59,15 @@ implementation {
          *       if you were unable to bind.
          */
         command error_t Transport.bind(socket_t fd, socket_addr_t *addr)  {
-		if(!call sockets.contains(fd))  return FAIL;
-		call sockets.insert(fd, );
-                return SUCCESS;
+		        socket_store_t refSocket;
+		          if(!call sockets.contains(fd))  return FAIL;
+		        refSocket = call sockets.get(fd);
+		        refSocket.state = CLOSED;
+		        refSocket.src = TOS_NODE_ID;
+		        refSocket.dest = *addr;
+		        call sockets.remove(fd);
+		        call sockets.insert(fd, refSocket);
+            return SUCCESS;
         }
 
         /**
@@ -74,7 +83,14 @@ implementation {
          *    if not return a null socket.
          */
         command socket_t Transport.accept(socket_t fd){
-
+		socket_store_t localSocket;
+		localSocket = call sockets.get(fd);
+		if (localSocket.state == LISTEN) {
+			if (connect(fd, &localSocket.dest) == SUCCESS) {
+				return localSocket;
+			}
+		}
+		return NULL;
         }
 
         /**
@@ -139,8 +155,16 @@ implementation {
          * @return socket_t - returns SUCCESS if you are able to attempt
          *    a connection with the fd passed, else return FAIL.
          */
-        command error_t Transport.connect(socket_t fd, socket_addr_t * addr){
-
+        command error_t Transport.connect(socket_t fd, socket_addr_t * addr) {
+		socket_store_t newConnection;
+		//socket_store_t local = call sockets.get(fd);
+		if (call sockets.contains(fd)) {
+			return FAIL;
+		} else {
+			return SUCCESS;
+		}
+		/* newConnection->dest = addr; */
+		return FAIL;
         }
 
         /**
@@ -179,6 +203,10 @@ implementation {
          *   to listen else FAIL.
          */
         command error_t Transport.listen(socket_t fd){
+		//We wanna get the socket back with our file descriptor
+		socket_store_t socket = call sockets.get(fd);
+		//Then we wanna update the values
+		socket.state = LISTEN;
 
         }
 }
