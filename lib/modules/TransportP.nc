@@ -22,7 +22,7 @@ module TransportP {
 
 implementation {
 	uint16_t fdKeys = 0;
-
+	uint_8_t numConnected = 0;
         /**
          * Get a socket if there is one available.
          * @Side Client/Server
@@ -85,13 +85,13 @@ implementation {
         command socket_t Transport.accept(socket_t fd){
 		socket_store_t localSocket;
 		localSocket = call sockets.get(fd);
-		if (localSocket.state == LISTEN) {
-			if (connect(fd, &localSocket.dest) == SUCCESS) {
-				return localSocket;
-			}
+		if (localSocket.state == LISTEN && numConnected < 10) {
+			numConnected++;
+
+			return ;
 		}
-		localSocket = NULL;
-		return localSocket;
+		localSocket.src = NULL;
+		return localSocket.src;
         }
 
         /**
