@@ -90,7 +90,8 @@ implementation {
 				return localSocket;
 			}
 		}
-		return NULL;
+		localSocket = NULL;
+		return localSocket;
         }
 
         /**

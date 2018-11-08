@@ -145,7 +145,8 @@ implementation {
 
         */
         event void ListenTimer.fired() {
-          int i, newFd = accept(fd);
+          int i, newFd;
+	  newFd = accept(fd);
           if(newFd != NULL){
                for(i = 0; i < sizeof(socks)/sizeof(socks[0]); i++){
                     dbg("",);
@@ -350,7 +351,7 @@ implementation {
 
         event void CommandHandler.setTestServer(uint8_t port) {
                 socket_addr_t *socketAddr;
-                socket_t fd = call Transport.socket();
+                fd = call Transport.socket();
 
                 socketAddr->port = port;
                 socketAddr->addr = TOS_NODE_ID;
