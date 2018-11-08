@@ -145,11 +145,12 @@ implementation {
 
         */
         event void ListenTimer.fired() {
-          int i, newFd;
+          int i;
+	  socket_t newFd;
 	  newFd = accept(fd);
-          if(newFd != NULL){
+          if(newFd != (socket_t)NULL){
                for(i = 0; i < sizeof(socks)/sizeof(socks[0]); i++){
-                    dbg("",);
+                    //dbg("",);
                }
           }
 
