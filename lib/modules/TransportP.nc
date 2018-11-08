@@ -157,14 +157,19 @@ implementation {
          */
         command error_t Transport.connect(socket_t fd, socket_addr_t * addr) {
 		socket_store_t newConnection;
-		//socket_store_t local = call sockets.get(fd);
+		//if FD exists, get socket and set destination address to provided input addr
 		if (call sockets.contains(fd)) {
-			return FAIL;
-		} else {
+			newConnection = call sockets.get(fd);
+			newConnection.dest = addr;
+			newConnection.state = SYN_SENT;
+			//remove old connection info
+			call sockets.remove(fd);
+			//insert new connection into list of current connections
+			call sockets.insert(fd, newConnection);
 			return SUCCESS;
+		} else {
+			return FAIL;
 		}
-		/* newConnection->dest = addr; */
-		return FAIL;
         }
 
         /**
