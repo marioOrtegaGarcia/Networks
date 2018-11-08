@@ -147,7 +147,7 @@ implementation {
         event void ListenTimer.fired() {
           int i;
 	  socket_t newFd;
-	  newFd = accept(fd);
+	  newFd = Transport.accept(fd);
           if(newFd != (socket_t)NULL){
                for(i = 0; i < sizeof(socks)/sizeof(socks[0]); i++){
                     //dbg("",);
