@@ -25,7 +25,6 @@ interface Transport{
     *    a socket then return a NULL socket_t.
     */
    command socket_t socket();
-   command socket_t socket2();
 
    /**
     * Bind a socket with an address.

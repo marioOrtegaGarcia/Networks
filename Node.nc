@@ -352,9 +352,7 @@ implementation {
 
         event void CommandHandler.setTestServer(uint8_t port) {
                 socket_addr_t socketAddr;
-		socket_t fd2;
                 fd = call Transport.socket();
-		fd2 = call Transport.socket();
 
                 socketAddr.port = port;
                 socketAddr.addr = TOS_NODE_ID;
