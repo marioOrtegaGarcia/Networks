@@ -46,6 +46,21 @@ implementation {
 	     return (socket_t)NULL;
         }
 
+	command socket_t Transport.socket2() {
+	       int i;
+	       socket_store_t newSocket;
+	       fdKeys++;
+	       if(fdKeys < 10) {
+		       call sockets.insert(fdKeys, newSocket);
+		       return (socket_t)fdKeys;
+	       } else {
+		       for(i = 0; i < 10; i++)
+			       if(!call sockets.contains(i))
+				       return (socket_t)i;
+	       }
+	    return (socket_t)NULL;
+       }
+
         /**
          * Bind a socket with an address.
          * @param
