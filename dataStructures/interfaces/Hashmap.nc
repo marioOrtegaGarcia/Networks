@@ -17,19 +17,18 @@ interface Hashmap<t>{
    command uint32_t * getKeys();
 }
 /*
-
-https://docs.oracle.com/javase/tutorial/networking/sockets/definition.html
-
-
-
-In component `Node':
+In component `TransportP':
+lib/modules/TransportP.nc: In function `Transport.bind':
+lib/modules/TransportP.nc:63: sockets.contains not connected
+lib/modules/TransportP.nc:65: sockets.get not connected
+lib/modules/TransportP.nc:69: sockets.remove not connected
+lib/modules/TransportP.nc:70: sockets.insert not connected
+lib/modules/TransportP.nc: In function `Transport.socket':
+lib/modules/TransportP.nc:39: sockets.insert not connected
+lib/modules/TransportP.nc:43: sockets.contains not connected
 lib/modules/TransportP.nc: In function `Transport.accept':
-lib/modules/TransportP.nc:89: implicit declaration of function `connect'
-lib/modules/TransportP.nc: In function `Transport.connect':
-lib/modules/TransportP.nc:173: warning: return makes integer from pointer without a cast
-/opt/tinyos-main/support/make/extras/sim.extra:67: recipe for target 'sim-exe' failed
-make: *** [sim-exe] Error 1
-
-
+lib/modules/TransportP.nc:91: sockets.get not connected
+lib/modules/TransportP.nc:96: sockets.remove not connected
+lib/modules/TransportP.nc:97: sockets.insert not connected
 
 */

@@ -147,7 +147,7 @@ implementation {
         event void ListenTimer.fired() {
           int i;
 	  socket_t newFd;
-	  newFd = Transport.accept(fd);
+	  newFd = call Transport.accept(fd);
           if(newFd != (socket_t)NULL){
                for(i = 0; i < sizeof(socks)/sizeof(socks[0]); i++){
                     //dbg("",);
@@ -351,14 +351,16 @@ implementation {
 
 
         event void CommandHandler.setTestServer(uint8_t port) {
-                socket_addr_t *socketAddr;
+                socket_addr_t socketAddr;
                 fd = call Transport.socket();
 
-                socketAddr->port = port;
-                socketAddr->addr = TOS_NODE_ID;
-                call Transport.bind(fd, socketAddr);
+                socketAddr.port = port;
+                socketAddr.addr = TOS_NODE_ID;
+                if (call Transport.bind(fd, &socketAddr)== SUCCESS) {
+			call ListenTimer.startOneShot(30000);
+		}
 
-                call ListenTimer.startOneShot(30000);
+
 
         }
 

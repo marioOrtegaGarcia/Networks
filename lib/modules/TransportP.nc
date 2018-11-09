@@ -22,7 +22,7 @@ module TransportP {
 
 implementation {
 	uint16_t fdKeys = 0;
-	uint_8_t numConnected = 0;
+	uint8_t numConnected = 0;
         /**
          * Get a socket if there is one available.
          * @Side Client/Server
@@ -58,16 +58,19 @@ implementation {
          * @return error_t - SUCCESS if you were able to bind this socket, FAIL
          *       if you were unable to bind.
          */
-        command error_t Transport.bind(socket_t fd, socket_addr_t *addr)  {
-		        socket_store_t refSocket;
-		          if(!call sockets.contains(fd))  return FAIL;
-		        refSocket = call sockets.get(fd);
-		        refSocket.state = CLOSED;
-		        refSocket.src = TOS_NODE_ID;
-		        refSocket.dest = *addr;
-		        call sockets.remove(fd);
-		        call sockets.insert(fd, refSocket);
-            return SUCCESS;
+        command error_t Transport.bind(socket_t fd, socket_addr_t *addr) {
+		socket_store_t refSocket;
+		bool contained = call sockets.contains((uint32_t)fd);
+		if(contained) {
+			refSocket = call sockets.get((uint32_t)fd);
+			refSocket.state = CLOSED;
+			refSocket.src = TOS_NODE_ID;
+			refSocket.dest = *addr;
+			call sockets.remove((uint32_t)fd);
+			call sockets.insert((uint32_t)fd, refSocket);
+			return SUCCESS;
+		}
+		return FAIL;
         }
 
         /**
@@ -84,14 +87,17 @@ implementation {
          */
         command socket_t Transport.accept(socket_t fd){
 		socket_store_t localSocket;
-		localSocket = call sockets.get(fd);
+		socket_t nullReturn = (socket_t)NULL;
+		localSocket = call sockets.get((uint32_t)fd);
 		if (localSocket.state == LISTEN && numConnected < 10) {
 			numConnected++;
-
-			return ;
+			localSocket.dest.addr = TOS_NODE_ID;
+			localSocket.state = SYN_RCVD;
+			call sockets.remove((uint32_t)fd);
+			call sockets.insert((uint32_t)fd,localSocket);
+			return fd;
 		}
-		localSocket.src = NULL;
-		return localSocket.src;
+		return nullReturn;
         }
 
         /**
@@ -159,14 +165,14 @@ implementation {
         command error_t Transport.connect(socket_t fd, socket_addr_t * addr) {
 		socket_store_t newConnection;
 		//if FD exists, get socket and set destination address to provided input addr
-		if (call sockets.contains(fd)) {
-			newConnection = call sockets.get(fd);
-			newConnection.dest = addr;
+		if (call sockets.contains((uint32_t)fd)) {
+			newConnection = call sockets.get((uint32_t)fd);
+			newConnection.dest = *addr;
 			newConnection.state = SYN_SENT;
 			//remove old connection info
-			call sockets.remove(fd);
+			call sockets.remove((uint32_t)fd);
 			//insert new connection into list of current connections
-			call sockets.insert(fd, newConnection);
+			call sockets.insert((uint32_t)fd, newConnection);
 			return SUCCESS;
 		} else {
 			return FAIL;
