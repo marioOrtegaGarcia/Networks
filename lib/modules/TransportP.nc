@@ -17,7 +17,7 @@
 
 module TransportP {
         provides interface Transport;
-        uses interface Hashmap <socket_store_t> as sockets;
+        uses interface Hashmap<socket_store_t> as sockets;
 }
 
 implementation {

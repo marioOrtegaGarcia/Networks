@@ -6,9 +6,9 @@ configuration TransportC{
 }
 
 implementation{
-     components TransportP;
-     /* Transport = TransportP; */
+     components /*Transport,*/ TransportP;
+     Transport = TransportP;
 
-     components new HashmapC(socket_store_t, 10) as Hashmap;
-     TransportP.sockets = Hashmap;
+     components new HashmapC(socket_store_t, 10) as hashmap;
+     TransportP.sockets = hashmap;
 }
