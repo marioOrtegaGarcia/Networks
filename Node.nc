@@ -33,6 +33,7 @@ module Node {
         uses interface Transport;
 
         uses interface List <pack> as PackLogs;
+	uses interface HashmapC <socket_t> as Socks;
 
         //uses interface List <uint16_t> as NeighborList;
         //uses interface List <NeighborNode> as NeighborList;
@@ -65,8 +66,6 @@ implementation {
         uint8_t NeighborList[19];
         uint8_t routing[255][3];
 	socket_t fd;
-        socket_store_t socks[10];
-
         //  Prototypes
         void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
         void logPacket(pack* payload);
@@ -147,12 +146,25 @@ implementation {
         event void ListenTimer.fired() {
           int i;
 	  socket_t newFd;
+	  dbg(GENERAL_CHANNEL, "ListenTimer Fired\n");
 	  newFd = call Transport.accept(fd);
           if(newFd != (socket_t)NULL){
-               for(i = 0; i < sizeof(socks)/sizeof(socks[0]); i++){
-                    //dbg("",);
-               }
-          }
+               //TODO insert new sock
+	       if (call Socks.size() < 10) {
+		       dbg(GENERAL_CHANNEL, "ListenTimer.fired() -- Succesfully saved new fd");
+		       call Socks.insert(fd);
+	       } else {
+		       dbg(GENERAL_CHANNEL, "ListenTimer.fired() -- Socks is full");
+	       }
+
+	       for(i = 0; i < call Socks.size(); i++){
+
+	       }
+
+
+          } else {
+		  dbg(GENERAL_CHANNEL, "newFd is NULL\n");
+	  }
 
 		/* = call sockets.get(keys);
 
@@ -359,6 +371,7 @@ implementation {
                 if (call Transport.bind(fd, &socketAddr)== SUCCESS) {
 			call ListenTimer.startOneShot(30000);
 		}
+
 
 
 

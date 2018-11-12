@@ -26,6 +26,7 @@ implementation {
     components new AMReceiverC(AM_PACK) as GeneralReceive;
 
     components new ListC(pack, 64) as PackLogsC;
+    components new HashmapC(socket_t, 10);
     //components new ListC(uint16_t, 64) as NeighborListC;
     //components new DVRTableC(uint8_t) as DVRTableC;
     /*
@@ -45,6 +46,8 @@ implementation {
     Node.Receive -> GeneralReceive;
 
     Node.PackLogs -> PackLogsC;
+    Node.Socks -> HashmapC;
+  
     //Node.NeighborList -> NeighborListC;
     //Node.DVRTable -> DVRTableC;
 
@@ -68,6 +71,5 @@ implementation {
 
     components TransportC;
     Node.Transport -> TransportC;
-
 
 }

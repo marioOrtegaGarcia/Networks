@@ -60,14 +60,15 @@ implementation {
          */
         command error_t Transport.bind(socket_t fd, socket_addr_t *addr) {
 		socket_store_t refSocket;
-		bool contained = call sockets.contains((uint32_t)fd);
+		bool contained = call sockets.contains(fd);
 		if(contained) {
-			refSocket = call sockets.get((uint32_t)fd);
+			refSocket = call sockets.get(fd);
 			refSocket.state = CLOSED;
 			refSocket.src = TOS_NODE_ID;
 			refSocket.dest = *addr;
-			call sockets.remove((uint32_t)fd);
-			call sockets.insert((uint32_t)fd, refSocket);
+			call sockets.remove(fd);
+			call sockets.insert(fd, refSocket);
+			dbg(GENERAL_CHANNEL, "Successful bind\n");
 			return SUCCESS;
 		}
 		return FAIL;
@@ -85,19 +86,24 @@ implementation {
          *    a destination associated with the destination address and port.
          *    if not return a null socket.
          */
-        command socket_t Transport.accept(socket_t fd){
+        command socket_t Transport.accept(socket_t fd) {
 		socket_store_t localSocket;
-		socket_t nullReturn = (socket_t)NULL;
-		localSocket = call sockets.get((uint32_t)fd);
+		if (!call sockets.contains(fd)) return (socket_t)NULL;
+
+
+		localSocket = call sockets.get(fd);
+
 		if (localSocket.state == LISTEN && numConnected < 10) {
 			numConnected++;
 			localSocket.dest.addr = TOS_NODE_ID;
 			localSocket.state = SYN_RCVD;
-			call sockets.remove((uint32_t)fd);
-			call sockets.insert((uint32_t)fd,localSocket);
+			call sockets.remove(fd);
+			call sockets.insert(fd, localSocket);
+			dbg(GENERAL_CHANNEL, "Transport.accept returning %d\n", fd);
 			return fd;
 		}
-		return nullReturn;
+		dbg(GENERAL_CHANNEL, "Transport.accept returning NULL\n");
+		return (socket_t)NULL;
         }
 
         /**
@@ -165,14 +171,14 @@ implementation {
         command error_t Transport.connect(socket_t fd, socket_addr_t * addr) {
 		socket_store_t newConnection;
 		//if FD exists, get socket and set destination address to provided input addr
-		if (call sockets.contains((uint32_t)fd)) {
-			newConnection = call sockets.get((uint32_t)fd);
+		if (call sockets.contains(fd)) {
+			newConnection = call sockets.get(fd);
 			newConnection.dest = *addr;
 			newConnection.state = SYN_SENT;
 			//remove old connection info
-			call sockets.remove((uint32_t)fd);
+			call sockets.remove(fd);
 			//insert new connection into list of current connections
-			call sockets.insert((uint32_t)fd, newConnection);
+			call sockets.insert(fd, newConnection);
 			return SUCCESS;
 		} else {
 			return FAIL;

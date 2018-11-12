@@ -69,12 +69,12 @@ implementation{
                 signal CommandHandler.printRouteTable();
                 break;
 
-            case CMD_TEST_CLIENT:
-                dbg(COMMAND_CHANNEL, "Command Type: Client\n");
-                num = buff[3];
-                num = num  | (buff[4] << 8);
-                signal CommandHandler.setTestClient(buff[0], buff[1], buff[2],  buff[3]);
-                break;
+	    case CMD_TEST_CLIENT:
+	    	dbg(COMMAND_CHANNEL, "Command Type: Client\n");
+	    	num = buff[3];
+	    	num = num | (buff[4] << 8);
+	    	signal CommandHandler.setTestClient(buff[0], buff[1], buff[2], num);
+	    	break;
 
             case CMD_TEST_SERVER:
                 dbg(COMMAND_CHANNEL, "Command Type: Client\n");

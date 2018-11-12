@@ -1,24 +1,13 @@
-THINGS TO FIX BEFORE PROJECT 3
+WHERE WE AT DOC
 
-        * Receiving old packets multiple times (pings and ping replies)
-        * Dropping Node 6 makes other nodes dropped
-        *
+TO  DO
+* finish setup/teardown
+	*
+* begin stop/wait
+	*
 
-
-COMMENTS OF ERRORS
-
-        * The second packet we try to send isn't being Recieved which is fine since we are dropping  it, but for some reason every other node stops droppping from the network
-
-read 3.3.2
-
-*****DVRTable can be added to payload through memcpy()*****
-
-NEED TO IMPLEMENT:
-*IMPORTANT:    need to add TTL for nodes in neighborlist INSTEAD OF clearNeighbors every Timer.fired()
-                    - this is causing a synchronization issues where the routing table doesnt have access to all the neighbors when we print the tables
-
-*Merge Rout isnt merging the tables properly, need to reexamine how that is working. Look at the output and try and see what you can figure out
-
-*Need to call splitHorizon before we send table
-
-* i left comments for you in mergerRoute to point out what needs to be looked at
+TO FIX
+* Transport.accept()
+* Fix Hashmap: Wiring correct, fix usage inside of node
+	* Converting from Array to Hashmap, should prob use a list instead
+*
