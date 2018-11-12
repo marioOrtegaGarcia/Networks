@@ -366,27 +366,34 @@ implementation {
 
         event void CommandHandler.setTestClient(uint16_t  dest, uint8_t srcPort, uint8_t destPort, uint8_t num){
 
-          /*
-               socket_addr_t socketAddr;
-               socket_addr_t serverAddr;
-               socket_t fd = call Transport.socket();
+		int i;
+		socket_store_t socket;
+		socket_addr_t socketAddr;
+		socket_addr_t serverAddr;
+		error_t check = FAIL;
+		fd = call Transport.socket();
 
-               //source info
-               socketAddr.addr = TOS_NODE_ID;
-               socketAddr.port = srcPort;
+		//source info
+		socketAddr.addr = TOS_NODE_ID;
+		socketAddr.port = srcPort;
 
-               call Transport.bind(fd, *socketAddr);
-
-               //destination info
-               serverAddr.addr = dest;
-               serverAddr.port = destPort;
-
-               if(call Transport.connect(fd, *serverAddr) == SUCCESS){
-                    WriteTimer.startPeriodicAt(30000);
-                    //global variable amount of data equal to [transfer]
-               }
-          */
-
+		check = call Transport.bind(fd, &socketAddr);
+		if (check == FAIL) {
+			dbg(GENERAL_CHANNEL, "Get rekt son, Couldnt bind.");
+		} else {
+			dbg(GENERAL_CHANNEL, "Got em, Bind Successful.");
+			//destination info
+			serverAddr.addr = dest;
+			serverAddr.port = destPort;
+			check = call Transport.connect(fd, &serverAddr);
+			if(check == FAIL)
+				dbg(GENERAL_CHANNEL, "Couldnt Connect");
+			else {
+				dbg(GENERAL_CHANNEL, "Connection Secure.");
+				//send [max transfer size] data in packet
+				call WriteTimer.startOneShot(30000);
+			}
+		}
         }
 
         event void CommandHandler.setAppServer(){
