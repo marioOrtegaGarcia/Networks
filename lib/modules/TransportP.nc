@@ -68,9 +68,10 @@ implementation {
 			refSocket.dest = *addr;
 			call sockets.remove(fd);
 			call sockets.insert(fd, refSocket);
-			dbg(GENERAL_CHANNEL, "Successful bind\n");
+			dbg(GENERAL_CHANNEL, "Transport.bind -- Successful bind\n");
 			return SUCCESS;
 		}
+		dbg(GENERAL_CHANNEL, "Transport.bind -- Failed bind\n");
 		return FAIL;
         }
 
@@ -88,11 +89,15 @@ implementation {
          */
         command socket_t Transport.accept(socket_t fd) {
 		socket_store_t localSocket;
-		if (!call sockets.contains(fd)) return (socket_t)NULL;
-
+		if (!call sockets.contains(fd)) {
+			dbg(GENERAL_CHANNEL, "Transport.accept() -- Sockets does not contain fd: %d\n", fd);
+			return (socket_t)NULL;
+		}
 
 		localSocket = call sockets.get(fd);
-
+		dbg(GENERAL_CHANNEL, "Transport.accept() -- Sockets does contain fd: %d\n", fd);
+		dbg(GENERAL_CHANNEL, "Transport.accept() -- Sockets state: %u\n", localSocket.state);
+		dbg(GENERAL_CHANNEL,"HERE");
 		if (localSocket.state == LISTEN && numConnected < 10) {
 			numConnected++;
 			localSocket.dest.addr = TOS_NODE_ID;
@@ -221,10 +226,22 @@ implementation {
          *   to listen else FAIL.
          */
         command error_t Transport.listen(socket_t fd){
-		//We wanna get the socket back with our file descriptor
-		socket_store_t socket = call sockets.get(fd);
-		//Then we wanna update the values
-		socket.state = LISTEN;
+
+		socket_store_t socket;
+		if(call sockets.contains(fd)){
+			//We wanna get the socket back with our file descriptor
+			socket = call sockets.get(fd);
+			//Then we wanna update the values
+			socket.state = LISTEN;
+			call sockets.remove(fd);
+			call sockets.insert(fd, socket);
+			dbg(GENERAL_CHANNEL, "Transport.listen() -- Server State: Listen with fd(%d)\n", fd);
+			return (error_t)SUCCESS;
+		}
+		else{
+			dbg(GENERAL_CHANNEL, "Transport.Listen() -- Server not listening: sockets didn't contain fd\n");
+			return (error_t)FAIL;
+		}
 
         }
 }

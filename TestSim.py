@@ -159,9 +159,9 @@ def main():
 
     s.newServer(3, 30);
     s.runTime(30);
-    s.newServer(4, 40);
+    #s.newServer(2, 140);
     s.runTime(30);
-    s.newClient(4,  3, 12, 40, 30, 4412);
+    s.newClient(4,  3, 12, 30, 4412);
 
     s.ping(3, 6, "Hello, World");
     s.runTime(10);

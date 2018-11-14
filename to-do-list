@@ -8,6 +8,4 @@ TO  DO
 
 TO FIX
 * Transport.accept()
-* Fix Hashmap: Wiring correct, fix usage inside of node
-	* Converting from Array to Hashmap, should prob use a list instead
 *

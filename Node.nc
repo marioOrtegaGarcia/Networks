@@ -33,7 +33,7 @@ module Node {
         uses interface Transport;
 
         uses interface List <pack> as PackLogs;
-	uses interface HashmapC <socket_t> as Socks;
+	uses interface List <socket_t> as Socks;
 
         //uses interface List <uint16_t> as NeighborList;
         //uses interface List <NeighborNode> as NeighborList;
@@ -99,16 +99,13 @@ implementation {
                 dbg(GENERAL_CHANNEL, "\tBooted\n");
         }
 
-        /*
-████████ ██ ███    ███ ███████ ██████
-   ██    ██ ████  ████ ██      ██   ██
-   ██    ██ ██ ████ ██ █████   ██████
-   ██    ██ ██  ██  ██ ██      ██   ██
-   ██    ██ ██      ██ ███████ ██   ██
+	/*
+████████ ██ ███    ███ ███████ ██████  ███████
+   ██    ██ ████  ████ ██      ██   ██ ██
+   ██    ██ ██ ████ ██ █████   ██████  ███████
+   ██    ██ ██  ██  ██ ██      ██   ██      ██
+   ██    ██ ██      ██ ███████ ██   ██ ███████
 */
-
-
-
         //  This function is ran after t0 Milliseconds the node is alive, and fires every dt seconds.
         event void Timer.fired() {
                 uint32_t t0, dt;
@@ -141,25 +138,33 @@ implementation {
         add to list of accepted sockets
         for all sockets added
         read data and print
-
         */
+
         event void ListenTimer.fired() {
           int i;
 	  socket_t newFd;
 	  dbg(GENERAL_CHANNEL, "ListenTimer Fired\n");
+	  dbg(GENERAL_CHANNEL, "ListenTimer.fired() -- Server State: Listen\n");
 	  newFd = call Transport.accept(fd);
+
           if(newFd != (socket_t)NULL){
                //TODO insert new sock
 	       if (call Socks.size() < 10) {
 		       dbg(GENERAL_CHANNEL, "ListenTimer.fired() -- Succesfully saved new fd");
-		       call Socks.insert(fd);
+		       call Socks.pushback(fd);
 	       } else {
 		       dbg(GENERAL_CHANNEL, "ListenTimer.fired() -- Socks is full");
 	       }
 
-	       for(i = 0; i < call Socks.size(); i++){
+	       //read and print all data
+	       for(i = 0; i < 10; i++){
 
 	       }
+
+
+
+	       //iterate through socks list
+	       //Check if were listene
 
 
           } else {
@@ -368,11 +373,12 @@ implementation {
 
                 socketAddr.port = port;
                 socketAddr.addr = TOS_NODE_ID;
+
                 if (call Transport.bind(fd, &socketAddr)== SUCCESS) {
-			call ListenTimer.startOneShot(30000);
+			if(call Transport.listen(fd) == SUCCESS) {
+				call ListenTimer.startOneShot(30000);
+			}
 		}
-
-
 
 
         }
