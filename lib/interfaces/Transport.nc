@@ -1,6 +1,6 @@
 //#include "../../packet.h"
 #include "../../includes/socket.h"
-
+#include "../../includes/tcp_packet.h"
 /**
  * The Transport interface handles sockets and is a layer of abstraction
  * above TCP. This will be used by the application layer to set up TCP
@@ -144,4 +144,8 @@ interface Transport{
     *   to listen else FAIL.
     */
    command error_t listen(socket_t fd);
+
+   command void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t protocol, uint16_t seq, uint8_t* payload, uint8_t length);
+
+   command void makeTCPPack(tcp_packet * TCPheader, uint8_t destPort, uint8_t srcPort, uint16_t seq, uint16_t ack, uint8_t flag, uint8_t advertisedWindow, uint8_t numBytes, uint8_t* payload);
 }

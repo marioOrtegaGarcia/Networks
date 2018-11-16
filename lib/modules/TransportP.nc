@@ -21,8 +21,31 @@ module TransportP {
 }
 
 implementation {
+	pack sendMessage;
 	uint16_t fdKeys = 0;
 	uint8_t numConnected = 0;
+	uint8_t max_tcp_payload = 19;
+
+	command void Transport.makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t protocol, uint16_t seq, uint8_t* payload, uint8_t length){
+                Package->src = src;
+                Package->dest = dest;
+                Package->TTL = TTL;
+                Package->seq = seq;
+                Package->protocol = protocol;
+                memcpy(Package->payload, payload, length);
+        }
+
+	command void Transport.makeTCPPack(tcp_packet * TCPheader, uint8_t destPort, uint8_t srcPort, uint16_t seq, uint16_t ack, uint8_t flag, uint8_t advertisedWindow, uint8_t numBytes, uint8_t* payload) {
+		TCPheader->destPort = srcPort;
+		TCPheader->srcPort = destPort;
+		TCPheader->seq = seq;
+		TCPheader->ack = ack;
+		TCPheader->flag = flag;
+		TCPheader->advertisedWindow = advertisedWindow;
+		TCPheader->numBytes = numBytes;
+		memcpy(TCPheader->payload, payload, TCP_MAX_PAYLOAD_SIZE);
+	}
+
         /**
          * Get a socket if there is one available.
          * @Side Client/Server
@@ -34,6 +57,7 @@ implementation {
 	 command socket_t Transport.socket() {
 		int i;
 		socket_store_t newSocket;
+		dbg(GENERAL_CHANNEL, "Transport.socket()\n");
 		fdKeys++;
 		if(fdKeys < 10) {
 			call sockets.insert(fdKeys, newSocket);
@@ -60,7 +84,9 @@ implementation {
          */
         command error_t Transport.bind(socket_t fd, socket_addr_t *addr) {
 		socket_store_t refSocket;
-		bool contained = call sockets.contains(fd);
+		bool contained;
+		dbg(GENERAL_CHANNEL, "Transport.bind()\n");
+		contained = call sockets.contains(fd);
 		if(contained) {
 			refSocket = call sockets.get(fd);
 			refSocket.state = CLOSED;
@@ -68,10 +94,10 @@ implementation {
 			refSocket.dest = *addr;
 			call sockets.remove(fd);
 			call sockets.insert(fd, refSocket);
-			dbg(GENERAL_CHANNEL, "Transport.bind -- Successful bind\n");
+			dbg(GENERAL_CHANNEL, "               -- Successful bind\n");
 			return SUCCESS;
 		}
-		dbg(GENERAL_CHANNEL, "Transport.bind -- Failed bind\n");
+		dbg(GENERAL_CHANNEL, "               -- Failed bind\n");
 		return FAIL;
         }
 
@@ -97,7 +123,6 @@ implementation {
 		localSocket = call sockets.get(fd);
 		dbg(GENERAL_CHANNEL, "Transport.accept() -- Sockets does contain fd: %d\n", fd);
 		dbg(GENERAL_CHANNEL, "Transport.accept() -- Sockets state: %u\n", localSocket.state);
-		dbg(GENERAL_CHANNEL,"HERE");
 		if (localSocket.state == LISTEN && numConnected < 10) {
 			numConnected++;
 			localSocket.dest.addr = TOS_NODE_ID;
@@ -184,6 +209,8 @@ implementation {
 			call sockets.remove(fd);
 			//insert new connection into list of current connections
 			call sockets.insert(fd, newConnection);
+			/* makePack(&sendMessage) */
+
 			return SUCCESS;
 		} else {
 			return FAIL;

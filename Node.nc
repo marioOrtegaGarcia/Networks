@@ -150,10 +150,10 @@ implementation {
           if(newFd != (socket_t)NULL){
                //TODO insert new sock
 	       if (call Socks.size() < 10) {
-		       dbg(GENERAL_CHANNEL, "ListenTimer.fired() -- Succesfully saved new fd");
+		       dbg(GENERAL_CHANNEL, "ListenTimer.fired() -- Succesfully saved new fd\n");
 		       call Socks.pushback(fd);
 	       } else {
-		       dbg(GENERAL_CHANNEL, "ListenTimer.fired() -- Socks is full");
+		       dbg(GENERAL_CHANNEL, "ListenTimer.fired() -- Socks is full\n");
 	       }
 
 	       //read and print all data
@@ -189,6 +189,7 @@ implementation {
                subtract the amount of data you were able to write(fd, buffer, buffer len)
 
              */
+	     dbg(GENERAL_CHANNEL, "WriteTimer.fired()\n");
         }
 
         //  Make sure all the Radios are turned on
@@ -367,21 +368,20 @@ implementation {
 
 
 
-        event void CommandHandler.setTestServer(uint8_t port) {
-                socket_addr_t socketAddr;
-                fd = call Transport.socket();
+	event void CommandHandler.setTestServer(uint8_t port) {
+		socket_addr_t socketAddr;
+		dbg(GENERAL_CHANNEL, "setTestServer() -- Initializing Server\n");
+		fd = call Transport.socket();
 
-                socketAddr.port = port;
-                socketAddr.addr = TOS_NODE_ID;
+		socketAddr.port = port;
+		socketAddr.addr = TOS_NODE_ID;
 
-                if (call Transport.bind(fd, &socketAddr)== SUCCESS) {
+		if (call Transport.bind(fd, &socketAddr) == SUCCESS) {
 			if(call Transport.listen(fd) == SUCCESS) {
 				call ListenTimer.startOneShot(30000);
 			}
 		}
-
-
-        }
+	}
 
         event void CommandHandler.setTestClient(uint16_t  dest, uint8_t srcPort, uint8_t destPort, uint8_t num){
 
@@ -398,17 +398,17 @@ implementation {
 
 		check = call Transport.bind(fd, &socketAddr);
 		if (check == FAIL) {
-			dbg(GENERAL_CHANNEL, "Get rekt son, Couldnt bind.");
+			dbg(GENERAL_CHANNEL, "Get rekt son, Couldnt bind.\n");
 		} else {
-			dbg(GENERAL_CHANNEL, "Got em, Bind Successful.");
+			dbg(GENERAL_CHANNEL, "Got em, Bind Successful.\n");
 			//destination info
 			serverAddr.addr = dest;
 			serverAddr.port = destPort;
 			check = call Transport.connect(fd, &serverAddr);
 			if(check == FAIL)
-				dbg(GENERAL_CHANNEL, "Couldnt Connect");
+				dbg(GENERAL_CHANNEL, "Couldnt Connect\n");
 			else {
-				dbg(GENERAL_CHANNEL, "Connection Secure.");
+				dbg(GENERAL_CHANNEL, "Connection Secure.\n");
 				//send [max transfer size] data in packet
 				call WriteTimer.startOneShot(30000);
 			}

@@ -169,15 +169,15 @@ def main():
     s.moteOff(6);
     s.runTime(200);
 
-    s.neighborDMP(3);
+    #s.neighborDMP(3);
     s.runTime(20);
-    s.neighborDMP(4);
+    #s.neighborDMP(4);
     s.runTime(55);
 
     s.ping(3, 6, "The World is flat");
     s.runTime(20);
 
-    s.routeDMP(3);
+    #s.routeDMP(3);
     s.runTime(20);
     # s.ping(6, 3, "Hi!");
     # s.runTime(20);
