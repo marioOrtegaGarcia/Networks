@@ -157,11 +157,13 @@ def main():
     s.addChannel(s.FLOODING_CHANNEL);
     s.runTime(30);
 
-    s.newServer(3, 30);
-    s.runTime(30);
+    s.newServer(3, 9);
+    s.runTime(10);
+    # s.runTime(30);
     #s.newServer(2, 140);
-    s.runTime(30);
-    s.newClient(4,  3, 12, 30, 4412);
+    #s.runTime(30);
+    s.newClient(4,  3, 12, 9, 4412);
+    s.runTime(40);
 
     s.ping(3, 6, "Hello, World");
     s.runTime(10);

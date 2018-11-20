@@ -18,10 +18,12 @@
 module TransportP {
         provides interface Transport;
         uses interface Hashmap<socket_store_t> as sockets;
+	uses interface Random as Random;
 }
 
 implementation {
 	pack sendMessage;
+	uint16_t RTT = 12000;
 	uint16_t fdKeys = 0;
 	uint8_t numConnected = 0;
 	uint8_t max_tcp_payload = 19;
@@ -60,6 +62,14 @@ implementation {
 		dbg(GENERAL_CHANNEL, "Transport.socket()\n");
 		fdKeys++;
 		if(fdKeys < 10) {
+			newSocket.state = CLOSED;
+			newSocket.lastWritten = 0;
+			newSocket.lastAck = 0xFF;
+			newSocket.lastSent = 0;
+			newSocket.lastRead = 0;
+			newSocket.lastRcvd = 0;
+			newSocket.nextExpected = 0;
+			newSocket.RTT = RTT;
 			call sockets.insert(fdKeys, newSocket);
 			return (socket_t)fdKeys;
 		} else {
@@ -84,20 +94,20 @@ implementation {
          */
         command error_t Transport.bind(socket_t fd, socket_addr_t *addr) {
 		socket_store_t refSocket;
-		bool contained;
 		dbg(GENERAL_CHANNEL, "Transport.bind()\n");
-		contained = call sockets.contains(fd);
-		if(contained) {
+		if(call sockets.contains(fd)) {
 			refSocket = call sockets.get(fd);
-			refSocket.state = CLOSED;
-			refSocket.src = TOS_NODE_ID;
-			refSocket.dest = *addr;
 			call sockets.remove(fd);
+
+			refSocket.state = CLOSED;
+			refSocket.src = addr->port;
+			dbg(GENERAL_CHANNEL, "\t\t\t-- port: %u\n", addr->port);
+
 			call sockets.insert(fd, refSocket);
-			dbg(GENERAL_CHANNEL, "               -- Successful bind\n");
+			dbg(GENERAL_CHANNEL, "\t\t\t-- Successful bind\n");
 			return SUCCESS;
 		}
-		dbg(GENERAL_CHANNEL, "               -- Failed bind\n");
+		dbg(GENERAL_CHANNEL, "\t\t\t-- Failed bind\n");
 		return FAIL;
         }
 
@@ -121,18 +131,18 @@ implementation {
 		}
 
 		localSocket = call sockets.get(fd);
-		dbg(GENERAL_CHANNEL, "Transport.accept() -- Sockets does contain fd: %d\n", fd);
-		dbg(GENERAL_CHANNEL, "Transport.accept() -- Sockets state: %u\n", localSocket.state);
+		dbg(GENERAL_CHANNEL, "\t\t\t-- Sockets does contain fd: %d\n", fd);
+		dbg(GENERAL_CHANNEL, "\t\t\t-- Sockets state: %u\n", localSocket.state);
 		if (localSocket.state == LISTEN && numConnected < 10) {
 			numConnected++;
 			localSocket.dest.addr = TOS_NODE_ID;
 			localSocket.state = SYN_RCVD;
 			call sockets.remove(fd);
 			call sockets.insert(fd, localSocket);
-			dbg(GENERAL_CHANNEL, "Transport.accept returning %d\n", fd);
+			dbg(GENERAL_CHANNEL, "\t\t\t-- returning %d\n", fd);
 			return fd;
 		}
-		dbg(GENERAL_CHANNEL, "Transport.accept returning NULL\n");
+		dbg(GENERAL_CHANNEL, "\t\t\t-- returning NULL\n");
 		return (socket_t)NULL;
         }
 
@@ -200,19 +210,36 @@ implementation {
          */
         command error_t Transport.connect(socket_t fd, socket_addr_t * addr) {
 		socket_store_t newConnection;
+		pack msg;
+		tcp_packet tcp_msg;
+		dbg(GENERAL_CHANNEL, "Transport.connect()\n");
 		//if FD exists, get socket and set destination address to provided input addr
 		if (call sockets.contains(fd)) {
 			newConnection = call sockets.get(fd);
-			newConnection.dest = *addr;
-			newConnection.state = SYN_SENT;
-			//remove old connection info
 			call sockets.remove(fd);
-			//insert new connection into list of current connections
-			call sockets.insert(fd, newConnection);
-			/* makePack(&sendMessage) */
 
+			// Set connec both ports
+			dbg(GENERAL_CHANNEL, "\t\t\t-- Port(%u)->Port(%u) w/ address(%u)\n", newConnection.src, addr->port, addr->addr);
+			// Set destination address
+			newConnection.dest = *addr;
+
+			//send SYN packet
+			makeTCPPack(&tcp_msg, newConnection.dest.port, newConnection.dest.addr, call Random.rand16() % 65530, newConnection.ack, newConnection.flag, newConnection.advertisedWindow, newConnection.numBytes, NULL)
+
+
+			Transport.makeTCPPack(tcp_packet * TCPheader, uint8_t destPort, uint8_t srcPort, uint16_t seq, uint16_t ack, uint8_t flag, uint8_t advertisedWindow, uint8_t numBytes, uint8_t* payload)
+
+
+			newConnection.state = SYN_SENT;
+
+			//remove old connection info
+			//insert new connection into list of current connections
+
+			call sockets.insert(fd, newConnection);
+			dbg(GENERAL_CHANNEL, "\t\t\t-- Successful\n");
 			return SUCCESS;
 		} else {
+			dbg(GENERAL_CHANNEL, "\t\t\t-- Failed\n");
 			return FAIL;
 		}
         }
@@ -226,49 +253,64 @@ implementation {
          * @return socket_t - returns SUCCESS if you are able to attempt
          *    a closure with the fd passed, else return FAIL.
          */
-        command error_t Transport.close(socket_t fd){
+	 command error_t Transport.close(socket_t fd){
 
-        }
+	}
 
-        /**
-         * A hard close, which is not graceful. This portion is optional.
-         * @param
-         *    socket_t fd: file descriptor that is associated with the socket
-         *       that you are hard closing.
-         * @side Client/Server
-         * @return socket_t - returns SUCCESS if you are able to attempt
-         *    a closure with the fd passed, else return FAIL.
-         */
-        command error_t Transport.release(socket_t fd){
+	/**
+	* A hard close, which is not graceful. This portion is optional.
+	* @param
+	*    socket_t fd: file descriptor that is associated with the socket
+	*       that you are hard closing.
+	* @side Client/Server
+	* @return socket_t - returns SUCCESS if you are able to attempt
+	*    a closure with the fd passed, else return FAIL.
+	*/
+	command error_t Transport.release(socket_t fd){
 
-        }
+	}
 
-        /**
-         * Listen to the socket and wait for a connection.
-         * @param
-         *    socket_t fd: file descriptor that is associated with the socket
-         *       that you are hard closing.
-         * @side Server
-         * @return error_t - returns SUCCESS if you are able change the state
-         *   to listen else FAIL.
-         */
-        command error_t Transport.listen(socket_t fd){
-
+	/**
+	* Listen to the socket and wait for a connection.
+	* @param
+	*    socket_t fd: file descriptor that is associated with the socket
+	*       that you are hard closing.
+	* @side Server
+	* @return error_t - returns SUCCESS if you are able change the state
+	*   to listen else FAIL.
+	*/
+	command error_t Transport.listen(socket_t fd){
 		socket_store_t socket;
-		if(call sockets.contains(fd)){
+		dbg(GENERAL_CHANNEL, "Transport.listen()\n");
+
+		if(call sockets.contains(fd)) {
+			socket = call sockets.get(fd);
+			call sockets.remove(fd);
+
+			socket.dest.port = ROOT_SOCKET_PORT;
+			socket.dest.addr = ROOT_SOCKET_ADDR;
+			socket.state = LISTEN;
+
+			call sockets.insert(fd, socket);
+			dbg(GENERAL_CHANNEL, "\t\t\t-- Successful\n");
+			return SUCCESS;
+		}
+		return FAIL;
+
+
+		/* if(call sockets.contains(fd)){
 			//We wanna get the socket back with our file descriptor
 			socket = call sockets.get(fd);
 			//Then we wanna update the values
 			socket.state = LISTEN;
 			call sockets.remove(fd);
 			call sockets.insert(fd, socket);
-			dbg(GENERAL_CHANNEL, "Transport.listen() -- Server State: Listen with fd(%d)\n", fd);
+			dbg(GENERAL_CHANNEL, "\t\t\t-- Server State: Listen with fd(%d)\n", fd);
 			return (error_t)SUCCESS;
 		}
 		else{
-			dbg(GENERAL_CHANNEL, "Transport.Listen() -- Server not listening: sockets didn't contain fd\n");
+			dbg(GENERAL_CHANNEL, "\t\t\t-- Server not listening: sockets didn't contain fd\n");
 			return (error_t)FAIL;
-		}
-
-        }
+		} */
+	}
 }

@@ -391,24 +391,24 @@ implementation {
 		socket_addr_t serverAddr;
 		error_t check = FAIL;
 		fd = call Transport.socket();
-
+		dbg(GENERAL_CHANNEL, "CommandHandler.setTestClient()\n");
 		//source info
 		socketAddr.addr = TOS_NODE_ID;
 		socketAddr.port = srcPort;
 
 		check = call Transport.bind(fd, &socketAddr);
 		if (check == FAIL) {
-			dbg(GENERAL_CHANNEL, "Get rekt son, Couldnt bind.\n");
+			dbg(GENERAL_CHANNEL, "\t-- Get rekt son, Couldnt bind.\n");
 		} else {
-			dbg(GENERAL_CHANNEL, "Got em, Bind Successful.\n");
+			dbg(GENERAL_CHANNEL, "\t-- Got em, Bind Successful.\n");
 			//destination info
 			serverAddr.addr = dest;
 			serverAddr.port = destPort;
 			check = call Transport.connect(fd, &serverAddr);
 			if(check == FAIL)
-				dbg(GENERAL_CHANNEL, "Couldnt Connect\n");
+				dbg(GENERAL_CHANNEL, "\t-- Couldnt Connect\n");
 			else {
-				dbg(GENERAL_CHANNEL, "Connection Secure.\n");
+				dbg(GENERAL_CHANNEL, "\t-- Connection Secure.\n");
 				//send [max transfer size] data in packet
 				call WriteTimer.startOneShot(30000);
 			}
