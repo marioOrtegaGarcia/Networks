@@ -32,15 +32,15 @@ implementation {
 	uint8_t max_tcp_payload = 20;
 
 	command void Transport.makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t protocol, uint16_t seq, uint8_t* payload, uint8_t length){
-                Package->src = src;
-                Package->dest = dest;
-                Package->TTL = TTL;
-                Package->seq = seq;
-                Package->protocol = protocol;
+		Package->src = src;
+		Package->dest = dest;
+		Package->TTL = TTL;
+		Package->seq = seq;
+		Package->protocol = protocol;
 		dbg(GENERAL_CHANNEL, "\t\t\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HERE: length: %u memcpy not working ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n", sizeof(payload));
-                //memcpy(Package->payload, payload, sizeof(payload/*length*/));
+		//memcpy(Package->payload, payload, sizeof(payload/*length*/));
 		dbg(GENERAL_CHANNEL, "\t\t\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HERE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-        }
+	}
 
 	command void Transport.makeTCPPack(tcp_packet* TCPheader, uint8_t destPort, uint8_t srcPort, uint16_t seq, uint16_t ack, uint8_t flag, uint8_t advertisedWindow, uint8_t numBytes, uint8_t* payload) {
 		//uint8_t* data = payload;
@@ -76,6 +76,28 @@ implementation {
 	TCPheader->advertisedWindow = advertisedWindow;
 	}
 
+	command uint8_t Transport.calcWindow(socket_store_t* sock, uint16_t advertisedWindow){
+		return advertisedWindow - (sock->lastSent - sock->lastAck - 1);
+	}
+
+	command pack Transport.send(socket_store_t * s, pack IPpack) {
+		tcp_packet* data;
+		data = (tcp_packet*)IPpack->payload;
+
+		data->advertisedWindow  = call Transport.calcWindow(s, data->advertisedWindow);
+		data->ack  =  s->nextExpected;
+
+		data->srcPort = s->src;
+		data->destPort = s->dest->port;
+
+		//call Transport.makeTCPPack(data, data->destPort, data->srcPort, data->seq, data->ack, data->flag, data->advertisedWindow, data->numBytes, (void*)data->payload);
+		//call Transport.makePack(&IPpack, IPpack->src, IPpack->dest, IPpack->TTL, IPpack->protocol, IPpack->seq, (void*) data, sizeof(data));
+
+		call Sender.send(IPpack, data->destPort);
+
+		return IPpack;
+	}
+
 	event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
 		pack* recievedMsg =  (pack*)  payload;
 
@@ -97,7 +119,8 @@ implementation {
 		if(fdKeys < 10) {
 			newSocket.state = CLOSED;
 			newSocket.lastWritten = 0;
-			newSocket.lastAck = 0xFF;
+			/* newSocket.lastAck = 0xFF; */
+			newSocket.lastAck = 0;
 			newSocket.lastSent = 0;
 			newSocket.lastRead = 0;
 			newSocket.lastRcvd = 0;
@@ -208,22 +231,26 @@ implementation {
          */
         command error_t Transport.receive(pack* package){
 		pack msg;
-		tcp_packet recievedTcp;
+		tcp_packet* recievedTcp;
 		error_t check = FAIL;
 
-		msg = package;
-		recievedTcp = package->payload;
+		msg = *package;
+		recievedTcp = (tcp_packet*)package->payload;
 
 		switch(recievedTcp->flag) {
 			case 1 ://syn
 				//reply with SYN + ACK
 				recievedTcp->flag = 2;
+
 				//makeTCPPack
-				makeAckPack(&recievedTcp, recievedTcp->destPort, recievedTcp->srcPort, recievedTcp->seq+1, recievedTcp->flag, 10 /*advertisedWindow*/)
+				call Transport.makeAckPack(recievedTcp, recievedTcp->destPort, recievedTcp->srcPort, recievedTcp->seq+1, recievedTcp->flag, 10 /*advertisedWindow*/);
+
 				//Set TCP PAck as payload for msg
 				//makePack
-				makePack(&msg, msg->dest, msg->src, msg->seq, msg->TTL, msg->protocol, msg->payload);
-				//sendpack
+
+				call Transport.makePack(&msg, msg->dest, msg->src, msg->seq, msg->TTL, msg->protocol, msg->payload, msg->len);
+
+				//send pack
 				break;
 
 			case 2:	//ACK

@@ -48,6 +48,8 @@ module Node {
 
         uses interface Timer<TMilli> as WriteTimer;
 
+	uses interface Timer<TMilli> as TimedOut;
+
         //uses interface DVRTableC <uint8_t> as Table;
 }
 
@@ -191,6 +193,13 @@ implementation {
              */
 	     dbg(GENERAL_CHANNEL, "WriteTimer.fired()\n");
         }
+
+	event void TimedOut.fired(){
+		//resend buffered data, with  same seq number.
+
+
+	dbg(GENERAL_CHANNEL, "TimedOut.fired() -- no ACK  received \n")
+	}
 
         //  Make sure all the Radios are turned on
         event void AMControl.startDone(error_t err)  {
