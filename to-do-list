@@ -1,10 +1,17 @@
 WHERE WE AT DOC
 
 TO  DO
-* finish setup/teardown
-	*
-* begin stop/wait
-	*
+* finish sending SYN packet from connect()
+	* Figure out memcpy for makeTCPPack
+	* Figure out how to put TCPPack as payload in Packet
+* Receive SYN packets
+	* check flags for packs Received
+	* reply with SYN + ACK
+	* Change state to ESTABLISHED
+* Begin sending data
+	* Partition payload into small chunks
+	* wait for ACK before sending another packet
+
 
 TO FIX
 * Transport.accept()

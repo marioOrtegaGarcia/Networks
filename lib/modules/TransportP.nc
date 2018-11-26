@@ -1,6 +1,6 @@
-//#include "../../packet.h"
+#include "../../includes/packet.h"
 #include "../../includes/socket.h"
-
+#include "../../includes/tcp_packet.h"
 /**
  * The Transport interface handles sockets and is a layer of abstraction
  * above TCP. This will be used by the application layer to set up TCP
@@ -19,14 +19,17 @@ module TransportP {
         provides interface Transport;
         uses interface Hashmap<socket_store_t> as sockets;
 	uses interface Random as Random;
+	uses interface Receive;
+	uses interface SimpleSend as Sender;
 }
 
 implementation {
 	pack sendMessage;
+	tcp_packet* tcp_msg;
 	uint16_t RTT = 12000;
 	uint16_t fdKeys = 0;
 	uint8_t numConnected = 0;
-	uint8_t max_tcp_payload = 19;
+	uint8_t max_tcp_payload = 20;
 
 	command void Transport.makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t protocol, uint16_t seq, uint8_t* payload, uint8_t length){
                 Package->src = src;
@@ -34,20 +37,50 @@ implementation {
                 Package->TTL = TTL;
                 Package->seq = seq;
                 Package->protocol = protocol;
-                memcpy(Package->payload, payload, length);
+		dbg(GENERAL_CHANNEL, "\t\t\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HERE: length: %u memcpy not working ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n", sizeof(payload));
+                //memcpy(Package->payload, payload, sizeof(payload/*length*/));
+		dbg(GENERAL_CHANNEL, "\t\t\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HERE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
         }
 
-	command void Transport.makeTCPPack(tcp_packet * TCPheader, uint8_t destPort, uint8_t srcPort, uint16_t seq, uint16_t ack, uint8_t flag, uint8_t advertisedWindow, uint8_t numBytes, uint8_t* payload) {
-		TCPheader->destPort = srcPort;
-		TCPheader->srcPort = destPort;
+	command void Transport.makeTCPPack(tcp_packet* TCPheader, uint8_t destPort, uint8_t srcPort, uint16_t seq, uint16_t ack, uint8_t flag, uint8_t advertisedWindow, uint8_t numBytes, uint8_t* payload) {
+		//uint8_t* data = payload;
+		// We can set whole variable pointer, but cant read or set off of
+		//dbg(GENERAL_CHANNEL, "\t\t\t\t %u \n", theTCPheader->destPort);
+		/* TCPheader->payload = malloc(sizeof(&payload)); */
+		TCPheader->destPort = destPort;
+		TCPheader->srcPort = srcPort;
 		TCPheader->seq = seq;
 		TCPheader->ack = ack;
 		TCPheader->flag = flag;
 		TCPheader->advertisedWindow = advertisedWindow;
-		TCPheader->numBytes = numBytes;
-		memcpy(TCPheader->payload, payload, TCP_MAX_PAYLOAD_SIZE);
+		//TCPheader->numBytes = numBytes;
+		dbg(GENERAL_CHANNEL, "\t\t\t\tSize of TCPheader->payload: %u, payload: %u, numBytes: %u\n", sizeof(TCPheader->payload), sizeof(payload), numBytes);
+		/* TCPheader->payload = malloc(numBytes); */
+
+		dbg(GENERAL_CHANNEL, "\t\t\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HERE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+	 	memcpy(TCPheader->payload, payload, sizeof(payload));
 	}
 
+	command void Transport.makeSynPack(tcp_packet* TCPheader, uint8_t destPort, uint8_t srcPort, uint16_t seq, uint8_t flag) {
+	TCPheader->destPort = destPort;
+	TCPheader->srcPort = srcPort;
+	TCPheader->seq = seq;
+	TCPheader->flag = flag;
+	}
+
+	command void Transport.makeAckPack(tcp_packet* TCPheader, uint8_t destPort, uint8_t srcPort, uint16_t seq, uint8_t flag, uint8_t advertisedWindow) {
+	TCPheader->destPort = destPort;
+	TCPheader->srcPort = srcPort;
+	TCPheader->seq = seq;
+	TCPheader->flag = flag;
+	TCPheader->advertisedWindow = advertisedWindow;
+	}
+
+	event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
+		pack* recievedMsg =  (pack*)  payload;
+
+		call Transport.receive(recievedMsg);
+	}
         /**
          * Get a socket if there is one available.
          * @Side Client/Server
@@ -174,7 +207,47 @@ implementation {
          *    packet or FAIL if there are errors.
          */
         command error_t Transport.receive(pack* package){
+		pack msg;
+		tcp_packet recievedTcp;
+		error_t check = FAIL;
 
+		msg = package;
+		recievedTcp = package->payload;
+
+		switch(recievedTcp->flag) {
+			case 1 ://syn
+				//reply with SYN + ACK
+				recievedTcp->flag = 2;
+				//makeTCPPack
+				makeAckPack(&recievedTcp, recievedTcp->destPort, recievedTcp->srcPort, recievedTcp->seq+1, recievedTcp->flag, 10 /*advertisedWindow*/)
+				//Set TCP PAck as payload for msg
+				//makePack
+				makePack(&msg, msg->dest, msg->src, msg->seq, msg->TTL, msg->protocol, msg->payload);
+				//sendpack
+				break;
+
+			case 2:	//ACK
+				dbg(GENERAL_CHANNEL, "Transport.receive() default flag ACK");
+				//Start Sending to the Sever
+				break;
+
+			case 4: // Fin
+				dbg(GENERAL_CHANNEL, "Transport.receive() default flag FIN");
+
+				break;
+
+			case 8: // RST
+				dbg(GENERAL_CHANNEL, "Transport.receive() default flag RST");
+
+				break;
+
+			default:
+				dbg(GENERAL_CHANNEL, "Transport.receive() Data packet?");
+		}
+
+
+
+		return check;
         }
 
         /**
@@ -211,7 +284,9 @@ implementation {
         command error_t Transport.connect(socket_t fd, socket_addr_t * addr) {
 		socket_store_t newConnection;
 		pack msg;
-		tcp_packet tcp_msg;
+		uint8_t* payload = 0;
+
+
 		dbg(GENERAL_CHANNEL, "Transport.connect()\n");
 		//if FD exists, get socket and set destination address to provided input addr
 		if (call sockets.contains(fd)) {
@@ -224,12 +299,23 @@ implementation {
 			newConnection.dest = *addr;
 
 			//send SYN packet
-			makeTCPPack(&tcp_msg, newConnection.dest.port, newConnection.dest.addr, call Random.rand16() % 65530, newConnection.ack, newConnection.flag, newConnection.advertisedWindow, newConnection.numBytes, NULL)
+			dbg(GENERAL_CHANNEL, "\t\t\tBreaking before makeTCPPack\n");
 
+			call Transport.makeSynPack(&tcp_msg,
+						newConnection.dest.port,
+						newConnection.src,
+						call Random.rand16() % 65530,
+						1);
+			call Transport.makePack(&msg,
+						(uint16_t)NULL,
+						(uint16_t)NULL,
+						(uint16_t)1,
+						PROTOCOL_TCP,
+						(uint16_t)1,
+						(void*)tcp_msg,
+						(uint8_t)sizeof(&tcp_msg));
 
-			Transport.makeTCPPack(tcp_packet * TCPheader, uint8_t destPort, uint8_t srcPort, uint16_t seq, uint16_t ack, uint8_t flag, uint8_t advertisedWindow, uint8_t numBytes, uint8_t* payload)
-
-
+			/* send() */
 			newConnection.state = SYN_SENT;
 
 			//remove old connection info
