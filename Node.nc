@@ -315,20 +315,20 @@ implementation {
 
 
         //  This is how we send a Ping to one another
-        event void CommandHandler.ping(uint16_t destination, uint8_t *payload) {
-                nodeSeq++;
+	event void CommandHandler.ping(uint16_t destination, uint8_t *payload) {
+		nodeSeq++;
 
-                dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Ping Sent\n", TOS_NODE_ID, destination);
-                makePack(&sendPackage, TOS_NODE_ID, destination, MAX_TTL+5, PROTOCOL_PING, nodeSeq, payload, PACKET_MAX_PAYLOAD_SIZE);
-                logPack(&sendPackage);
-                logPacket(&sendPackage);
-                if (!initialized) {
-                        call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-                } else {
-                        call Sender.send(sendPackage, findNextHop(destination));
-                }
+		dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Ping Sent\n", TOS_NODE_ID, destination);
+		PACKET_MAX_PAYLOAD_SIZE);
+		logPack(&sendPackage);
+		logPacket(&sendPackage);
+		if (!initialized) {
+			call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+			} else {
+				call Sender.send(sendPackage, findNextHop(destination));
+			}
 
-        }
+		}
 
         /*
 ██████  ██████  ██ ███    ██ ████████ ███████
@@ -338,29 +338,29 @@ implementation {
 ██      ██   ██ ██ ██   ████    ██    ███████
 */
 
-        //  This are functions we are going to be implementing in the future.
-        event void CommandHandler.printNeighbors() {
-                int i, count = 0;
+	// This are functions we are going to be implementing in the future.
+	event void CommandHandler.printNeighbors() {
+		int i, count = 0;
 
-                dbg(NEIGHBOR_CHANNEL, "\t~~~~~~~Mote %d's Neighbors~~~~~~~\n", TOS_NODE_ID);
-                for(i = 1; i < (NeighborListSize); i++) {
-                        if(NeighborList[i] > 0) {
-                                dbg(NEIGHBOR_CHANNEL, "\t\t   %d -> %d\n", TOS_NODE_ID, i);
-                                count++;
-                        }
-                }
-                if(count == 0)
-                        dbg(NEIGHBOR_CHANNEL, "Neighbor List is Empty\n");
-        }
+		dbg(NEIGHBOR_CHANNEL, "\t~~~~~~~Mote %d's Neighbors~~~~~~~\n", TOS_NODE_ID);
+		for(i = 1; i < (NeighborListSize); i++) {
+			if(NeighborList[i] > 0) {
+				dbg(NEIGHBOR_CHANNEL, "\t\t   %d -> %d\n", TOS_NODE_ID, i);
+				count++;
+			}
+		}
+		if(count == 0)
+		dbg(NEIGHBOR_CHANNEL, "Neighbor List is Empty\n");
+	}
 
-        event void CommandHandler.printRouteTable() {
-                int i;
-                dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Routing Table~~~~~~~\n", TOS_NODE_ID);
-                dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
-                for (i = 1; i <= poolSize; i++) {
-                        dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", routing[i][0], routing[i][1], routing[i][2]);
-                }
-        }
+	event void CommandHandler.printRouteTable() {
+		int i;
+		dbg(GENERAL_CHANNEL, "\t~~~~~~~Mote %d's Routing Table~~~~~~~\n", TOS_NODE_ID);
+		dbg(GENERAL_CHANNEL, "\tDest\tCost\tNext Hop:\n");
+		for (i = 1; i <= poolSize; i++) {
+			dbg(GENERAL_CHANNEL, "\t  %d \t  %d \t    %d \n", routing[i][0], routing[i][1], routing[i][2]);
+		}
+	}
 
         event void CommandHandler.printLinkState() {
         }
@@ -381,49 +381,57 @@ implementation {
 	event void CommandHandler.setTestServer(uint8_t port) {
 		socket_addr_t socketAddr;
 		dbg(GENERAL_CHANNEL, "setTestServer() -- Initializing Server\n");
+
+		// Creating our file descriptor
 		fd = call Transport.socket();
 
+		// Setting the port and address of our Server
 		socketAddr.port = port;
 		socketAddr.addr = TOS_NODE_ID;
 
+		// Making sure we have a Successful bind
 		if (call Transport.bind(fd, &socketAddr) == SUCCESS) {
+			// Making sure were in the listening state
 			if(call Transport.listen(fd) == SUCCESS) {
+				// Calling our listen timer
 				call ListenTimer.startOneShot(30000);
 			}
 		}
 	}
 
-        event void CommandHandler.setTestClient(uint16_t  dest, uint8_t srcPort, uint8_t destPort, uint8_t num){
+	event void CommandHandler.setTestClient(uint16_t dest, uint8_t srcPort, uint8_t destPort, uint8_t num){
 
 		int i;
 		socket_store_t socket;
-		socket_addr_t socketAddr;
-		socket_addr_t serverAddr;
+		socket_addr_t socketAddr, serverAddr;
 		error_t check = FAIL;
-		fd = call Transport.socket();
 		dbg(GENERAL_CHANNEL, "CommandHandler.setTestClient()\n");
-		//source info
+
+		// Creating our file descriptor
+		fd = call Transport.socket();
+
+		// Setting the port and address of our Client
 		socketAddr.addr = TOS_NODE_ID;
 		socketAddr.port = srcPort;
 
-		check = call Transport.bind(fd, &socketAddr);
-		if (check == FAIL) {
-			dbg(GENERAL_CHANNEL, "\t-- Get rekt son, Couldnt bind.\n");
-		} else {
+		if  (call Transport.bind(fd, &socketAddr) == SUCCESS) {
 			dbg(GENERAL_CHANNEL, "\t-- Got em, Bind Successful.\n");
-			//destination info
+
+			// Setting our destination address and port
 			serverAddr.addr = dest;
 			serverAddr.port = destPort;
-			check = call Transport.connect(fd, &serverAddr);
-			if(check == FAIL)
-				dbg(GENERAL_CHANNEL, "\t-- Couldnt Connect\n");
-			else {
+
+			if (call Transport.connect(fd, &serverAddr) == SUCCESS)  {
 				dbg(GENERAL_CHANNEL, "\t-- Connection Secure.\n");
 				//send [max transfer size] data in packet
 				call WriteTimer.startOneShot(30000);
+			} else {
+				dbg(GENERAL_CHANNEL, "\t-- Couldnt Connect\n");
 			}
+		} else {
+			dbg(GENERAL_CHANNEL, "\t-- Get rekt son, Couldnt bind.\n");
 		}
-        }
+	}
 
         event void CommandHandler.setAppServer(){
         }
