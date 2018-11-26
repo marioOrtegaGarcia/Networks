@@ -81,25 +81,20 @@ In component `TransportP':
 lib/modules/TransportP.nc: In function `Transport.send':
 lib/modules/TransportP.nc:85: invalid type argument of `unary *'
 lib/modules/TransportP.nc:91: invalid type argument of `unary *'
-lib/modules/TransportP.nc:95: invalid type argument of `unary *'
-lib/modules/TransportP.nc:95: invalid type argument of `unary *'
-lib/modules/TransportP.nc:95: invalid type argument of `unary *'
-lib/modules/TransportP.nc:95: invalid type argument of `unary *'
-lib/modules/TransportP.nc:95: invalid type argument of `unary *'
-lib/modules/TransportP.nc:95: warning: passing argument 7 of `Transport.makePack' from incompatible pointer type
 lib/modules/TransportP.nc: In function `Transport.receive':
-lib/modules/TransportP.nc:245: warning: passing argument 1 of `Transport.makeAckPack' from incompatible pointer type
-lib/modules/TransportP.nc:248: invalid type argument of `unary *'
-lib/modules/TransportP.nc:248: invalid type argument of `unary *'
-lib/modules/TransportP.nc:248: invalid type argument of `unary *'
-lib/modules/TransportP.nc:248: invalid type argument of `unary *'
-lib/modules/TransportP.nc:248: invalid type argument of `unary *'
-lib/modules/TransportP.nc:248: invalid type argument of `unary *'
-lib/modules/TransportP.nc:248: too few arguments to function `Transport.makePack'
+lib/modules/TransportP.nc:251: invalid type argument of `unary *'
+lib/modules/TransportP.nc:251: invalid type argument of `unary *'
+lib/modules/TransportP.nc:251: invalid type argument of `unary *'
+lib/modules/TransportP.nc:251: invalid type argument of `unary *'
+lib/modules/TransportP.nc:251: invalid type argument of `unary *'
+lib/modules/TransportP.nc:251: invalid type argument of `unary *'
+lib/modules/TransportP.nc:251: invalid type argument of `unary *'
 lib/modules/TransportP.nc: In function `Transport.connect':
-lib/modules/TransportP.nc:331: warning: passing argument 1 of `Transport.makeSynPack' from incompatible pointer type
+lib/modules/TransportP.nc:335: warning: passing argument 1 of `Transport.makeSynPack' from incompatible pointer type
 /opt/tinyos-main/support/make/extras/sim.extra:67: recipe for target 'sim-exe' failed
 make: *** [sim-exe] Error 1
+
+
 
 
 

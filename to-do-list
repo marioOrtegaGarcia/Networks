@@ -1,6 +1,6 @@
 WHERE WE AT DOC
 
-TO  DO
+TO DO
 * finish sending SYN packet from connect()
 	* Figure out memcpy for makeTCPPack
 	* Figure out how to put TCPPack as payload in Packet
@@ -14,5 +14,10 @@ TO  DO
 
 
 TO FIX
-* Transport.accept()
-*
+
+* Getting errors while attempting to work out the handshake
+	* Problems with tcp_packet pointers also getting invalid type argument of `unary *' error
+	* Stuck with sending any packs
+		* when to Transport.read()/Transport.write()???
+* Attempting writing a send function
+	* Getting invalid type argument of `unary *' error

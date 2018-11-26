@@ -218,7 +218,36 @@ implementation {
          *    from the pass buffer. This may be shorter then bufflen
          */
         command uint16_t Transport.write(socket_t fd, uint8_t *buff, uint16_t bufflen){
+		uint16_t freeSpace;
+		socket_store_t socket;
 
+		dbg(GENERAL_CHANNEL, "\tTransport.write() -- beginning to write to socket\n");
+
+		if(call socks.contains(fd))
+			socket = socks.get(fd);
+		// Amount of data we can write, (bufferlength or write length which  ever is less)
+		if(socket.lastWritten == socket.lastAck)
+			freeSpace = SOCKET_BUFFER_SIZE - 1;
+	 	else if(socket.lastWritten > socket.lastAck)
+			freeSpace  = SOCKET_BUFFER_SIZE - (socket.lastWritten - socket.lastAck) - 1;
+		else if(socket.lastWritten < socket.lastAck)
+			freeSpace  = socket.lastAck -  socket.lastWritten - 1;
+
+		if(freeSpace > bufflen)
+			bufflen = freeSpace;
+
+		if (bufflen == 0){
+			dbg(GENERAL_CHANNEL, "\tTransport.write() -- Buffer Full\n");
+			return 0;
+		}
+
+		for(i = 0; i < freeSpace; i++){
+
+			position = (socket->lastWritten + i + 1) % SOCKET_BUFFER_SIZE;
+			socket.sendBuff[position] = buff[i];
+		}
+
+		socket.lastWritten += position;
         }
 
         /**
