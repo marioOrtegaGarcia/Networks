@@ -37,8 +37,8 @@ implementation {
 		Package->TTL = TTL;
 		Package->seq = seq;
 		Package->protocol = protocol;
-		dbg(GENERAL_CHANNEL, "\t\t\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HERE: length: %u memcpy not working ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n", sizeof(payload));
-		//memcpy(Package->payload, payload, sizeof(payload/*length*/));
+		dbg(GENERAL_CHANNEL, "\t\t\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HERE: length: %u memcpy not working ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n", length);
+		memcpy(Package->payload, payload, length);
 		dbg(GENERAL_CHANNEL, "\t\t\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HERE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	}
 
@@ -61,6 +61,7 @@ implementation {
 	 	memcpy(TCPheader->payload, payload, sizeof(payload));
 	}
 
+	// Method used to make SYN to only initiate the required variables
 	command void Transport.makeSynPack(tcp_packet* TCPheader, uint8_t destPort, uint8_t srcPort, uint16_t seq, uint8_t flag) {
 	TCPheader->destPort = destPort;
 	TCPheader->srcPort = srcPort;
@@ -68,6 +69,7 @@ implementation {
 	TCPheader->flag = flag;
 	}
 
+	// Method used to make ACK to reply too SYN
 	command void Transport.makeAckPack(tcp_packet* TCPheader, uint8_t destPort, uint8_t srcPort, uint16_t seq, uint8_t flag, uint8_t advertisedWindow) {
 	TCPheader->destPort = destPort;
 	TCPheader->srcPort = srcPort;
@@ -76,32 +78,39 @@ implementation {
 	TCPheader->advertisedWindow = advertisedWindow;
 	}
 
-	command uint8_t Transport.calcWindow(socket_store_t* sock, uint16_t advertisedWindow){
+	// Computing the Calculated Window based off the advertised Window minuts the things we've already sent and know they have received
+	command uint8_t Transport.calcWindow(socket_store_t* sock, uint16_t advertisedWindow) {
 		return advertisedWindow - (sock->lastSent - sock->lastAck - 1);
 	}
 
 	command pack Transport.send(socket_store_t * s, pack IPpack) {
+		// Making a tcp_packet pointer for the payload of IP Pack
 		tcp_packet* data;
-		data = (tcp_packet*)IPpack->payload;
+		data = (tcp_packet*)IPpack.payload;
 
-		data->advertisedWindow  = call Transport.calcWindow(s, data->advertisedWindow);
-		data->ack  =  s->nextExpected;
+		// Computing aw and increasing the ACK
+		data->advertisedWindow = call Transport.calcWindow(s, data->advertisedWindow);
+		data->ack = s->nextExpected;
 
+		//  Setting the src and dest Ports from our socket_store_t
 		data->srcPort = s->src;
-		data->destPort = s->dest->port;
+		data->destPort = s->dest.port;
 
 		//call Transport.makeTCPPack(data, data->destPort, data->srcPort, data->seq, data->ack, data->flag, data->advertisedWindow, data->numBytes, (void*)data->payload);
 		//call Transport.makePack(&IPpack, IPpack->src, IPpack->dest, IPpack->TTL, IPpack->protocol, IPpack->seq, (void*) data, sizeof(data));
 
+		// Sending the IP packet to the destPort
 		call Sender.send(IPpack, data->destPort);
 
 		return IPpack;
 	}
 
 	event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
-		pack* recievedMsg =  (pack*)  payload;
 
-		call Transport.receive(recievedMsg);
+		pack* recievedMsg = (pack*) payload;
+		//Sending all the PROTOCOL_TCP's to the Transport.receive function
+		if (recievedMsg->protocol == PROTOCOL_TCP)
+			call Transport.receive(recievedMsg);
 	}
         /**
          * Get a socket if there is one available.
@@ -218,13 +227,14 @@ implementation {
          *    from the pass buffer. This may be shorter then bufflen
          */
         command uint16_t Transport.write(socket_t fd, uint8_t *buff, uint16_t bufflen){
-		uint16_t freeSpace;
+		uint8_t i;
+		uint16_t freeSpace, position;
 		socket_store_t socket;
 
 		dbg(GENERAL_CHANNEL, "\tTransport.write() -- beginning to write to socket\n");
 
-		if(call socks.contains(fd))
-			socket = socks.get(fd);
+		if(call sockets.contains(fd))
+			socket = call sockets.get(fd);
 		// Amount of data we can write, (bufferlength or write length which  ever is less)
 		if(socket.lastWritten == socket.lastAck)
 			freeSpace = SOCKET_BUFFER_SIZE - 1;
@@ -236,14 +246,13 @@ implementation {
 		if(freeSpace > bufflen)
 			bufflen = freeSpace;
 
-		if (bufflen == 0){
+		if (bufflen == 0) {
 			dbg(GENERAL_CHANNEL, "\tTransport.write() -- Buffer Full\n");
 			return 0;
 		}
 
-		for(i = 0; i < freeSpace; i++){
-
-			position = (socket->lastWritten + i + 1) % SOCKET_BUFFER_SIZE;
+		for(i = 0; i < freeSpace; i++) {
+			position = (socket.lastWritten + i + 1) % SOCKET_BUFFER_SIZE;
 			socket.sendBuff[position] = buff[i];
 		}
 
@@ -263,9 +272,12 @@ implementation {
 		tcp_packet* recievedTcp;
 		error_t check = FAIL;
 
+		// Setting our pack and tcp_packet types
+		// WHy  are we setting msg as a pointer????????
 		msg = *package;
 		recievedTcp = (tcp_packet*)package->payload;
 
+		// Using switch cases  for every flag enum we use
 		switch(recievedTcp->flag) {
 			case 1 ://syn
 				//reply with SYN + ACK
@@ -277,28 +289,28 @@ implementation {
 				//Set TCP PAck as payload for msg
 				//makePack
 
-				call Transport.makePack(&msg, msg->dest, msg->src, msg->seq, msg->TTL, msg->protocol, msg->payload, msg->len);
+				call Transport.makePack(&msg, msg.dest, msg.src, msg.seq, msg.TTL, msg.protocol, (uint8_t*)msg.payload, sizeof(msg.payload));
 
 				//send pack
 				break;
 
 			case 2:	//ACK
-				dbg(GENERAL_CHANNEL, "Transport.receive() default flag ACK");
+				dbg(GENERAL_CHANNEL, "\tTransport.receive() default flag ACK\n");
 				//Start Sending to the Sever
 				break;
 
 			case 4: // Fin
-				dbg(GENERAL_CHANNEL, "Transport.receive() default flag FIN");
+				dbg(GENERAL_CHANNEL, "\tTransport.receive() default flag FIN\n");
 
 				break;
 
 			case 8: // RST
-				dbg(GENERAL_CHANNEL, "Transport.receive() default flag RST");
+				dbg(GENERAL_CHANNEL, "\tTransport.receive() default flag RST\n");
 
 				break;
 
 			default:
-				dbg(GENERAL_CHANNEL, "Transport.receive() Data packet?");
+				dbg(GENERAL_CHANNEL, "\tTransport.receive() Data packet?\n");
 		}
 
 
@@ -340,6 +352,7 @@ implementation {
         command error_t Transport.connect(socket_t fd, socket_addr_t * addr) {
 		socket_store_t newConnection;
 		pack msg;
+		uint16_t seq;
 		uint8_t* payload = 0;
 
 
@@ -357,11 +370,13 @@ implementation {
 			//send SYN packet
 			dbg(GENERAL_CHANNEL, "\t\t\tBreaking before makeTCPPack\n");
 
+			seq = call Random.rand16() % 65530;
+
 			call Transport.makeSynPack(&tcp_msg,
 						newConnection.dest.port,
 						newConnection.src,
-						call Random.rand16() % 65530,
-						1);
+						seq,
+						(uint8_t)SYN);
 			call Transport.makePack(&msg,
 						(uint16_t)NULL,
 						(uint16_t)NULL,

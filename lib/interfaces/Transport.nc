@@ -155,5 +155,5 @@ interface Transport{
 
    command uint8_t calcWindow(socket_store_t* sock, uint16_t advertisedWindow);
 
-   command pack send(socket_store_t * s, pack pack);
+   command pack send(socket_store_t * s, pack IPpack);
 }

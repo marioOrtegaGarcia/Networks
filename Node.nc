@@ -198,7 +198,8 @@ implementation {
 		//resend buffered data, with  same seq number.
 
 
-	dbg(GENERAL_CHANNEL, "TimedOut.fired() -- no ACK  received \n")
+	dbg(GENERAL_CHANNEL, "TimedOut.fired() -- no ACK  received \n");
+
 	}
 
         //  Make sure all the Radios are turned on
