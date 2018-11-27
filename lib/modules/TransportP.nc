@@ -31,15 +31,20 @@ implementation {
 	uint8_t numConnected = 0;
 	uint8_t max_tcp_payload = 20;
 
-	command void Transport.makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t protocol, uint16_t seq, uint8_t* payload, uint8_t length){
+	command void Transport.makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t protocol, uint16_t seq, uint8_t* payload, uint8_t length) {
+		tcp_packet* tcpp = (tcp_packet*) payload;
+
 		Package->src = src;
 		Package->dest = dest;
 		Package->TTL = TTL;
 		Package->seq = seq;
 		Package->protocol = protocol;
-		dbg(GENERAL_CHANNEL, "\t\t\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HERE: length: %u memcpy not working ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n", length);
-		memcpy(Package->payload, payload, length);
-		dbg(GENERAL_CHANNEL, "\t\t\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HERE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+
+		dbg(GENERAL_CHANNEL, "\t\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HERE: length: %u memcpy not working ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n", length);
+		dbg(GENERAL_CHANNEL, "TCP Pack Unwrap: %d", tcpp->destPort);
+
+		memcpy(Package->payload, payload, TCP_MAX_PAYLOAD_SIZE);
+		dbg(GENERAL_CHANNEL,"\t\t\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HERE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	}
 
 	command void Transport.makeTCPPack(tcp_packet* TCPheader, uint8_t destPort, uint8_t srcPort, uint16_t seq, uint16_t ack, uint8_t flag, uint8_t advertisedWindow, uint8_t numBytes, uint8_t* payload) {
@@ -62,11 +67,12 @@ implementation {
 	}
 
 	// Method used to make SYN to only initiate the required variables
-	command void Transport.makeSynPack(tcp_packet* TCPheader, uint8_t destPort, uint8_t srcPort, uint16_t seq, uint8_t flag) {
+	command void Transport.makeSynPack(tcp_packet* TCPheader, uint8_t destPort, uint8_t srcPort, uint16_t seq) {
 	TCPheader->destPort = destPort;
 	TCPheader->srcPort = srcPort;
 	TCPheader->seq = seq;
-	TCPheader->flag = flag;
+	TCPheader->flag = SYN;
+	dbg(GENERAL_CHANNEL, "\t\t\tmakeSynPack complete with values destPort: %d srcPort: %d seq: %d\n", TCPheader->destPort, TCPheader->srcPort, TCPheader->seq);
 	}
 
 	// Method used to make ACK to reply too SYN
@@ -301,10 +307,8 @@ implementation {
 				//makeTCPPack
 				call Transport.makeAckPack(recievedTcp, recievedTcp->destPort, recievedTcp->srcPort, recievedTcp->seq+1, recievedTcp->flag, 10 /*advertisedWindow*/);
 
-				//Set TCP PAck as payload for msg
-				//makePack
-
-				call Transport.makePack(&msg, msg.dest, msg.src, msg.seq, msg.TTL, msg.protocol, (uint8_t*)msg.payload, sizeof(msg.payload));
+				//makePack and Set TCP PAck as payload for msg
+				call Transport.makePack(&msg, msg.dest, msg.src, msg.seq, msg.TTL, msg.protocol, (uint8_t*)recievedTcp, sizeof(recievedTcp));
 
 				//send pack
 				break;
@@ -383,25 +387,25 @@ implementation {
 			newConnection.dest = *addr;
 
 			//send SYN packet
-			dbg(GENERAL_CHANNEL, "\t\t\tBreaking before makeTCPPack\n");
 
 			seq = call Random.rand16() % 65530;
 
-			call Transport.makeSynPack(&tcp_msg,
-						newConnection.dest.port,
-						newConnection.src,
-						seq,
-						(uint8_t)1);
+			dbg(GENERAL_CHANNEL, "\t\t\t Debug before makeSynPack\n");
+			call Transport.makeSynPack(&tcp_msg, newConnection.dest.port, newConnection.src, seq);
+
+			dbg(GENERAL_CHANNEL, "But this  runs ######################\n");
+			//dbg(GENERAL_CHANNEL, "tcp_msg->destPort: %d############################\n", tcp_msg->destPort);
+			dbg(GENERAL_CHANNEL, "But this  runs ######################\n");
 			call Transport.makePack(&msg,
-						(uint16_t)NULL,
-						(uint16_t)NULL,
+						(uint16_t)TOS_NODE_ID,
+						(uint16_t)newConnection.src,
 						(uint16_t)1,
 						PROTOCOL_TCP,
 						(uint16_t)1,
 						(void*)tcp_msg,
-						(uint8_t)sizeof(&tcp_msg));
+						(uint8_t)sizeof(tcp_msg));
 
-			/* call send() */
+			/* We need to actually call send() once make Pack ends up workng */
 			newConnection.state = SYN_SENT;
 
 			//remove old connection info

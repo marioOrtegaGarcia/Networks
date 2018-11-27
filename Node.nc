@@ -319,7 +319,7 @@ implementation {
 		nodeSeq++;
 
 		dbg(GENERAL_CHANNEL, "\tPackage(%d,%d) Ping Sent\n", TOS_NODE_ID, destination);
-		PACKET_MAX_PAYLOAD_SIZE);
+		/* PACKET_MAX_PAYLOAD_SIZE); */
 		logPack(&sendPackage);
 		logPacket(&sendPackage);
 		if (!initialized) {
