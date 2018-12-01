@@ -68,6 +68,7 @@ implementation {
         uint8_t NeighborList[19];
         uint8_t routing[255][3];
 	socket_t fd;
+
         //  Prototypes
         void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
         void logPacket(pack* payload);
@@ -142,76 +143,87 @@ implementation {
         read data and print
         */
 
-        event void ListenTimer.fired() {
-          int i;
-	  socket_t newFd;
-	  dbg(GENERAL_CHANNEL, "ListenTimer Fired\n");
-	  dbg(GENERAL_CHANNEL, "ListenTimer.fired() -- Server State: Listen\n");
-	  newFd = call Transport.accept(fd);
-
-          if(newFd != (socket_t)NULL){
-               //TODO insert new sock
-	       if (call Socks.size() < 10) {
-		       dbg(GENERAL_CHANNEL, "ListenTimer.fired() -- Succesfully saved new fd\n");
-		       call Socks.pushback(fd);
-	       } else {
-		       dbg(GENERAL_CHANNEL, "ListenTimer.fired() -- Socks is full\n");
-	       }
-
-	       //read and print all data
-	       for(i = 0; i < 10; i++){
-
-	       }
+	event void ListenTimer.fired() {
+		int i, len;
+		socket_store_t sock;
+		//dbg(GENERAL_CHANNEL, "\tListenTimer Fired\n");
+		dbg(GENERAL_CHANNEL, "ListenTimer.fired() {\n");
 
 
+		fd = call Transport.accept(fd);
 
-	       //iterate through socks list
-	       //Check if were listene
+		if(fd != (socket_t)NULL)  {
+			//TODO insert new sock
+			if (call Socks.size() < 10) {
+				dbg(GENERAL_CHANNEL, "\t-- Succesfully saved new fd: %d\n", fd);
+				call Socks.pushback(fd);
+				} else {
+					dbg(GENERAL_CHANNEL, "\t-- Socks is full\n");
+				}
 
+				sock = call Transport.getSocket(fd);
 
-          } else {
-		  dbg(GENERAL_CHANNEL, "newFd is NULL\n");
-	  }
+				//read and print all data
+				dbg(GENERAL_CHANNEL,"\t-- Reading from buffer\n");
+				len = call Transport.read(fd, (uint8_t*)sock.rcvdBuff, SOCKET_BUFFER_SIZE);
+				dbg(GENERAL_CHANNEL,"\t-- len: %d\n", len);
+		} else {
+			dbg(GENERAL_CHANNEL, "\t-- fd is NULL\n");
+		}
 
 		/* = call sockets.get(keys);
 
-             int newFd = call Transport.accept(); */
-             /* if((uint16_t)newFd != (uint16_t)NULL){
-                  add to list of accepted sockets
-             }
-             for all sockets added
-             read data and print */
-        }
+		int newFd = call Transport.accept(); */
+		/* if((uint16_t)newFd != (uint16_t)NULL){
+			add to list of accepted sockets
+		}
+		for all sockets added
+		read data and print */
+	}
 
-        event void WriteTimer.fired() {
-             /*
-             if all data in buffer has been writtin or buffer is empty
-                    create new data for buffer
-                    //data is from 0 to [transfer]
-               subtract the amount of data you were able to write(fd, buffer, buffer len)
+	event void WriteTimer.fired() {
+		/*
+		//data is from 0 to [transfer]
+		subtract the amount of data you were able to write(fd, buffer, buffer len)
+		*/
+		socket_store_t sock;
 
-             */
-	     dbg(GENERAL_CHANNEL, "WriteTimer.fired()\n");
-        }
+		dbg(GENERAL_CHANNEL, "\t WriteTimer.fired() ->\n");
+
+		if (call Transport.isValidSocket(fd)) {
+			dbg(GENERAL_CHANNEL, "\t\t\t    -- Socket is valid: True\n");
+			sock = call Transport.getSocket(fd);
+		} else {
+			dbg(GENERAL_CHANNEL, "\t\t\t    -- Socket is valid: False\n");
+		}
+		//if all data in buffer has been writtin or buffer is empty
+		if(sock.lastWritten == SOCKET_BUFFER_SIZE || sock.lastWritten == 0) {
+			//Make  new data
+			dbg(GENERAL_CHANNEL, "\t\t\t    -- Begining to  make data not Implemented yet\n");
+		} else {
+			dbg(GENERAL_CHANNEL, "WriteTimer.fired() -- fd could not befound\n");
+		}
+
+	}
 
 	event void TimedOut.fired(){
 		//resend buffered data, with  same seq number.
 
 
-	dbg(GENERAL_CHANNEL, "TimedOut.fired() -- no ACK  received \n");
+		dbg(GENERAL_CHANNEL, "TimedOut.fired() -- no ACK  received \n");
 
 	}
 
-        //  Make sure all the Radios are turned on
-        event void AMControl.startDone(error_t err)  {
-                if(err == SUCCESS)
-                        dbg(GENERAL_CHANNEL, "\tRadio On\n");
-                else
-                        call AMControl.start();
-        }
+	//  Make sure all the Radios are turned on
+	event void AMControl.startDone(error_t err)  {
+		if(err == SUCCESS)
+		dbg(GENERAL_CHANNEL, "\tRadio On\n");
+		else
+		call AMControl.start();
+	}
 
-        event void AMControl.stopDone(error_t err){
-        }
+	event void AMControl.stopDone(error_t err){
+	}
 
         //  Handles all the Packs we are receiving.
         event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
@@ -296,6 +308,15 @@ implementation {
                                 relayToNeighbors(&sendPackage);
                                 return msg;
                         }
+			else if (recievedMsg->protocol == PROTOCOL_TCP && recievedMsg->dest == TOS_NODE_ID) {
+				dbg(GENERAL_CHANNEL, "Recieved a TCP Pack\n");
+				call Transport.receive(recievedMsg);
+			} else if (recievedMsg->protocol == PROTOCOL_TCP && recievedMsg->dest != TOS_NODE_ID) {
+				recievedMsg->TTL--;
+				makePack(&sendPackage, recievedMsg->src, recievedMsg->dest, recievedMsg->TTL, recievedMsg->protocol, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
+                                logPacket(&sendPackage);
+				relayToNeighbors(&sendPackage);
+			}
 
                         // If Packet get here we have not expected it and it will fail
                         dbg(GENERAL_CHANNEL, "\tUnknown Packet Type %d\n", len);
@@ -380,7 +401,7 @@ implementation {
 
 	event void CommandHandler.setTestServer(uint8_t port) {
 		socket_addr_t socketAddr;
-		dbg(GENERAL_CHANNEL, "setTestServer() -- Initializing Server\n");
+		dbg(GENERAL_CHANNEL, "CommandHandler.setTestServer(%d) -- Initializing Server\n", port);
 
 		// Creating our file descriptor
 		fd = call Transport.socket();
@@ -404,6 +425,7 @@ implementation {
 		int i;
 		socket_store_t socket;
 		socket_addr_t socketAddr, serverAddr;
+
 		error_t check = FAIL;
 		dbg(GENERAL_CHANNEL, "CommandHandler.setTestClient()\n");
 
@@ -415,7 +437,7 @@ implementation {
 		socketAddr.port = srcPort;
 
 		if  (call Transport.bind(fd, &socketAddr) == SUCCESS) {
-			dbg(GENERAL_CHANNEL, "\t-- Got em, Bind Successful.\n");
+			dbg(GENERAL_CHANNEL, "\t-- Bind Successful.\n");
 
 			// Setting our destination address and port
 			serverAddr.addr = dest;
@@ -429,7 +451,7 @@ implementation {
 				dbg(GENERAL_CHANNEL, "\t-- Couldnt Connect\n");
 			}
 		} else {
-			dbg(GENERAL_CHANNEL, "\t-- Get rekt son, Couldnt bind.\n");
+			dbg(GENERAL_CHANNEL, "\t-- Get rekt son, Couldn't bind.\n");
 		}
 	}
 

@@ -149,11 +149,18 @@ interface Transport{
 
    command void makeTCPPack(tcp_packet * TCPheader, uint8_t destPort, uint8_t srcPort, uint16_t seq, uint16_t ack, uint8_t flag, uint8_t advertisedWindow, uint8_t numBytes, uint8_t* payload);
 
-   command void makeSynPack(tcp_packet* TCPheader, uint8_t destPort, uint8_t srcPort, uint16_t seq);
+   command tcp_packet* makeSynPack(tcp_packet* TCPheader, uint8_t destPort, uint8_t srcPort, uint16_t seq);
 
    command void makeAckPack(tcp_packet* TCPheader, uint8_t destPort, uint8_t srcPort, uint16_t seq, uint8_t flag, uint8_t advertisedWindow);
 
    command uint8_t calcWindow(socket_store_t* sock, uint16_t advertisedWindow);
 
    command pack send(socket_store_t * s, pack IPpack);
+
+   command socket_store_t getSocket(socket_t fd);
+
+   command  bool isValidSocket(socket_t fd);
+
+   command socket_store_t* findSocket(uint8_t dest, uint8_t srcPort, uint8_t destPort);
+
 }

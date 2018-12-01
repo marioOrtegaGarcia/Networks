@@ -5,9 +5,16 @@ TO DO
 	* Figure out memcpy for makeTCPPack
 	* Figure out how to put TCPPack as payload in Packet
 * Receive SYN packets
-	* check flags for packs Received
 	* reply with SYN + ACK
 	* Change state to ESTABLISHED
+
+
+	--TOMORROW MORNING --
+* Finish Transport.read()
+	*Finish Correcting IF statements
+* Finish writing down Transport.write()
+* Find somewhere to initialize lastAck / lastRcvd / lastSent / lastWritten / nextExpected
+
 * Begin sending data
 	* Partition payload into small chunks
 	* wait for ACK before sending another packet
@@ -21,3 +28,31 @@ TO FIX
 		* when to Transport.read()/Transport.write()???
 * Attempting writing a send function
 	* Getting invalid type argument of `unary *' error
+
+
+
+
+~~~~~~~~~~~~~~~~~~~ Receive.receive ~~~~~~~~~~~~~~~~~~~
+* Size of actual packet is currently 8, but we are expecting 28
+
+
+
+
+
+
+
+
+
+
+
+
+
+11/30 WWA
+* Got sending to partially work
+	* check bind to see if we need to set socket.dest.port and socket.dest.addr
+	* Make sure bind is inserting the socket to the hash and what to do if its not there
+
+	* Need to go back and recheck how we set our values, running just not correct
+		* Check what numBytes is doing and how we set it
+
+	* We are fixing up how to properly handle

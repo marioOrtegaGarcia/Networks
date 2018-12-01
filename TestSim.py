@@ -165,8 +165,8 @@ def main():
     s.newClient(4,  3, 12, 9, 4412);
     s.runTime(40);
 
-    s.ping(3, 6, "Hello, World");
-    s.runTime(10);
+    # s.ping(3, 6, "Hello, World");
+    # s.runTime(10);
 
     s.moteOff(6);
     s.runTime(200);
@@ -174,20 +174,20 @@ def main():
     #s.neighborDMP(3);
     s.runTime(20);
     #s.neighborDMP(4);
-    s.runTime(55);
-
-    s.ping(3, 6, "The World is flat");
-    s.runTime(20);
+    # s.runTime(55);
+	#
+    # s.ping(3, 6, "The World is flat");
+    # s.runTime(20);
 
     #s.routeDMP(3);
-    s.runTime(20);
+    # s.runTime(20);
     # s.ping(6, 3, "Hi!");
     # s.runTime(20);
     # s.ping(1, 10, "Ka-Chao!");
     # s.runTime(10);
     # s.ping(1, 11, "Tralalalala");
-    # s.runTime(10);
-    s.neighborDMP(6);
+    # # s.runTime(10);
+    # s.neighborDMP(6);
     s.runTime(4);
 
 if __name__ == '__main__':

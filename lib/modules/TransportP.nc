@@ -1,5 +1,5 @@
-#include "../../includes/packet.h"
 #include "../../includes/socket.h"
+#include "../../includes/packet.h"
 #include "../../includes/tcp_packet.h"
 /**
  * The Transport interface handles sockets and is a layer of abstraction
@@ -25,7 +25,7 @@ module TransportP {
 
 implementation {
 	pack sendMessage;
-	tcp_packet* tcp_msg;
+	//tcp_packet* tcp_msg;
 	uint16_t RTT = 12000;
 	uint16_t fdKeys = 0;
 	uint8_t numConnected = 0;
@@ -38,13 +38,13 @@ implementation {
 		Package->dest = dest;
 		Package->TTL = TTL;
 		Package->seq = seq;
-		Package->protocol = protocol;
+		//Package->protocol = protocol;
 
-		dbg(GENERAL_CHANNEL, "\t\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HERE: length: %u memcpy not working ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n", length);
-		dbg(GENERAL_CHANNEL, "TCP Pack Unwrap: %d", tcpp->destPort);
+		//dbg(GENERAL_CHANNEL, "\t--payload Size: %u ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n", sizeof(payload));
+		//dbg(GENERAL_CHANNEL, "TCP Pack Unwrap: %d", tcpp->destPort);
 
+		dbg(GENERAL_CHANNEL,"\t\t\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HERE at makePack ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 		memcpy(Package->payload, payload, TCP_MAX_PAYLOAD_SIZE);
-		dbg(GENERAL_CHANNEL,"\t\t\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HERE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	}
 
 	command void Transport.makeTCPPack(tcp_packet* TCPheader, uint8_t destPort, uint8_t srcPort, uint16_t seq, uint16_t ack, uint8_t flag, uint8_t advertisedWindow, uint8_t numBytes, uint8_t* payload) {
@@ -62,17 +62,18 @@ implementation {
 		dbg(GENERAL_CHANNEL, "\t\t\t\tSize of TCPheader->payload: %u, payload: %u, numBytes: %u\n", sizeof(TCPheader->payload), sizeof(payload), numBytes);
 		/* TCPheader->payload = malloc(numBytes); */
 
-		dbg(GENERAL_CHANNEL, "\t\t\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HERE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+		dbg(GENERAL_CHANNEL, "\t\t\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HERE at makeTCPPack ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	 	memcpy(TCPheader->payload, payload, sizeof(payload));
 	}
 
 	// Method used to make SYN to only initiate the required variables
-	command void Transport.makeSynPack(tcp_packet* TCPheader, uint8_t destPort, uint8_t srcPort, uint16_t seq) {
+	command tcp_packet* Transport.makeSynPack(tcp_packet* TCPheader, uint8_t destPort, uint8_t srcPort, uint16_t seq) {
 	TCPheader->destPort = destPort;
 	TCPheader->srcPort = srcPort;
 	TCPheader->seq = seq;
 	TCPheader->flag = SYN;
 	dbg(GENERAL_CHANNEL, "\t\t\tmakeSynPack complete with values destPort: %d srcPort: %d seq: %d\n", TCPheader->destPort, TCPheader->srcPort, TCPheader->seq);
+	return TCPheader;
 	}
 
 	// Method used to make ACK to reply too SYN
@@ -84,6 +85,36 @@ implementation {
 	TCPheader->advertisedWindow = advertisedWindow;
 	}
 
+
+	command socket_store_t Transport.getSocket(socket_t fd) {
+		/* if(call sockets.contains(fd))
+			return (call sockets.get(fd));
+		else
+			return (socket_store_t) NULL; */
+			return call sockets.get(fd);
+	}
+
+	command socket_store_t* Transport.findSocket(uint8_t dest, uint8_t srcPort, uint8_t destPort) {
+		socket_store_t theSocket;
+		uint8_t i;
+		uint8_t fd = 1;
+		for (i = 1; i < 11; i++) {
+			theSocket = call sockets.get(i);
+			if(theSocket.src == srcPort /*&& theSocket.dest.port == destPort && theSocket.dest.addr == dest*/) {
+				dbg(GENERAL_CHANNEL, "Hey we found socket with  fd: %u theSocket.src: %u theSocket.dest.port: %u theSocket.dest.addr: %u\n", i, theSocket.src, theSocket.dest.port, theSocket.dest.addr);
+
+				return &theSocket;
+
+			}
+		}
+	}
+
+	command bool Transport.isValidSocket(socket_t fd){
+		if(call sockets.contains(fd))
+			return TRUE;
+		return FALSE;
+	}
+
 	// Computing the Calculated Window based off the advertised Window minuts the things we've already sent and know they have received
 	command uint8_t Transport.calcWindow(socket_store_t* sock, uint16_t advertisedWindow) {
 		return advertisedWindow - (sock->lastSent - sock->lastAck - 1);
@@ -93,30 +124,52 @@ implementation {
 		// Making a tcp_packet pointer for the payload of IP Pack
 		tcp_packet* data;
 		data = (tcp_packet*)IPpack.payload;
+		dbg(GENERAL_CHANNEL, "\t\t\t\t-> Transport.send()\n");
+
+
+		dbg(GENERAL_CHANNEL, "\t\t\t\t-> IP PACK LAYER\n");
+		dbg(GENERAL_CHANNEL, "\t\t\t\t\t-> Sending Packet: Src->%d, Dest-> %d, Seq->%d\n", IPpack.src, IPpack.dest, IPpack.seq);
+		dbg(GENERAL_CHANNEL, "\t\t\t\t\t-> Sending Packet: TTL->%d\n", IPpack.TTL);
+		dbg(GENERAL_CHANNEL, "\t\t\t\t-> TCP PACK LAYER\n");
+		dbg(GENERAL_CHANNEL, "\t\t\t\t\t-> Sending Packet: destPort->%d, srcPort-> %d, Seq->%d\n", data->destPort, data->srcPort, data->seq);
+		dbg(GENERAL_CHANNEL, "\t\t\t\t\t-> Sending Packet: ack->%d, numBytes->%d\n", data->ack, data->numBytes);
+
+		//  Setting the src and dest Ports from our socket_store_t
+		data->destPort = s->dest.port;
+		data->srcPort = s->src;
 
 		// Computing aw and increasing the ACK
 		data->advertisedWindow = call Transport.calcWindow(s, data->advertisedWindow);
 		data->ack = s->nextExpected;
 
-		//  Setting the src and dest Ports from our socket_store_t
-		data->srcPort = s->src;
-		data->destPort = s->dest.port;
-
 		//call Transport.makeTCPPack(data, data->destPort, data->srcPort, data->seq, data->ack, data->flag, data->advertisedWindow, data->numBytes, (void*)data->payload);
 		//call Transport.makePack(&IPpack, IPpack->src, IPpack->dest, IPpack->TTL, IPpack->protocol, IPpack->seq, (void*) data, sizeof(data));
 
 		// Sending the IP packet to the destPort
-		call Sender.send(IPpack, data->destPort);
+
+		dbg(GENERAL_CHANNEL, "Sent\n");
+		call Sender.send(IPpack, s->dest.addr);
 
 		return IPpack;
 	}
 
 	event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
 
-		pack* recievedMsg = (pack*) payload;
+		pack* receivedMsg = (pack*) payload;
 		//Sending all the PROTOCOL_TCP's to the Transport.receive function
-		if (recievedMsg->protocol == PROTOCOL_TCP)
-			call Transport.receive(recievedMsg);
+
+		//dbg(GENERAL_CHANNEL, "\t\t\t -- Receive.receive() :: Size of Pack = %d\n", sizeof(receivedMsg)); //Size  is 8
+
+		if (sizeof(receivedMsg) == 8) {
+			/* dbg(GENERAL_CHANNEL, "\t\t\t --  PASSED: Length  check\n"); */
+			if (receivedMsg->protocol == PROTOCOL_TCP)
+				//dbg(GENERAL_CHANNEL, "\t\t\t -- PROTOCOL_TCP\n");
+				call Transport.receive(receivedMsg);
+		} else {
+			//dbg(GENERAL_CHANNEL, "\t\t\t -- %d\n", len);  28
+			//dbg(GENERAL_CHANNEL, "\t\t\n");
+		}
+
 	}
 	/**
  	* Get a socket if there is one available.
@@ -129,20 +182,21 @@ implementation {
 	 command socket_t Transport.socket() {
 		int i;
 		socket_store_t newSocket;
-		dbg(GENERAL_CHANNEL, "Transport.socket()\n");
+		dbg(GENERAL_CHANNEL, "\tTransport.socket() ->\n");
 		// Generate new Key
 		fdKeys++;
 		if(fdKeys < 10) {
 			newSocket.state = CLOSED;
 			newSocket.lastWritten = 0;
 			/* newSocket.lastAck = 0xFF; */
-			newSocket.lastAck = 0;
+			newSocket.lastAck = 255;
 			newSocket.lastSent = 0;
 			newSocket.lastRead = 0;
 			newSocket.lastRcvd = 0;
 			newSocket.nextExpected = 0;
 			newSocket.RTT = RTT;
 			call sockets.insert(fdKeys, newSocket);
+			dbg (GENERAL_CHANNEL, "\t\t\t   -> socket_t(%d)\n", fdKeys);
 			return (socket_t)fdKeys;
 		} else {
 		// If we already looped though all 10 keys look for unused file descriptor
@@ -167,7 +221,7 @@ implementation {
  	*/
 	command error_t Transport.bind(socket_t fd, socket_addr_t *addr) {
 		socket_store_t refSocket;
-		dbg(GENERAL_CHANNEL, "Transport.bind()\n");
+		dbg(GENERAL_CHANNEL, "\tTransport.bind() ->\n");
 		// Making sure we contin  the file descriptor
 		if(call sockets.contains(fd)) {
 			refSocket = call sockets.get(fd);
@@ -176,14 +230,14 @@ implementation {
 			// Binding the file  descriptor with the source port address
 			refSocket.state = CLOSED;
 			refSocket.src = addr->port;
-			dbg(GENERAL_CHANNEL, "\t\t\t-- port: %u\n", addr->port);
+			dbg(GENERAL_CHANNEL, "\t\t\t -- fd: %u port: %u\n", fd, addr->port);
 
 			// Adding the Socket  back  to our hashtable
 			call sockets.insert(fd, refSocket);
-			dbg(GENERAL_CHANNEL, "\t\t\t-- Successful bind\n");
+			dbg(GENERAL_CHANNEL, "\t\t\t -> Successful bind\n");
 			return SUCCESS;
 		}
-		dbg(GENERAL_CHANNEL, "\t\t\t-- Failed bind\n");
+		dbg(GENERAL_CHANNEL, "\t\t\t -- Failed bind\n");
 		return FAIL;
 	}
 
@@ -201,16 +255,18 @@ implementation {
  	*/
 	command socket_t Transport.accept(socket_t fd) {
 		socket_store_t localSocket;
-
+		dbg(GENERAL_CHANNEL, "\t Transport.accept(%d) ->\n", fd);
 		// Failing  if the filedescripter is not contained
 		if (!call sockets.contains(fd)) {
-			dbg(GENERAL_CHANNEL, "Transport.accept() -- Sockets does not contain fd: %d\n", fd);
+			dbg(GENERAL_CHANNEL, "\t\t\t     -- sockets.contains(fd:  %d): False\n", fd);
 			return (socket_t)NULL;
+		} else {
+			dbg(GENERAL_CHANNEL, "\t\t\t     -- sockets.contains(fd:  %d): True\n", fd);
 		}
 
 		localSocket = call sockets.get(fd);
-		dbg(GENERAL_CHANNEL, "\t\t\t-- Sockets does contain fd: %d\n", fd);
-		dbg(GENERAL_CHANNEL, "\t\t\t-- Sockets state: %u\n", localSocket.state);
+		dbg(GENERAL_CHANNEL, "\t\t\t     -- | CLOSED = 0, LISTEN = 1, ESTABLISHED = 3, SYN_SENT  = 4, SYN_RCVD = 5 |\n");
+		dbg(GENERAL_CHANNEL, "\t\t\t     -- localSocket.state: %u\n", localSocket.state);
 
 		// If were on a litening state and we have less than 10 sockets used
 		if (localSocket.state == LISTEN && numConnected < 10) {
@@ -220,13 +276,15 @@ implementation {
 			localSocket.dest.addr = TOS_NODE_ID;
 			localSocket.state = SYN_RCVD;
 
+			dbg (GENERAL_CHANNEL, "\t\t\t     -- localSocket.state: %d localSocket.dest.addr: %d \n", localSocket.state, localSocket.dest.addr);
+
 			// Clearing old and  inserting the modified socket back
 			call sockets.remove(fd);
 			call sockets.insert(fd, localSocket);
-			dbg(GENERAL_CHANNEL, "\t\t\t-- returning %d\n", fd);
+			dbg(GENERAL_CHANNEL, "\t\t\t     -- returning fd: %d\n", fd);
 			return fd;
 		}
-		dbg(GENERAL_CHANNEL, "\t\t\t-- returning NULL\n");
+		dbg(GENERAL_CHANNEL, "\t\t\t     -- returning fd: NULL\n");
 		return (socket_t)NULL;
 	}
 
@@ -291,6 +349,7 @@ implementation {
 	command error_t Transport.receive(pack* package){
 		pack msg;
 		tcp_packet* recievedTcp;
+		socket_store_t * socket;
 		error_t check = FAIL;
 
 		// Setting our pack and tcp_packet types
@@ -298,24 +357,54 @@ implementation {
 		msg = *package;
 		recievedTcp = (tcp_packet*)package->payload;
 
+		msg.TTL--;
+
 		// Using switch cases for every flag enum we use
 		switch(recievedTcp->flag) {
-			case 1 ://syn
+			case 1://syn
+				dbg(GENERAL_CHANNEL, "Transport.receive -> SYN TCP PACK Recieved with ttl: %u\n", msg.TTL);
+
 				//reply with SYN + ACK
 				recievedTcp->flag = 2;
 
+
+				dbg(GENERAL_CHANNEL, "\tSet flag to SYN+ACK: %d\n", recievedTcp->flag);
 				//makeTCPPack
-				call Transport.makeAckPack(recievedTcp, recievedTcp->destPort, recievedTcp->srcPort, recievedTcp->seq+1, recievedTcp->flag, 10 /*advertisedWindow*/);
+				//dbg(GENERAL_CHANNEL, "\t\t\t\t -> Making TCP Pack\n");
+
+
+				recievedTcp->seq++;
+				recievedTcp->advertisedWindow = 1;
+
+
+				//call Transport.makeAckPack(recievedTcp, recievedTcp->destPort, recievedTcp->srcPort, recievedTcp->seq+1, recievedTcp->flag, 10 /*advertisedWindow*/);
 
 				//makePack and Set TCP PAck as payload for msg
-				call Transport.makePack(&msg, msg.dest, msg.src, msg.seq, msg.TTL, msg.protocol, (uint8_t*)recievedTcp, sizeof(recievedTcp));
+				//dbg(GENERAL_CHANNEL, "\t\t\t\t -> Making IP Pack\n");
+				msg.dest = msg.src;
+				msg.src = msg.dest;
+				msg.seq++;
+				msg.TTL = (uint8_t)18;
+				msg.protocol = PROTOCOL_TCP;
+				dbg(GENERAL_CHANNEL, "\tTransport.receive -> DBG BEFORE MEMCPY\n");
+				memcpy(msg.payload, recievedTcp, TCP_MAX_PAYLOAD_SIZE);
+				dbg(GENERAL_CHANNEL, "\tTransport.receive -> DBG AFTER MEMCPY\n");
+
+
+
+				//call Transport.makePack(&msg, msg.dest, msg.src, msg.seq, 18 /*TTL*/, msg.protocol, (uint8_t*)recievedTcp, sizeof(recievedTcp));
 
 				//send pack
+				dbg(GENERAL_CHANNEL, "\t\t\t\tFinding Socket from Sockets Hashmap (we switched the src/dest and ports, if anything weird happens, check here)\n");
+				socket = call Transport.findSocket(msg.src, recievedTcp->destPort, recievedTcp->srcPort);
+
+				call Transport.send(socket, msg);
 				break;
 
 			case 2:	//ACK
 				dbg(GENERAL_CHANNEL, "\tTransport.receive() default flag ACK\n");
 				//Start Sending to the Sever
+
 				break;
 
 			case 4: // Fin
@@ -353,7 +442,51 @@ implementation {
  	*    from the pass buffer. This may be shorter then bufflen
  	*/
 	command uint16_t Transport.read(socket_t fd, uint8_t *buff, uint16_t bufflen){
+		uint16_t i, pos, len;
+		socket_store_t socket;
 
+		dbg(GENERAL_CHANNEL, "\tTransport.read() ->\n");
+		/* if(call sockets.contains(fd))
+			socket = call sockets.get(fd);
+		else
+			return 0; */
+
+		if (!call sockets.contains(fd)) {
+			dbg(GENERAL_CHANNEL, "\t\t\t -- sockets.contains(fd:  %d): False\n", fd);
+			return 0;
+		} else {
+
+			dbg(GENERAL_CHANNEL, "\t\t\t -- sockets.contains(fd:  %d): True\n", fd);
+			socket = call sockets.get(fd);
+		}
+
+
+
+		//calulate read space in buffer
+	 	if(socket.lastRcvd >= socket.lastRead)
+			len = socket.lastRcvd - socket.lastRead;
+		else if(socket.lastRcvd < socket.lastRead)
+			len = SOCKET_BUFFER_SIZE - socket.lastRead + socket.lastRcvd;
+
+		dbg(GENERAL_CHANNEL, "\t\t\t -- Read space len: %d\n", len);
+		//minimum value between length and buffer length
+		if (len > bufflen)
+			len = bufflen;
+		dbg(GENERAL_CHANNEL, "\t\t\t -- Min from len and buffer len -> len: %d\n", len);
+		//calculate space in buffer ready to be read up to first gap
+		if (socket.nextExpected <= socket.lastRcvd+1)
+			len = socket.nextExpected - socket.lastRead;
+		dbg(GENERAL_CHANNEL, "\t\t\t -- Ready to be read len: %d\n", len);
+		for (i = 0; i < len; i++) {
+			pos = (socket.lastRead + i) % SOCKET_BUFFER_SIZE;
+			buff[i] =  socket.rcvdBuff[pos];
+		}
+
+		socket.lastRead += len;
+
+		call sockets.insert(fd, socket);
+		dbg(GENERAL_CHANNEL, "\t\t\t -> len: %d\n", len);
+		return len;
 	}
 
 	/**
@@ -370,52 +503,76 @@ implementation {
  	*/
 	command error_t Transport.connect(socket_t fd, socket_addr_t * addr) {
 		socket_store_t newConnection;
-		pack msg;
 		uint16_t seq;
+		pack msg;
+		uint8_t ttl;
+		tcp_packet* tcp_msg;
 		uint8_t* payload = 0;
+		ttl = 18;
 
-
-		dbg(GENERAL_CHANNEL, "Transport.connect()\n");
+		dbg(GENERAL_CHANNEL, "\tTransport.connect(%u,%d) ->\n", fd, addr->addr);
 		//if FD exists, get socket and set destination address to provided input addr
 		if (call sockets.contains(fd)) {
 			newConnection = call sockets.get(fd);
 			call sockets.remove(fd);
 
 			// Set connec both ports
-			dbg(GENERAL_CHANNEL, "\t\t\t-- Port(%u)->Port(%u) w/ address(%u)\n", newConnection.src, addr->port, addr->addr);
+			//dbg(GENERAL_CHANNEL, "\t\t\t\t\t-- Port(%u)->Port(%u) w/ address(%u)\n", newConnection.src, addr->port, addr->addr);
 			// Set destination address
 			newConnection.dest = *addr;
 
 			//send SYN packet
-
+			dbg(GENERAL_CHANNEL, "\t\t\t\t-- newConnection [ port src: %d dest: [ port: %d addr: %d]]\n", newConnection.src, newConnection.dest.port, newConnection.dest.addr);
 			seq = call Random.rand16() % 65530;
 
-			dbg(GENERAL_CHANNEL, "\t\t\t Debug before makeSynPack\n");
-			call Transport.makeSynPack(&tcp_msg, newConnection.dest.port, newConnection.src, seq);
+			dbg(GENERAL_CHANNEL, "\t\t\t\t -- MADE TCP_MSG LETS SEE IF THIS IS WHATS BREAKING \n");
 
-			dbg(GENERAL_CHANNEL, "But this  runs ######################\n");
-			//dbg(GENERAL_CHANNEL, "tcp_msg->destPort: %d############################\n", tcp_msg->destPort);
-			dbg(GENERAL_CHANNEL, "But this  runs ######################\n");
+			//dbg(GENERAL_CHANNEL, "\t\t\t\t\t ~~ Debug before makeSynPack\n");
+			tcp_msg->destPort = newConnection.dest.port;
+			tcp_msg->srcPort = newConnection.src;
+			tcp_msg->seq = seq;
+			tcp_msg->flag = SYN;
+			tcp_msg->numBytes = 0;
+
+			/* tcp_packet* test = call Transport.makeSynPack(&tcp_msg, newConnection.dest.port, newConnection.src, seq); */
+
+
+			//dbg(GENERAL_CHANNEL, "\t\t\t\t~~ Debug before makePack\n");
+			//dbg(GENERAL_CHANNEL, "tcp_msg->destPort: %d  ############################\n", tcp_msg->destPort);
+			//dbg(GENERAL_CHANNEL, "\t\t\t\t\t ~~ Debug after makePack, this runs an Error in Transport.connect()#########\n");
+
+			msg.dest = newConnection.dest.addr;
+			msg.src = TOS_NODE_ID;
+			msg.seq = seq;
+			msg.TTL = ttl;
+			msg.protocol = PROTOCOL_TCP;
+			memcpy(msg.payload, (void*)tcp_msg, TCP_MAX_PAYLOAD_SIZE);
+			//dbg(GENERAL_CHANNEL, "TTL: %u\n", msg.TTL);
+
+
+			/*
 			call Transport.makePack(&msg,
 						(uint16_t)TOS_NODE_ID,
 						(uint16_t)newConnection.src,
-						(uint16_t)1,
+						(uint16_t)19,
 						PROTOCOL_TCP,
 						(uint16_t)1,
 						(void*)tcp_msg,
 						(uint8_t)sizeof(tcp_msg));
-
+			*/
 			/* We need to actually call send() once make Pack ends up workng */
 			newConnection.state = SYN_SENT;
-
+			//dbg(GENERAL_CHANNEL, "\t\t\t\t-> I THINK THIS IS WHERE THE SEG FAULT IS HAPPENING BUT LETS SEE \n");
+			dbg(GENERAL_CHANNEL, "\t\t\t\t-> Sending Syn Packet: Src->%d, Dest-> %d, Seq->%d\n", msg.src, msg.dest, msg.seq);
+			dbg(GENERAL_CHANNEL, "\t\t\t\t-> Sending Syn Packet: TTL->%d\n", msg.TTL);
+			call Transport.send(&newConnection, msg);
 			//remove old connection info
 			//insert new connection into list of current connections
-
 			call sockets.insert(fd, newConnection);
-			dbg(GENERAL_CHANNEL, "\t\t\t-- Successful\n");
+			dbg(GENERAL_CHANNEL, "\t\t\t\t-> Successful\n");
 			return SUCCESS;
 		} else {
-			dbg(GENERAL_CHANNEL, "\t\t\t-- Failed\n");
+			dbg(GENERAL_CHANNEL, "\t\t\t\t\t -> Failed\n");
 			return FAIL;
 		}
 	}
@@ -429,8 +586,16 @@ implementation {
  	* @return socket_t - returns SUCCESS if you are able to attempt
  	*    a closure with the fd passed, else return FAIL.
  	*/
-	 command error_t Transport.close(socket_t fd){
+	 command error_t Transport.close(socket_t fd) {
+		 //remove socket from list of active connections
+		 if (call sockets.contains(fd))
+		 	call sockets.remove(fd);
+		else {
+			dbg(GENERAL_CHANNEL, "UNABLE TO CLOSE");
+			return FAIL;
+		}
 
+		 return SUCCESS;
 	}
 
 	/**
@@ -442,8 +607,8 @@ implementation {
 	* @return socket_t - returns SUCCESS if you are able to attempt
 	*    a closure with the fd passed, else return FAIL.
 	*/
-	command error_t Transport.release(socket_t fd){
-
+	command error_t Transport.release(socket_t fd) {
+		return SUCCESS;
 	}
 
 	/**
@@ -457,19 +622,22 @@ implementation {
 	*/
 	command error_t Transport.listen(socket_t fd){
 		socket_store_t socket;
-		dbg(GENERAL_CHANNEL, "Transport.listen()\n");
+		dbg(GENERAL_CHANNEL, "\tTransport.listen() ->\n");
 
 		if(call sockets.contains(fd)) {
 			socket = call sockets.get(fd);
 			call sockets.remove(fd);
 
 			// Setting to the ROOT Socket (port and address) Destinatinom for listening
-			socket.dest.port = ROOT_SOCKET_PORT;
-			socket.dest.addr = ROOT_SOCKET_ADDR;
+			//socket.dest.port = ROOT_SOCKET_PORT;
+			//socket.dest.addr = ROOT_SOCKET_ADDR;
 			socket.state = LISTEN;
+			dbg(GENERAL_CHANNEL, "\t\t\t   -- dest.port: %d dest.addr: %d state: %u\n", socket.dest.port, socket.dest.addr, socket.state);
+
 
 			call sockets.insert(fd, socket);
-			dbg(GENERAL_CHANNEL, "\t\t\t-- Successful\n");
+			dbg(GENERAL_CHANNEL, "\t\t\t   -- Insert to sockets w/ fd: %d\n", fd);
+			dbg(GENERAL_CHANNEL, "\t\t\t   -> Successful listen\n");
 			return SUCCESS;
 		}
 		return FAIL;
