@@ -310,16 +310,20 @@ implementation {
                         }
 			else if (recievedMsg->protocol == PROTOCOL_TCP && recievedMsg->dest == TOS_NODE_ID) {
 				dbg(GENERAL_CHANNEL, "Recieved a TCP Pack\n");
+				logPacket(&sendPackage);
 				call Transport.receive(recievedMsg);
+
+				return msg;
 			} else if (recievedMsg->protocol == PROTOCOL_TCP && recievedMsg->dest != TOS_NODE_ID) {
 				recievedMsg->TTL--;
 				makePack(&sendPackage, recievedMsg->src, recievedMsg->dest, recievedMsg->TTL, recievedMsg->protocol, recievedMsg->seq, (uint8_t*)recievedMsg->payload, len);
                                 logPacket(&sendPackage);
 				relayToNeighbors(&sendPackage);
+				return msg;
 			}
 
                         // If Packet get here we have not expected it and it will fail
-                        dbg(GENERAL_CHANNEL, "\tUnknown Packet Type %d\n", len);
+                        dbg(GENERAL_CHANNEL, "\tUnknown Packet Type with %d\n", len);
                         return msg;
                 }// End of Currupt if statement
 
@@ -349,7 +353,7 @@ implementation {
 				call Sender.send(sendPackage, findNextHop(destination));
 			}
 
-		}
+	}
 
         /*
 ██████  ██████  ██ ███    ██ ████████ ███████
@@ -437,7 +441,7 @@ implementation {
 		socketAddr.port = srcPort;
 
 		if  (call Transport.bind(fd, &socketAddr) == SUCCESS) {
-			dbg(GENERAL_CHANNEL, "\t-- Bind Successful.\n");
+			//dbg(GENERAL_CHANNEL, "\t-- Bind Successful.\n");
 
 			// Setting our destination address and port
 			serverAddr.addr = dest;
@@ -577,6 +581,8 @@ implementation {
 
         //  sends message to all known neighbors in neighbor list; if list is empty, forwards to everyone within range using AM_BROADCAST_ADDR.
         void relayToNeighbors(pack* recievedMsg) {
+		if(recievedMsg->protocol == PROTOCOL_TCP)
+			dbg(GENERAL_CHANNEL, "RELAYING TCP PACKET TO NEIGHBORS");
                 if(destIsNeighbor(recievedMsg)) {
                         /* dbg(NEIGHBOR_CHANNEL, "\tDeliver Message to Destination\n"); */
                         call Sender.send(sendPackage, recievedMsg->dest);

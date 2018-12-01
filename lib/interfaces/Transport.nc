@@ -161,6 +161,6 @@ interface Transport{
 
    command  bool isValidSocket(socket_t fd);
 
-   command socket_store_t* findSocket(uint8_t dest, uint8_t srcPort, uint8_t destPort);
+   command socket_t findSocket(uint8_t destAddr, uint8_t srcPort, uint8_t destPort);
 
 }
