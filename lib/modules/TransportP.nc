@@ -24,16 +24,16 @@ module TransportP {
 
 implementation {
 	pack sendMessage;
-	/* uint16_t* IPseq; */
+	uint16_t* IPseq;
 	//tcp_packet* tcp_msg;
 	uint16_t RTT = 12000;
 	uint16_t fdKeys = 0;
 	uint8_t numConnected = 0;
 	uint8_t max_tcp_payload = 20;
 
-	/* command void Transport.passSeq(uint16_t* seq) {
+	command void Transport.passSeq(uint16_t* seq) {
 		IPseq = seq;
-	} */
+	}
 
 	command void Transport.makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t protocol, uint16_t seq, uint8_t* payload, uint8_t length) {
 		tcp_packet* tcpp = (tcp_packet*) payload;
@@ -665,29 +665,41 @@ implementation {
  	* @return socket_t - returns SUCCESS if you are able to attempt
  	*    a closure with the fd passed, else return FAIL.
  	*/
-	 command error_t Transport.close(socket_t fd) {
+	 command error_t Transport.close(socket_t fd, uint16_t seq) {
 		 //remove socket from list of active connections
 		 socket_store_t socket;
 		 pack msg;
-		 tcp_packet tcp_msg;
-		 /*
-		 if (call sockets.contains(fd))
+		 tcp_packet* tcp_msg;
+
+		 dbg(GENERAL_CHANNEL, "Transport.Close\n");
+		 if (call sockets.contains(fd)) {
 
 		 	socket = call sockets.get(fd);
-			dbg(GENERAL_CHANNEL, "FML\n");
-			tcp_msg.destPort = socket.dest.port;
-			tcp_msg.srcPort = socket.src;
-			tcp_msg.seq = IPseq;
-			tcp_msg.flag = SYN;
-			tcp_msg.numBytes = 0;
-
+			dbg(GENERAL_CHANNEL, "Here 1\n");
+			tcp_msg->destPort = socket.dest.port;
+			dbg(GENERAL_CHANNEL, "Here 1\n");
+			tcp_msg->srcPort = socket.src;
+			tcp_msg->seq = seq;
+			tcp_msg->flag = RST;
+			dbg(GENERAL_CHANNEL, "Here 1\n");
+			tcp_msg->numBytes = 0;
+			dbg(GENERAL_CHANNEL, "Here 2\n");
+			msg.dest = socket.dest.addr;
+			msg.src = TOS_NODE_ID;
+			msg.seq = seq;
+			msg.TTL = 18;
+			msg.protocol = PROTOCOL_TCP;
+			dbg(GENERAL_CHANNEL, "Here 3\n");
+			memcpy(msg.payload, (void*)tcp_msg, TCP_MAX_PAYLOAD_SIZE);
 
 			call sockets.remove(fd);
 			call sockets.insert(fd, socket);
-		else {
+			dbg(GENERAL_CHANNEL, "Here 4\n");
+			call Transport.send(&socket, msg);
+		} else {
 			dbg(GENERAL_CHANNEL, "UNABLE TO CLOSE");
 			return FAIL;
-		} */
+		}
 
 		 return SUCCESS;
 	}

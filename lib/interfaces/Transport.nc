@@ -121,7 +121,7 @@ interface Transport{
     * @return socket_t - returns SUCCESS if you are able to attempt
     *    a closure with the fd passed, else return FAIL.
     */
-   command error_t close(socket_t fd);
+   command error_t close(socket_t fd, uint16_t seq);
 
    /**
     * A hard close, which is not graceful. This portion is optional.
@@ -162,5 +162,7 @@ interface Transport{
    command  bool isValidSocket(socket_t fd);
 
    command socket_t findSocket(uint8_t destAddr, uint8_t srcPort, uint8_t destPort);
+
+   command void  passSeq(uint16_t* IPSequence);
 
 }

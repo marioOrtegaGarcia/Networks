@@ -407,6 +407,8 @@ implementation {
 		socket_addr_t socketAddr;
 		dbg(GENERAL_CHANNEL, "CommandHandler.setTestServer(%d) -- Initializing Server\n", port);
 
+		/* call Transport.passSeq(&nodeSeq); */
+
 		// Creating our file descriptor
 		fd = call Transport.socket();
 
@@ -429,8 +431,9 @@ implementation {
 		int i;
 		socket_store_t socket;
 		socket_addr_t socketAddr, serverAddr;
-
 		error_t check = FAIL;
+
+		/* call Transport.passSeq(&nodeSeq); */
 		dbg(GENERAL_CHANNEL, "CommandHandler.setTestClient()\n");
 
 		// Creating our file descriptor
@@ -465,15 +468,13 @@ implementation {
         event void CommandHandler.setAppClient(){
         }
         event void CommandHandler.closeConnection(uint16_t dest, uint8_t srcPort, uint8_t  destPort, uint8_t num) {
+                int i;
+		/* socket_t fd; */
+		socket_store_t socket;
+		fd = call Transport.findSocket(srcPort, destPort, dest);
 
-                /* int i;
-                for (i = 0; i < 19; i++) {
-                        if (socks[i] == dest) {
-                        find fd associated with [client address], [srcPort], [destPort], [dest]
-                        close(fd);
-                        }
-                } */
 
+		call Transport.close(fd, nodeSeq++);
         }
 
         /*
