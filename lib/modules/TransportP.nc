@@ -186,12 +186,10 @@ implementation {
 		dbg(GENERAL_CHANNEL, "\t\t\tBegining Stop & Wait\n");
 
 		while(sentData < data+1){
-			tcpSeq = tcpSeq+1;
-			IPseqnum+=1;
 			//make tcp_packet
 			tcp.destPort = sock.dest.port;
 			tcp.srcPort = sock.src;
-			tcp.seq = tcpSeq;
+			tcp.seq = tcpSeq++;
 			tcp.flag = 10;
 			tcp.numBytes = sizeof(sentData);
 			memcpy(tcp.payload, &sentData, TCP_MAX_PAYLOAD_SIZE);
@@ -200,7 +198,7 @@ implementation {
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tsrc->%u\n", TOS_NODE_ID);
 			msg.src = TOS_NODE_ID;
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tseq->%u\n", IPseqnum+1);
-			msg.seq = (uint16_t)IPseqnum;
+			msg.seq = (uint16_t)IPseqnum++;
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tTTL->18\n");
 			msg.TTL = 18;
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tprotocol->%u\n",PROTOCOL_TCP);
