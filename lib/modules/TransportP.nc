@@ -188,8 +188,8 @@ implementation {
 		while(sentData < data+1){
 
 			//make tcp_packet
-			tcp->destPort = sock.dest.port;
-			tcp->srcPort = sock.src;
+			tcp.destPort = sock.dest.port;
+			tcp.srcPort = sock.src;
 			tcp.seq = tcpSeq++;
 			tcp.flag = 10;
 			tcp.numBytes = sizeof(sentData);
