@@ -187,10 +187,11 @@ implementation {
 
 		while(sentData < data+1){
 			//make tcp_packet
+			tcpSeq = tcpSeq + 1;
 			tcp.destPort = sock.dest.port;
 			tcp.srcPort = sock.src;
 			dbg(GENERAL_CHANNEL, "\t\t\t\t TCP Seq: %u\n", tcpSeq);
-			tcp.seq = tcpSeq++;
+			tcp.seq = tcpSeq;
 			tcp.flag = 10;
 			tcp.numBytes = sizeof(sentData);
 			memcpy(tcp.payload, &sentData, TCP_MAX_PAYLOAD_SIZE);
