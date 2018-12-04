@@ -190,7 +190,7 @@ implementation {
 			//make tcp_packet
 			tcp.destPort = sock.dest.port;
 			tcp.srcPort = sock.src;
-			tcp.seq = tcpSeq++;
+			tcp.seq = tcpSeq;
 			tcp.flag = 10;
 			tcp.numBytes = sizeof(sentData);
 			memcpy(tcp.payload, &sentData, TCP_MAX_PAYLOAD_SIZE);
