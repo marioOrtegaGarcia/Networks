@@ -685,23 +685,28 @@ implementation {
 			tcp_msg.flag = RST;
 			dbg(GENERAL_CHANNEL, "\t\t\t\tnumBytes->0\n");
 			tcp_msg.numBytes = 0;
-			dbg(GENERAL_CHANNEL, "\t\tSetting IP:\t\n");
+			dbg(GENERAL_CHANNEL, "\t\tSetting IP:\tdest->%u\n", socket.dest.addr);
 			msg.dest = socket.dest.addr;
+			dbg(GENERAL_CHANNEL, "\t\t\t\tsrc->%u\n", TOS_NODE_ID);
 			msg.src = TOS_NODE_ID;
+			dbg(GENERAL_CHANNEL, "\t\t\t\tseq->%u\n", seq);
 			msg.seq = seq;
+			dbg(GENERAL_CHANNEL, "\t\t\t\tTTL->18\n");
 			msg.TTL = 18;
+			dbg(GENERAL_CHANNEL, "\t\t\t\tprotocol->%u\n",PROTOCOL_TCP);
 			msg.protocol = PROTOCOL_TCP;
-			dbg(GENERAL_CHANNEL, "Here 3\n");
+			dbg(GENERAL_CHANNEL, "\t\tCopying TCP pack to IP payload\n");
 			memcpy(msg.payload, &tcp_msg, TCP_MAX_PAYLOAD_SIZE);
 
 			call sockets.remove(fd);
 			call sockets.insert(fd, socket);
-			dbg(GENERAL_CHANNEL, "Here 4\n");
+			dbg(GENERAL_CHANNEL, "\t\tSending RST Packet\n");
 			call Transport.send(&socket, msg);
 		} else {
 			dbg(GENERAL_CHANNEL, "UNABLE TO CLOSE");
 			return FAIL;
 		}
+		dbg(GENERAL_CHANNEL, "\t\tSuccess!\n");
 
 		 return SUCCESS;
 	}
