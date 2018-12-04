@@ -204,7 +204,7 @@ implementation {
 			dbg(GENERAL_CHANNEL, "\t\t\t    -- Begining to  make data\n");
 			//TODO use read/write to implement fixed sliding window
 			//in the meantime, here is stop & wait
-			call Transport.stopWait(sock, transfer, &nodeSeq);
+			nodeSeq = call Transport.stopWait(sock, transfer, nodeSeq);
 		} else {
 			dbg(GENERAL_CHANNEL, "WriteTimer.fired() -- fd could not befound\n");
 		}
