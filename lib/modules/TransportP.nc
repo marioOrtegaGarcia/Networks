@@ -186,11 +186,12 @@ implementation {
 		dbg(GENERAL_CHANNEL, "\t\t\tBegining Stop & Wait\n");
 
 		while(sentData < data+1){
-
+			tcpSeq+=1;
+			IPseq+=1;
 			//make tcp_packet
 			tcp.destPort = sock.dest.port;
 			tcp.srcPort = sock.src;
-			tcp.seq = tcpSeq++;
+			tcp.seq = tcpSeq;
 			tcp.flag = 10;
 			tcp.numBytes = sizeof(sentData);
 			memcpy(tcp.payload, &sentData, TCP_MAX_PAYLOAD_SIZE);
