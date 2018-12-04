@@ -25,6 +25,7 @@ module TransportP {
 implementation {
 	pack sendMessage;
 	uint16_t* IPseq;
+	uint16_t tcpSeq = 0;
 	//tcp_packet* tcp_msg;
 	uint16_t RTT = 12000;
 	uint16_t fdKeys = 0;
@@ -173,6 +174,43 @@ implementation {
 		call Sender.send(IPpack, s->dest.addr);
 
 		return IPpack;
+	}
+
+
+	command void stopWait(socket_store_t sock, uint8_t data, uint16_t IPseq){
+
+		pack msg;
+		tcp_packet tcp;
+		uint8_t sentData = 0;
+
+		dbg(GENERAL_CHANNEL, "\t\t\tBegining Stop & Wait\n");
+
+		while(sentData < data+1){
+
+			//make tcp_packet
+			tcp->destPort = sock.dest.port;
+			tcp->srcPort = sock.src;
+			tcp.seq = tcpSeq++;
+			tcp.flag = 10;
+			tcp.numBytes = sizeof(sentData);
+			memcpy(tcp.payload, &sentData, TCP_MAX_PAYLOAD_SIZE);
+
+			msg.dest = socket.dest.addr;
+			dbg(GENERAL_CHANNEL, "\t\t\t\tsrc->%u\n", TOS_NODE_ID);
+			msg.src = TOS_NODE_ID;
+			dbg(GENERAL_CHANNEL, "\t\t\t\tseq->%u\n", seq);
+			msg.seq = seq;
+			dbg(GENERAL_CHANNEL, "\t\t\t\tTTL->18\n");
+			msg.TTL = 18;
+			dbg(GENERAL_CHANNEL, "\t\t\t\tprotocol->%u\n",PROTOCOL_TCP);
+			msg.protocol = PROTOCOL_TCP;
+			dbg(GENERAL_CHANNEL, "\t\tCopying TCP pack to IP payload\n");
+			memcpy(msg.payload, &tcp_msg, TCP_MAX_PAYLOAD_SIZE);
+
+			call Transport.send(sock, msg);
+
+			sentData++;
+		}
 	}
 	/* event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
 
@@ -578,7 +616,7 @@ implementation {
  	*/
 	command error_t Transport.connect(socket_t fd, socket_addr_t * addr) {
 		socket_store_t newConnection;
-		uint16_t seq;
+		//uint16_t seq;
 		pack msg;
 		uint8_t ttl;
 		tcp_packet* tcp_msg;
@@ -599,6 +637,7 @@ implementation {
 			//send SYN packet
 			dbg(GENERAL_CHANNEL, "\t\t\t\t-- newConnection [ port src: %d dest: [ port: %d addr: %d]]\n", newConnection.src, newConnection.dest.port, newConnection.dest.addr);
 			seq = call Random.rand16() % 65530;
+			tcpSeq = seq;
 
 			dbg(GENERAL_CHANNEL, "\t\t\t\t-- MADE TCP_MSG LETS SEE IF THIS IS WHATS BREAKING \n");
 
