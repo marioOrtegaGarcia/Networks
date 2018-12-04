@@ -518,6 +518,7 @@ implementation {
 
 			case 4: // Fin
 				dbg(GENERAL_CHANNEL, "\tTransport.receive() default flag FIN\n");
+				return SUCCESS;
 
 				break;
 
@@ -531,12 +532,38 @@ implementation {
 
 				call sockets.remove(fd);
 				dbg(GENERAL_CHANNEL, "\t\tSuccessfully closed both ends of connection!\n");
+				return SUCCESS;
 
 				break;
 
+			case 10:
+				dbg(GENERAL_CHANNEL, "\tTransport.receive() default flag ACK\n");
+				//Start Sending to the Sever
+
+				//swap
+				temp = recievedTcp->destPort;
+				recievedTcp->destPort = recievedTcp->srcPort;
+				recievedTcp->srcPort = temp;
+				recievedTcp->flag = ACK;
+				recievedTcp->ack = recievedTcp->seq+1;
+
+				//swap
+				temp = msg.dest;
+				msg.dest = msg.src;
+				msg.src = temp;
+				dbg(GENERAL_CHANNEL, "\tTransport.receive() Data packet\n");
+
+				fd = call Transport.findSocket(recievedTcp->srcPort, recievedTcp->destPort, msg.dest);
+
+				socket = call sockets.get(fd);
+
+				call Transport.send(socket, msg);
+				return SUCCESS;
+				break;
+
 			default:
+
 				return FAIL;
-				dbg(GENERAL_CHANNEL, "\tTransport.receive() Data packet?\n");
 		}
 
 		return check;
