@@ -205,9 +205,9 @@ implementation {
 			dbg(GENERAL_CHANNEL, "\t\t\t\tprotocol->%u\n",PROTOCOL_TCP);
 			msg.protocol = PROTOCOL_TCP;
 			dbg(GENERAL_CHANNEL, "\t\tCopying TCP pack to IP payload\n");
-			memcpy(msg.payload, &tcp_msg, TCP_MAX_PAYLOAD_SIZE);
+			memcpy(msg.payload, &tcp, TCP_MAX_PAYLOAD_SIZE);
 
-			call Transport.send(sock, msg);
+			call Transport.send(&sock, msg);
 
 			sentData++;
 		}
