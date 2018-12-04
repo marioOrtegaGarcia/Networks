@@ -195,7 +195,7 @@ implementation {
 			tcp.numBytes = sizeof(sentData);
 			memcpy(tcp.payload, &sentData, TCP_MAX_PAYLOAD_SIZE);
 
-			msg.dest = socket.dest.addr;
+			msg.dest = sock.dest.addr;
 			dbg(GENERAL_CHANNEL, "\t\t\t\tsrc->%u\n", TOS_NODE_ID);
 			msg.src = TOS_NODE_ID;
 			dbg(GENERAL_CHANNEL, "\t\t\t\tseq->%u\n", seq);
