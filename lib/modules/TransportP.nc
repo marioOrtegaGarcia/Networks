@@ -692,7 +692,7 @@ implementation {
 			msg.TTL = 18;
 			msg.protocol = PROTOCOL_TCP;
 			dbg(GENERAL_CHANNEL, "Here 3\n");
-			memcpy(msg.payload, (void*)tcp_msg, TCP_MAX_PAYLOAD_SIZE);
+			memcpy(msg.payload, &tcp_msg, TCP_MAX_PAYLOAD_SIZE);
 
 			call sockets.remove(fd);
 			call sockets.insert(fd, socket);
