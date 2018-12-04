@@ -56,3 +56,24 @@ TO FIX
 		* Check what numBytes is doing and how we set it
 
 	* We are fixing up how to properly handle
+
+12/4
+
+* currently sending everything at once
+	*need to modify stopWait such that we only send packets after recieving the ACK
+	*from WriteTimer create loop from 0 - transfer: call stopWait - sends single packet - return
+	*startOneShot(RTT) - times sent packet
+		- if it fires, resend current Data
+		- otherwise ack must be recieved in time
+			--when ack is received, check tcp->ack
+				if ack = IPseq+1
+					send IPseq+1 packet
+global ack = null;
+stopWait
+ 	send packs
+	isAcked()
+
+		receive function sets ack
+		
+		startOneShot
+			-resend
