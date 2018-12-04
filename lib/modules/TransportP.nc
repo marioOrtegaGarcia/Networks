@@ -557,7 +557,7 @@ implementation {
 
 				socket = call sockets.get(fd);
 
-				call Transport.send(socket, msg);
+				call Transport.send(&socket, msg);
 				return SUCCESS;
 				break;
 
