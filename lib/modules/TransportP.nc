@@ -186,8 +186,8 @@ implementation {
 		dbg(GENERAL_CHANNEL, "\t\t\tBegining Stop & Wait\n");
 
 		while(sentData < data+1){
-			tcpSeq+=1;
-			IPseq+=1;
+			tcpSeq = tcpSeq+1;
+			IPseqnum+=1;
 			//make tcp_packet
 			tcp.destPort = sock.dest.port;
 			tcp.srcPort = sock.src;
