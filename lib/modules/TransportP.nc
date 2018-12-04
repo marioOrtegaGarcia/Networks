@@ -616,7 +616,7 @@ implementation {
  	*/
 	command error_t Transport.connect(socket_t fd, socket_addr_t * addr) {
 		socket_store_t newConnection;
-		//uint16_t seq;
+		uint16_t seq;
 		pack msg;
 		uint8_t ttl;
 		tcp_packet* tcp_msg;
