@@ -675,15 +675,17 @@ implementation {
 		 if (call sockets.contains(fd)) {
 
 		 	socket = call sockets.get(fd);
-			dbg(GENERAL_CHANNEL, "Here 1\n");
+			dbg(GENERAL_CHANNEL, "\t\tSetting TCP:\tDestPort->%u\n", socket.dest.port);
 			tcp_msg->destPort = socket.dest.port;
-			dbg(GENERAL_CHANNEL, "Here 1\n");
+			dbg(GENERAL_CHANNEL, "\t\t\t\tsrcPort->%u\n", socket.src);
 			tcp_msg->srcPort = socket.src;
+			dbg(GENERAL_CHANNEL, "\t\t\t\tseq->%u\n", seq);
 			tcp_msg->seq = seq;
+			dbg(GENERAL_CHANNEL, "\t\t\t\tflag->%u\n", RST);
 			tcp_msg->flag = RST;
-			dbg(GENERAL_CHANNEL, "Here 1\n");
+			dbg(GENERAL_CHANNEL, "\t\t\t\tnumBytes->0\n");
 			tcp_msg->numBytes = 0;
-			dbg(GENERAL_CHANNEL, "Here 2\n");
+			dbg(GENERAL_CHANNEL, "\t\tSetting IP:\t\n");
 			msg.dest = socket.dest.addr;
 			msg.src = TOS_NODE_ID;
 			msg.seq = seq;
