@@ -177,7 +177,7 @@ implementation {
 	}
 
 
-	command void stopWait(socket_store_t sock, uint8_t data, uint16_t IPseq){
+	command void stopWait(socket_store_t sock, uint8_t data, uint16_t* IPseqnum){
 
 		pack msg;
 		tcp_packet tcp;
@@ -199,7 +199,7 @@ implementation {
 			dbg(GENERAL_CHANNEL, "\t\t\t\tsrc->%u\n", TOS_NODE_ID);
 			msg.src = TOS_NODE_ID;
 			dbg(GENERAL_CHANNEL, "\t\t\t\tseq->%u\n", seq);
-			msg.seq = seq;
+			msg.seq = IPseqnum;
 			dbg(GENERAL_CHANNEL, "\t\t\t\tTTL->18\n");
 			msg.TTL = 18;
 			dbg(GENERAL_CHANNEL, "\t\t\t\tprotocol->%u\n",PROTOCOL_TCP);

@@ -69,6 +69,8 @@ implementation {
         uint8_t routing[255][3];
 	socket_t fd;
 
+	uint8_t transfer = 0;
+
         //  Prototypes
         void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
         void logPacket(pack* payload);
@@ -199,7 +201,10 @@ implementation {
 		//if all data in buffer has been writtin or buffer is empty
 		if(sock.lastWritten == SOCKET_BUFFER_SIZE || sock.lastWritten == 0) {
 			//Make  new data
-			dbg(GENERAL_CHANNEL, "\t\t\t    -- Begining to  make data not Implemented yet\n");
+			dbg(GENERAL_CHANNEL, "\t\t\t    -- Begining to  make data\n");
+			//TODO use read/write to implement fixed sliding window
+			//in the meantime, here is stop & wait
+			call Transport.stopWait(sock, data, &nodeSeq);
 		} else {
 			dbg(GENERAL_CHANNEL, "WriteTimer.fired() -- fd could not befound\n");
 		}
@@ -432,6 +437,7 @@ implementation {
 		socket_store_t socket;
 		socket_addr_t socketAddr, serverAddr;
 		error_t check = FAIL;
+		transfer = num;
 
 		/* call Transport.passSeq(&nodeSeq); */
 		dbg(GENERAL_CHANNEL, "CommandHandler.setTestClient()\n");
