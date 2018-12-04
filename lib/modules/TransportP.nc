@@ -489,7 +489,8 @@ implementation {
 
 
 				call sockets.remove(fd);
-				call sockets.insert(fd, socket);
+				dbg(GENERAL_CHANNEL, "\t\tSuccessfully closed both ends of connection!\n");
+
 				break;
 
 			default:
