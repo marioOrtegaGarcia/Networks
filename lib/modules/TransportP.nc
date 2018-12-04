@@ -723,7 +723,7 @@ implementation {
 			dbg(GENERAL_CHANNEL, "\t\t\t\tsrcPort->%u\n", socket.src);
 			tcp_msg.srcPort = socket.src;
 			dbg(GENERAL_CHANNEL, "\t\t\t\tseq->%u\n", seq);
-			tcp_msg.seq = seq;
+			tcp_msg.seq = tcpSeq;
 			dbg(GENERAL_CHANNEL, "\t\t\t\tflag->%u\n", RST);
 			tcp_msg.flag = RST;
 			dbg(GENERAL_CHANNEL, "\t\t\t\tnumBytes->0\n");
