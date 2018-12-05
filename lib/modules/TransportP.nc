@@ -156,11 +156,11 @@ implementation {
 		//s->lastSent = data->seq;
 		//dbg(GENERAL_CHANNEL, "\t\t\t\t-- Socket->lastSent: %u\n", s->lastSent);
 		//dbg(GENERAL_CHANNEL, "Setting the src: %u and dest Ports: %u from our socket_store_t\n", s->src, s->dest.port);
-		dbg(GENERAL_CHANNEL, "\t\t\t\t-- Reassigning Ports with  socket\n");
-		data->destPort = s->dest.port;
-		dbg(GENERAL_CHANNEL, "\t\t\t\t-- Data->destPort: %u\n", data->destPort);
-		data->srcPort = s->src;
-		dbg(GENERAL_CHANNEL, "\t\t\t\t-- Data->srcPort: %u\n", data->srcPort);
+		dbg(GENERAL_CHANNEL, "\t\t\t\t-- Socket Data:\n");
+		//data->destPort = s->dest.port;
+		dbg(GENERAL_CHANNEL, "\t\t\t\t-- destPort: %u, destAddr: %u, srcPort: %u, \n", s->dest.port, s->dest.addr, s->src);
+		//data->srcPort = s->src;
+		dbg(GENERAL_CHANNEL, "\t\t\t\t-- socket->srcPort: %u\n", data->srcPort);
 
 
 		//dbg(GENERAL_CHANNEL, "\t\t\t\t-- Segfault B4 calcWindow()\n");
