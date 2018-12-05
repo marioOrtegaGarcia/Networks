@@ -583,8 +583,7 @@ implementation {
 				recievedTcp->srcPort = temp;
 				recievedTcp->flag = 2;
 				recievedTcp->ack = recievedTcp->seq+1;
-				recievedTcp->seq +=1;
-				dbg(GENERAL_CHANNEL, "\t\trecievedTcp->seq: %u\n", recievedTcp->seq);
+
 				//swap
 				temp = sendMessage.dest;
 				sendMessage.dest = sendMessage.src;
@@ -603,7 +602,7 @@ implementation {
 				//socket.nextExpected = recievedTcp->seq+1;
 
 				socket = call sockets.get(fd);
-
+				
 				++(sendMessage.seq);
 				call Transport.send(&socket, sendMessage);
 				if(sentData != transfer)
