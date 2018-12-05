@@ -427,7 +427,7 @@ implementation {
 		tcp_packet* recievedTcp;
 		socket_store_t socket;
 		error_t check = FAIL;
-		uint8_t tempSeq;
+		uint16_t tempSeq;
 
 		// Setting our pack and tcp_packet types
 		// Why are we setting msg as a pointer????????
