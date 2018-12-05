@@ -517,6 +517,7 @@ implementation {
 				if(recievedTcp->ack = IPseq){
 					send = TRUE;
 					tempSeq = IPseq;
+					socket.nextExpected = recievedTcp->ack;
 					dbg(GENERAL_CHANNEL, "ACK RECIEVED: ALLOWING NEXT PACKET TO BE SENT\n");
 					call Transport.stopWait(socket, transfer, tempSeq+1);
 				}
