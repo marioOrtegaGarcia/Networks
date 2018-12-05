@@ -44,12 +44,15 @@ implementation {
 
 		dbg(GENERAL_CHANNEL, "\n\n\t\tPacket %u timed out! Resending...\n\n\n", tcpSeq);
 
+		call Sender.send(sendMessage, sendMessage.dest);
+
 
 	}
 	event void AckTimer.fired() {
 		tcp_packet* payload;
 		payload = (tcp_packet*)sendMessage.payload;
 		dbg(GENERAL_CHANNEL, "\n\n\t\tAck %u timed out! Resending...\n\n\n", payload->seq);
+		call Sender.send(sendMessage, sendMessage.dest);
 	}
 
 
