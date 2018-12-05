@@ -511,13 +511,12 @@ implementation {
 
 				socket = call sockets.get(fd);
 
-
+				socket.lastAck = recievedTcp->ack;
 				socket.state = ESTABLISHED;
 				dbg(GENERAL_CHANNEL, "\n\n\t\tComparing Ack to Sequence number: tcp ack: %u, IPseq: %u\n", recievedTcp->ack, IPseq);
 				if(recievedTcp->ack = IPseq){
 					send = TRUE;
 					tempSeq = IPseq;
-					socket.lastAck = recievedTcp->ack;
 					dbg(GENERAL_CHANNEL, "ACK RECIEVED: ALLOWING NEXT PACKET TO BE SENT\n");
 					call Transport.stopWait(socket, transfer, tempSeq+1);
 				}
