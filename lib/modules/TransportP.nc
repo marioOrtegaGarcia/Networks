@@ -535,14 +535,14 @@ implementation {
 				break;
 
 			case 10:
-				dbg(GENERAL_CHANNEL, "\tTransport.receive() default flag ACK\n");
+
 				//Start Sending to the Sever
 
 				//swap
 				temp = recievedTcp->destPort;
 				recievedTcp->destPort = recievedTcp->srcPort;
 				recievedTcp->srcPort = temp;
-				recievedTcp->flag = ACK;
+				recievedTcp->flag = 2;
 				recievedTcp->ack = recievedTcp->seq+1;
 
 				//swap
@@ -561,7 +561,7 @@ implementation {
 				break;
 
 			default:
-
+				dbg(GENERAL_CHANNEL, "\tTransport.receive() default flag ACK\n");
 				return FAIL;
 		}
 
