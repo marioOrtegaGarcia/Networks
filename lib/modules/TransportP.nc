@@ -511,8 +511,10 @@ implementation {
 
 				socket.state = ESTABLISHED;
 
-				if(recievedTcp->ack = IPseq)
+				if(recievedTcp->ack = IPseq){
 					send = TRUE;
+					dbg(GENERAL_CHANNEL, "ACK RECIEVED: ALLOWING NEXT PACKET TO BE SENT\n");
+				}
 
 				call sockets.remove(fd);
 				call sockets.insert(fd, socket);
