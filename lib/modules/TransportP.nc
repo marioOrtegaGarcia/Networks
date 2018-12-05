@@ -32,6 +32,7 @@ implementation {
 	uint8_t numConnected = 0;
 	uint8_t max_tcp_payload = 20;
 	uint8_t transfer;
+	uint8_t sentData = 0;
 
 	command void Transport.passSeq(uint16_t* seq) {
 		IPseq = seq;
@@ -182,7 +183,6 @@ implementation {
 
 		pack msg;
 		tcp_packet tcp;
-		uint8_t sentData = 0;
 		data = transfer;
 
 		dbg(GENERAL_CHANNEL, "\t\t\tBegining Stop & Wait\n");
