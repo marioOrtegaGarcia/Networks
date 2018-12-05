@@ -203,7 +203,7 @@ implementation {
 			msg.src = TOS_NODE_ID;
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tseq->%u\n", IPseqnum+1);
 			dbg(GENERAL_CHANNEL, "\t\t\t\tIP Seq Before: %u\n", IPseqnum);
-			msg.seq = (uint8_t)*IPseqnum++;
+			msg.seq = IPseqnum;
 			*IPseq = IPseqnum;
 
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tTTL->18\n");
