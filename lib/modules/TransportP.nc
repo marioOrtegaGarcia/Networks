@@ -206,6 +206,8 @@ implementation {
 			msg.seq = *IPseqnum++;
 			IPseq = *IPseqnum;
 			dbg(GENERAL_CHANNEL, "\t\t\t\tIP Seq: %u\n", IPseq);
+			dbg(GENERAL_CHANNEL, "\t\t\t\tIP Seq Num: %u\n", IPseqnum);
+
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tTTL->18\n");
 			msg.TTL = 18;
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tprotocol->%u\n",PROTOCOL_TCP);
