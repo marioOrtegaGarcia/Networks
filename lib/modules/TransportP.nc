@@ -810,7 +810,7 @@ implementation {
 			dbg(GENERAL_CHANNEL, "\t\t\t\tsrc->%u\n", TOS_NODE_ID);
 			msg.src = TOS_NODE_ID;
 			dbg(GENERAL_CHANNEL, "\t\t\t\tseq->%u\n", seq);
-			msg.seq = IPseq;
+			msg.seq = seq;
 			dbg(GENERAL_CHANNEL, "\t\t\t\tTTL->18\n");
 			msg.TTL = 18;
 			dbg(GENERAL_CHANNEL, "\t\t\t\tprotocol->%u\n",PROTOCOL_TCP);
