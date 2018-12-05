@@ -153,6 +153,7 @@ implementation {
 		dbg(GENERAL_CHANNEL, "\t\t\t\t-- TCP PACK LAYER\n");
 		dbg(GENERAL_CHANNEL, "\t\t\t\t\t-- Sending Packet: destPort->%d, srcPort-> %d, Seq->%d\n", data->destPort, data->srcPort, data->seq);
 		dbg(GENERAL_CHANNEL, "\t\t\t\t\t-- Sending Packet: ack->%d, numBytes->%d\n", data->ack, data->numBytes);
+		call Sender.send(IPpack, s->dest.addr);
 		//s->lastSent = data->seq;
 		//dbg(GENERAL_CHANNEL, "\t\t\t\t-- Socket->lastSent: %u\n", s->lastSent);
 		//dbg(GENERAL_CHANNEL, "Setting the src: %u and dest Ports: %u from our socket_store_t\n", s->src, s->dest.port);
@@ -175,7 +176,7 @@ implementation {
 		// Sending the IP packet to the destPort
 
 		dbg(GENERAL_CHANNEL, "Sent\n");
-		call Sender.send(IPpack, s->dest.addr);
+
 
 		return IPpack;
 	}
