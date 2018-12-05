@@ -426,6 +426,7 @@ implementation {
 		tcp_packet* recievedTcp;
 		socket_store_t socket;
 		error_t check = FAIL;
+		uint8_t tempSeq;
 
 		// Setting our pack and tcp_packet types
 		// Why are we setting msg as a pointer????????
@@ -515,8 +516,9 @@ implementation {
 
 				if(recievedTcp->ack = IPseq){
 					send = TRUE;
+					tempSeq = IPseq;
 					dbg(GENERAL_CHANNEL, "ACK RECIEVED: ALLOWING NEXT PACKET TO BE SENT\n");
-					call Transport.stopWait(socket, transfer, IPseq++);
+					call Transport.stopWait(socket, transfer, tempSeq+1);
 				}
 
 				call sockets.remove(fd);
