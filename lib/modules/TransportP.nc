@@ -20,6 +20,8 @@ module TransportP {
 	uses interface Hashmap<socket_store_t> as sockets;
 	uses interface Random as Random;
 	uses interface SimpleSend as Sender;
+	uses interface Timer<TMilli> as TimedOut;
+	uses interface Timer<TMilli> as AckTimer;
 }
 
 implementation {
@@ -34,6 +36,22 @@ implementation {
 	uint8_t transfer;
 	uint8_t sentData = 0;
 	bool send = TRUE;
+
+	event void TimedOut.fired() {
+
+		tcp_packet* payload;
+		payload = (tcp_packet*)sendMessage.payload;
+
+		dbg(GENERAL_CHANNEL, "\t\tPacket %u timed out! Resending...\n", tcpSeq);
+
+
+	}
+	event void AckTimer.fired() {
+		tcp_packet* payload;
+		payload = (tcp_packet*)sendMessage.payload;
+		dbg(GENERAL_CHANNEL, "\t\tAck %u timed out! Resending...\n", payload->seq);
+	}
+
 
 	command void Transport.passSeq(uint16_t* seq) {
 		IPseq = seq;
@@ -182,7 +200,7 @@ implementation {
 	}
 
 
-	command void Transport.stopWait(socket_store_t sock, uint8_t data, uint16_t IPseqnum){
+	command void Transport.stopWait(socket_store_t sock, uint8_t data, uint16_t IPseqnum) {
 
 		pack msg;
 		tcp_packet tcp;
@@ -200,26 +218,28 @@ implementation {
 			tcp.numBytes = sizeof(sentData);
 			memcpy(tcp.payload, &sentData, TCP_MAX_PAYLOAD_SIZE);
 
-			msg.dest = sock.dest.addr;
+			sendMessage.dest = sock.dest.addr;
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tsrc->%u\n", TOS_NODE_ID);
-			msg.src = TOS_NODE_ID;
+			sendMessage.src = TOS_NODE_ID;
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tseq->%u\n", IPseqnum+1);
 			dbg(GENERAL_CHANNEL, "\t\t\t\tIP Seq Before: %u\n", IPseqnum);
-			msg.seq = IPseqnum;
+			sendMessage.seq = IPseqnum;
 			IPseq = IPseqnum;
 
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tTTL->18\n");
-			msg.TTL = 18;
+			sendMessage.TTL = 18;
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tprotocol->%u\n",PROTOCOL_TCP);
-			msg.protocol = PROTOCOL_TCP;
+			sendMessage.protocol = PROTOCOL_TCP;
 			//dbg(GENERAL_CHANNEL, "\t\tCopying TCP pack to IP payload\n");
-			memcpy(msg.payload, &tcp, TCP_MAX_PAYLOAD_SIZE);
+			memcpy(sendMessage.payload, &tcp, TCP_MAX_PAYLOAD_SIZE);
 			dbg(GENERAL_CHANNEL, "\t\t\tSending num %u to Node %u over socket %u\n", sentData, sock.dest.addr, sock.dest.port);
 			//call Transport.send(&sock, msg);
-			call Sender.send(msg, sock.dest.addr);
+			call Sender.send(sendMessage, sock.dest.addr);
 
 			send = FALSE;
 			sentData++;
+
+			call TimedOut.startOneShot(6000);
 		}
 	}
 	/* event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
@@ -433,19 +453,18 @@ implementation {
 
 		// Setting our pack and tcp_packet types
 		// Why are we setting msg as a pointer????????
-		msg = *package;
+		sendMessage = *package;
 		recievedTcp = (tcp_packet*)package->payload;
 
-		msg.TTL--;
+		sendMessage.TTL--;
 
 		// Using switch cases for every flag enum we use
 		switch(recievedTcp->flag) {
 			case 1://syn
-				dbg(GENERAL_CHANNEL, "\tTransport.receive: SYN TCP PACK Recieved with ttl: %u\n", msg.TTL);
+				dbg(GENERAL_CHANNEL, "\tTransport.receive: SYN TCP PACK Recieved with ttl: %u\n", sendMessage.TTL);
 
 				//reply with SYN + ACK
 				recievedTcp->flag = ACK;
-
 
 				dbg(GENERAL_CHANNEL, "\tSet flag to SYN+ACK\n");
 				//makeTCPPack
@@ -463,33 +482,33 @@ implementation {
 
 				//makePack and Set TCP PAck as payload for msg
 				//dbg(GENERAL_CHANNEL, "\t\t\t\t -> Making IP Pack\n");
-				temp = msg.dest;
-				msg.dest = msg.src;
-				msg.src = temp;
-				msg.seq++;
-				msg.TTL = (uint8_t)18;
-				msg.protocol = PROTOCOL_TCP;
+				temp = sendMessage.dest;
+				sendMessage.dest = sendMessage.src;
+				sendMessage.src = temp;
+				sendMessage.seq++;
+				sendMessage.TTL = (uint8_t)18;
+				sendMessage.protocol = PROTOCOL_TCP;
 				//dbg(GENERAL_CHANNEL, "\t\t\t -- DBG BEFORE MEMCPY\n");
-				memcpy(msg.payload, recievedTcp, TCP_MAX_PAYLOAD_SIZE);
+				memcpy(sendMessage.payload, recievedTcp, TCP_MAX_PAYLOAD_SIZE);
 				//dbg(GENERAL_CHANNEL, "\t\t\t -- DBG AFTER MEMCPY\n");
 				//call Transport.makePack(&msg, msg.dest, msg.src, msg.seq, 18 /*TTL*/, msg.protocol, (uint8_t*)recievedTcp, sizeof(recievedTcp));
 
 				//send pack
 				dbg(GENERAL_CHANNEL, "\t\t\t\tFinding Socket from Sockets Hashmap (we switched the src/dest and ports, if anything weird happens, check here)\n");
 
-				dbg(GENERAL_CHANNEL, "\t\t\t\tFrom PACK::::: msg.dest: %u, msg.src: %u, msg.seq: %u, msg.TTL: %u, msg.protocol: %u\n", msg.dest, msg.src, msg.seq, msg.TTL, msg.protocol);
+				dbg(GENERAL_CHANNEL, "\t\t\t\tFrom PACK::::: sendMessage.dest: %u, sendMessage.src: %u, sendMessage.seq: %u, sendMessage.TTL: %u, msg.protocol: %u\n", sendMessage.dest, sendMessage.src, sendMessage.seq, sendMessage.TTL, sendMessage.protocol);
 				fd = call Transport.findSocket(recievedTcp->srcPort, ROOT_SOCKET_PORT, ROOT_SOCKET_PORT);
 				socket = call sockets.get(fd);
 
 				socket.dest.port = recievedTcp->destPort;
-				socket.dest.addr = msg.dest;
+				socket.dest.addr = sendMessage.dest;
 				socket.state = SYN_RCVD;
 
 				call sockets.remove(fd);
 				call sockets.insert(fd, socket);
 				dbg(GENERAL_CHANNEL, "\t\t\t\tsocket.src: %u socket.dest.port: %u\n",  socket.src, socket.dest.port);
-				call Transport.send(&socket, msg);
-				return  SUCCESS;
+				call Transport.send(&socket, sendMessage);
+				return SUCCESS;
 				break;
 
 			case 2:	//ACK
@@ -502,15 +521,15 @@ implementation {
 				recievedTcp->srcPort = temp;
 
 				//swap
-				temp = msg.dest;
-				msg.dest = msg.src;
-				msg.src = temp;
+				temp = sendMessage.dest;
+				sendMessage.dest = sendMessage.src;
+				sendMessage.src = temp;
 
 
-				dbg(GENERAL_CHANNEL, "\t\tmsg.dest: %u recievedTcp->destPort: %u msg.seq: %u\n", msg.dest, recievedTcp->destPort,  msg.seq);
-				dbg(GENERAL_CHANNEL, "\t\t recievedTcp->srcPort: %u, msg.src: %u, recievedTcp->destPort: %u msg.dest: %u\n",recievedTcp->srcPort, msg.src, recievedTcp->destPort, msg.dest);
+				dbg(GENERAL_CHANNEL, "\t\tsendMessage.dest: %u recievedTcp->destPort: %u sendMessage.seq: %u\n", sendMessage.dest, recievedTcp->destPort,  sendMessage.seq);
+				dbg(GENERAL_CHANNEL, "\t\t recievedTcp->srcPort: %u, msg.src: %u, recievedTcp->destPort: %u sendMessage.dest: %u\n",recievedTcp->srcPort, sendMessage.src, recievedTcp->destPort, sendMessage.dest);
 
-				fd = call Transport.findSocket(recievedTcp->srcPort, recievedTcp->destPort, msg.dest);
+				fd = call Transport.findSocket(recievedTcp->srcPort, recievedTcp->destPort, sendMessage.dest);
 
 				socket = call sockets.get(fd);
 
@@ -519,9 +538,9 @@ implementation {
 				dbg(GENERAL_CHANNEL, "\t\tComparing Ack to Sequence number: tcp ack: %u, tcp seq: %u\n", recievedTcp->ack, tcpSeq+1);
 				if(recievedTcp->ack == tcpSeq+1){
 					send = TRUE;
-					tempSeq = IPseq;
+					//tempSeq = IPseq;
 					dbg(GENERAL_CHANNEL, "\t\tACK RECIEVED: ALLOWING NEXT PACKET TO BE SENT\n");
-					call Transport.stopWait(socket, transfer, tempSeq+1);
+					call Transport.stopWait(socket, transfer, IPseq++);
 				}
 
 				call sockets.remove(fd);
@@ -530,7 +549,7 @@ implementation {
 				return SUCCESS;
 				break;
 
-			case 4: // Fin
+			case 4: // Fin f
 				dbg(GENERAL_CHANNEL, "\tTransport.receive() default flag FIN\n");
 				return SUCCESS;
 
@@ -538,7 +557,7 @@ implementation {
 
 			case 8: // RST
 				dbg(GENERAL_CHANNEL, "\tTransport.receive() default flag RST\n");
-				fd = call Transport.findSocket(recievedTcp->destPort, recievedTcp->srcPort, msg.src);
+				fd = call Transport.findSocket(recievedTcp->destPort, recievedTcp->srcPort, sendMessage.src);
 
 				socket = call sockets.get(fd);
 
@@ -551,7 +570,7 @@ implementation {
 				break;
 
 			case 10:
-
+				dbg(GENERAL_CHANNEL, "\tTransport.receive() Data packet\n");
 				//Start Sending to the Sever
 
 				//swap
@@ -562,24 +581,27 @@ implementation {
 				recievedTcp->ack = recievedTcp->seq+1;
 
 				//swap
-				temp = msg.dest;
-				msg.dest = msg.src;
-				msg.src = temp;
-				dbg(GENERAL_CHANNEL, "\tTransport.receive() Data packet\n");
+				temp = sendMessage.dest;
+				sendMessage.dest = sendMessage.src;
+				sendMessage.src = temp;
+
+				//dbg(GENERAL_CHANNEL, "\tTransport.receive() Data packet\n");
 				dbg(GENERAL_CHANNEL, "\t\trecievedTcp->ack: %u\n", recievedTcp->ack);
-				dbg(GENERAL_CHANNEL, "\t\tmsg.dest: %u recievedTcp->destPort: %u msg.seq: %u, flag: \n", msg.dest, recievedTcp->destPort,  msg.seq, recievedTcp->flag);
-				dbg(GENERAL_CHANNEL, "\t\t recievedTcp->srcPort: %u, msg.src: %u, recievedTcp->destPort: %u msg.dest: %u\n",recievedTcp->srcPort, msg.src, recievedTcp->destPort, msg.dest);
+				dbg(GENERAL_CHANNEL, "\t\tsendMessage.dest: %u recievedTcp->destPort: %u sendMessage.seq: %u, flag: \n", sendMessage.dest, recievedTcp->destPort,  sendMessage.seq, recievedTcp->flag);
+				dbg(GENERAL_CHANNEL, "\t\t recievedTcp->srcPort: %u, sendMessage.src: %u, recievedTcp->destPort: %u sendMessage.dest: %u\n",recievedTcp->srcPort, sendMessage.src, recievedTcp->destPort, sendMessage.dest);
 
 				dbg(GENERAL_CHANNEL, "\tData:\t%u\n", *recievedTcp->payload);
-				fd = call Transport.findSocket(recievedTcp->srcPort, recievedTcp->destPort, msg.dest);
+				fd = call Transport.findSocket(recievedTcp->srcPort, recievedTcp->destPort, sendMessage.dest);
 
-				memcpy(msg.payload, (void*)recievedTcp, TCP_MAX_PAYLOAD_SIZE);
+				memcpy(sendMessage.payload, (void*)recievedTcp, TCP_MAX_PAYLOAD_SIZE);
 
 				//socket.nextExpected = recievedTcp->seq+1;
 
 				socket = call sockets.get(fd);
 
-				call Transport.send(&socket, msg);
+				++(sendMessage.seq);
+				call Transport.send(&socket, sendMessage);
+				call AckTimer.startOneShot(12000);
 				return SUCCESS;
 				break;
 
