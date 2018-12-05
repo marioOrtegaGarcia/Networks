@@ -215,7 +215,8 @@ implementation {
 			//dbg(GENERAL_CHANNEL, "\t\tCopying TCP pack to IP payload\n");
 			memcpy(msg.payload, &tcp, TCP_MAX_PAYLOAD_SIZE);
 			dbg(GENERAL_CHANNEL, "\t\t\tSending num %u to Node %u over socket %u\n", sentData, sock.dest.addr, sock.dest.port);
-			call Transport.send(&sock, msg);
+			//call Transport.send(&sock, msg);
+			call Sender.send(msg, sock.dest.addr);
 
 			send = FALSE;
 			sentData++;
