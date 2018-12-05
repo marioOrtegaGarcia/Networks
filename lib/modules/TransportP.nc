@@ -180,7 +180,7 @@ implementation {
 	}
 
 
-	command void Transport.stopWait(socket_store_t sock, uint8_t data, uint16_t IPseqnum){
+	command uint8_t Transport.stopWait(socket_store_t sock, uint8_t data, uint16_t IPseqnum){
 
 		pack msg;
 		tcp_packet tcp;
@@ -217,6 +217,7 @@ implementation {
 
 			send = FALSE;
 			sentData++;
+			return sentData;
 		}
 	}
 	/* event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
