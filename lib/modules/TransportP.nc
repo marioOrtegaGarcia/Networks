@@ -202,11 +202,10 @@ implementation {
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tsrc->%u\n", TOS_NODE_ID);
 			msg.src = TOS_NODE_ID;
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tseq->%u\n", IPseqnum+1);
-
-			msg.seq = (uint16_t)*IPseqnum++;
-			IPseq = (uint16_t)*IPseqnum;
-			dbg(GENERAL_CHANNEL, "\t\t\t\tIP Seq: %u\n", IPseq);
-			dbg(GENERAL_CHANNEL, "\t\t\t\tIP Seq Num: %u\n", *IPseqnum);
+			dbg(GENERAL_CHANNEL, "\t\t\t\tIP Seq Before: %u\n", (uint8_t)*IPseqnum++);
+			msg.seq = (uint8_t)*IPseqnum++;
+			IPseq = *IPseqnum;
+			dbg(GENERAL_CHANNEL, "\t\t\t\tIP Seq After: %u\n", (uint8_t)*IPseqnum++);
 
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tTTL->18\n");
 			msg.TTL = 18;
@@ -215,7 +214,7 @@ implementation {
 			//dbg(GENERAL_CHANNEL, "\t\tCopying TCP pack to IP payload\n");
 			memcpy(msg.payload, &tcp, TCP_MAX_PAYLOAD_SIZE);
 			dbg(GENERAL_CHANNEL, "\t\t\tSending num %u to Node %u over socket %u\n", sentData, sock.dest.addr, sock.dest.port);
-			call Sender.send(msg, sock.dest.addr);
+			call Transport.send(&sock, msg);
 
 			send = FALSE;
 			sentData++;
