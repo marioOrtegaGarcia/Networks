@@ -153,7 +153,8 @@ implementation {
 		dbg(GENERAL_CHANNEL, "\t\t\t\t-- TCP PACK LAYER\n");
 		dbg(GENERAL_CHANNEL, "\t\t\t\t\t-- Sending Packet: destPort->%d, srcPort-> %d, Seq->%d\n", data->destPort, data->srcPort, data->seq);
 		dbg(GENERAL_CHANNEL, "\t\t\t\t\t-- Sending Packet: ack->%d, numBytes->%d\n", data->ack, data->numBytes);
-
+		s->lastSent = data->seq;
+		dbg(GENERAL_CHANNEL, "\t\t\t\t-- Socket->lastSent: %u\n", s->lastSent);
 		//dbg(GENERAL_CHANNEL, "Setting the src: %u and dest Ports: %u from our socket_store_t\n", s->src, s->dest.port);
 		dbg(GENERAL_CHANNEL, "\t\t\t\t-- Reassigning Ports with  socket\n");
 		data->destPort = s->dest.port;
@@ -163,8 +164,7 @@ implementation {
 
 
 		//dbg(GENERAL_CHANNEL, "\t\t\t\t-- Segfault B4 calcWindow()\n");
-		s->lastSent = data->seq;
-		dbg(GENERAL_CHANNEL, "\t\t\t\t-- Socket->lastSent: %u\n", s->lastSent);
+
 		// Computing aw and increasing the ACK
 		data->advertisedWindow = call Transport.calcWindow(s, data->advertisedWindow);
 		data->ack = s->nextExpected;
