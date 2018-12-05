@@ -46,7 +46,7 @@ implementation {
 
 		call Sender.send(sendMessage, sendMessage.dest);
 
-
+		call TimedOut.startOneShot(12000);
 	}
 	event void AckTimer.fired() {
 		tcp_packet* payload;
@@ -602,7 +602,7 @@ implementation {
 				//socket.nextExpected = recievedTcp->seq+1;
 
 				socket = call sockets.get(fd);
-				
+
 				++(sendMessage.seq);
 				call Transport.send(&socket, sendMessage);
 				if(sentData != transfer)
