@@ -244,6 +244,7 @@ implementation {
 			sentData++;
 			if(sentData != transfer)
 				call TimedOut.startOneShot(6000);
+			else call TimedOut.stop();
 		}
 	}
 	/* event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
