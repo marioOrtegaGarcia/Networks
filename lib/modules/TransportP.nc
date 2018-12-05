@@ -186,7 +186,7 @@ implementation {
 		tcp_packet tcp;
 		data = transfer;
 
-		dbg(GENERAL_CHANNEL, "\t\t\tBegining Stop & Wait, Trasnfer: %u\n", transfer);
+		dbg(GENERAL_CHANNEL, "\t\t\tBegining Stop & Wait, Trasnfer: %u, data: %u\n", transfer, data);
 		if(send == TRUE){
 			//make tcp_packet
 			tcpSeq = tcpSeq + 1;
