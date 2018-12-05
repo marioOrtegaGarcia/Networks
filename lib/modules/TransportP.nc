@@ -560,11 +560,13 @@ implementation {
 				msg.dest = msg.src;
 				msg.src = temp;
 				dbg(GENERAL_CHANNEL, "\tTransport.receive() Data packet\n");
-				dbg(GENERAL_CHANNEL, "\t\tmsg.dest: %u recievedTcp->destPort: %u msg.seq: %u\n", msg.dest, recievedTcp->destPort,  msg.seq);
+				dbg(GENERAL_CHANNEL, "\t\tmsg.dest: %u recievedTcp->destPort: %u msg.seq: %u, flag: \n", msg.dest, recievedTcp->destPort,  msg.seq, recievedTcp->flag);
 				dbg(GENERAL_CHANNEL, "\t\t recievedTcp->srcPort: %u, msg.src: %u, recievedTcp->destPort: %u msg.dest: %u\n",recievedTcp->srcPort, msg.src, recievedTcp->destPort, msg.dest);
 
 				dbg(GENERAL_CHANNEL, "\tData:\t%u\n", *recievedTcp->payload);
 				fd = call Transport.findSocket(recievedTcp->srcPort, recievedTcp->destPort, msg.dest);
+
+				memcpy(msg.payload, recievedTcp, TCP_MAX_PAYLOAD_SIZE);
 
 				socket = call sockets.get(fd);
 
