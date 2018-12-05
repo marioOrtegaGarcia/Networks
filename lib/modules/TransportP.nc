@@ -45,8 +45,8 @@ implementation {
 		dbg(GENERAL_CHANNEL, "\n\n\t\tPacket %u timed out! Resending...\n\n\n", tcpSeq);
 
 		call Sender.send(sendMessage, sendMessage.dest);
-
-		call TimedOut.startOneShot(12000);
+		if(sentData != transfer)
+			call TimedOut.startOneShot(12000);
 	}
 	event void AckTimer.fired() {
 		tcp_packet* payload;
