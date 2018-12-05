@@ -583,7 +583,8 @@ implementation {
 				recievedTcp->srcPort = temp;
 				recievedTcp->flag = 2;
 				recievedTcp->ack = recievedTcp->seq+1;
-
+				recievedTcp->seq +=1;
+				dbg(GENERAL_CHANNEL, "\t\trecievedTcp->seq: %u\n", recievedTcp->seq);
 				//swap
 				temp = sendMessage.dest;
 				sendMessage.dest = sendMessage.src;
