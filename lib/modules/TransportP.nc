@@ -241,8 +241,8 @@ implementation {
 
 			send = FALSE;
 			sentData++;
-
-			call TimedOut.startOneShot(6000);
+			if(sentData != transfer)
+				call TimedOut.startOneShot(6000);
 		}
 	}
 	/* event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
@@ -604,7 +604,8 @@ implementation {
 
 				++(sendMessage.seq);
 				call Transport.send(&socket, sendMessage);
-				call AckTimer.startOneShot(12000);
+				if(sentData != transfer)
+					call AckTimer.startOneShot(12000);
 				return SUCCESS;
 				break;
 
