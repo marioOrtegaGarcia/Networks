@@ -184,10 +184,10 @@ implementation {
 
 		pack msg;
 		tcp_packet tcp;
-		data = transfer;
+		transfer = data;
 
 		dbg(GENERAL_CHANNEL, "\t\t\tBegining Stop & Wait, Trasnfer: %u, data: %u\n", transfer, data);
-		if(send == TRUE){
+		if(send == TRUE && sentData < transfer){
 			//make tcp_packet
 			tcpSeq = tcpSeq + 1;
 			tcp.destPort = sock.dest.port;
