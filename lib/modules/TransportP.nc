@@ -204,7 +204,7 @@ implementation {
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tseq->%u\n", IPseqnum+1);
 			dbg(GENERAL_CHANNEL, "\t\t\t\tIP Seq Before: %u\n", IPseqnum);
 			msg.seq = IPseqnum;
-			*IPseq = IPseqnum;
+			IPseq = IPseqnum;
 
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tTTL->18\n");
 			msg.TTL = 18;
