@@ -163,7 +163,7 @@ implementation {
 
 
 		//dbg(GENERAL_CHANNEL, "\t\t\t\t-- Segfault B4 calcWindow()\n");
-
+		s->lastSent = data->seq;
 		// Computing aw and increasing the ACK
 		data->advertisedWindow = call Transport.calcWindow(s, data->advertisedWindow);
 		data->ack = s->nextExpected;
@@ -517,7 +517,7 @@ implementation {
 				if(recievedTcp->ack = IPseq){
 					send = TRUE;
 					tempSeq = IPseq;
-					socket.nextExpected = recievedTcp->ack;
+					socket.lastAck = recievedTcp->ack;
 					dbg(GENERAL_CHANNEL, "ACK RECIEVED: ALLOWING NEXT PACKET TO BE SENT\n");
 					call Transport.stopWait(socket, transfer, tempSeq+1);
 				}
@@ -572,6 +572,8 @@ implementation {
 				fd = call Transport.findSocket(recievedTcp->srcPort, recievedTcp->destPort, msg.dest);
 
 				memcpy(msg.payload, (void*)recievedTcp, TCP_MAX_PAYLOAD_SIZE);
+
+				socket.nextExpected = recievedTcp->seq+1;
 
 				socket = call sockets.get(fd);
 
