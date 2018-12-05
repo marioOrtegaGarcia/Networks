@@ -206,6 +206,8 @@ implementation {
 			//in the meantime, here is stop & wait
 			call Transport.stopWait(sock, transfer, nodeSeq);
 			nodeSeq++;
+			call Transport.stopWait(sock, transfer, nodeSeq);
+			nodeSeq++;
 		} else {
 			dbg(GENERAL_CHANNEL, "WriteTimer.fired() -- fd could not befound\n");
 		}
