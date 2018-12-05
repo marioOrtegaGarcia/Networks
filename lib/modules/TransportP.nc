@@ -514,7 +514,7 @@ implementation {
 				socket.lastAck = recievedTcp->ack;
 				socket.state = ESTABLISHED;
 				dbg(GENERAL_CHANNEL, "\n\n\t\tComparing Ack to Sequence number: tcp ack: %u, IPseq: %u\n", recievedTcp->ack, IPseq);
-				if(recievedTcp->ack = IPseq){
+				if(recievedTcp->ack = socket.lastSent){
 					send = TRUE;
 					tempSeq = IPseq;
 					dbg(GENERAL_CHANNEL, "ACK RECIEVED: ALLOWING NEXT PACKET TO BE SENT\n");
