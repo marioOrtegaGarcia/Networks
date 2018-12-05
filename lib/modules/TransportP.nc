@@ -42,14 +42,14 @@ implementation {
 		tcp_packet* payload;
 		payload = (tcp_packet*)sendMessage.payload;
 
-		dbg(GENERAL_CHANNEL, "\t\tPacket %u timed out! Resending...\n", tcpSeq);
+		dbg(GENERAL_CHANNEL, "\n\n\t\tPacket %u timed out! Resending...\n\n\n", tcpSeq);
 
 
 	}
 	event void AckTimer.fired() {
 		tcp_packet* payload;
 		payload = (tcp_packet*)sendMessage.payload;
-		dbg(GENERAL_CHANNEL, "\t\tAck %u timed out! Resending...\n", payload->seq);
+		dbg(GENERAL_CHANNEL, "\n\n\t\tAck %u timed out! Resending...\n\n\n", payload->seq);
 	}
 
 
