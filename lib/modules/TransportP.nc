@@ -31,6 +31,7 @@ implementation {
 	uint16_t fdKeys = 0;
 	uint8_t numConnected = 0;
 	uint8_t max_tcp_payload = 20;
+	uint8_t transfer;
 
 	command void Transport.passSeq(uint16_t* seq) {
 		IPseq = seq;
@@ -177,15 +178,15 @@ implementation {
 	}
 
 
-	command uint16_t Transport.stopWait(socket_store_t sock, uint8_t data, uint16_t IPseqnum){
+	command void Transport.stopWait(socket_store_t sock, uint8_t data, uint16_t* IPseqnum){
 
 		pack msg;
 		tcp_packet tcp;
 		uint8_t sentData = 0;
+		data = transfer;
 
 		dbg(GENERAL_CHANNEL, "\t\t\tBegining Stop & Wait\n");
 
-		while(sentData < data+1){
 			//make tcp_packet
 			tcpSeq = tcpSeq + 1;
 			tcp.destPort = sock.dest.port;
@@ -200,7 +201,7 @@ implementation {
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tsrc->%u\n", TOS_NODE_ID);
 			msg.src = TOS_NODE_ID;
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tseq->%u\n", IPseqnum+1);
-			msg.seq = IPseqnum++;
+			msg.seq = (uint16_t)IPseqnum++;
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tTTL->18\n");
 			msg.TTL = 18;
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tprotocol->%u\n",PROTOCOL_TCP);
@@ -211,7 +212,6 @@ implementation {
 			call Transport.send(&sock, msg);
 
 			sentData++;
-		}
 
 		return IPseqnum;
 	}
@@ -553,6 +553,7 @@ implementation {
 				msg.src = temp;
 				dbg(GENERAL_CHANNEL, "\tTransport.receive() Data packet\n");
 
+				dbg(GENERAL_CHANNEL, "\tData:\t%u\n", recievedTcp->payload);
 				fd = call Transport.findSocket(recievedTcp->srcPort, recievedTcp->destPort, msg.dest);
 
 				socket = call sockets.get(fd);
