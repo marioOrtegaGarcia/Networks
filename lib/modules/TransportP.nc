@@ -567,7 +567,7 @@ implementation {
 				dbg(GENERAL_CHANNEL, "\tData:\t%u\n", *recievedTcp->payload);
 				fd = call Transport.findSocket(recievedTcp->srcPort, recievedTcp->destPort, msg.dest);
 
-				memcpy(msg.payload, recievedTcp, TCP_MAX_PAYLOAD_SIZE);
+				memcpy(msg.payload, (void*)recievedTcp, TCP_MAX_PAYLOAD_SIZE);
 
 				socket = call sockets.get(fd);
 
