@@ -556,7 +556,8 @@ implementation {
 				recievedTcp->destPort = recievedTcp->srcPort;
 				recievedTcp->srcPort = temp;
 				recievedTcp->flag = 2;
-				recievedTcp->ack = recievedTcp->seq+1;
+				temp = recievedTcp->seq+1;
+				recievedTcp->ack = temp;
 
 				//swap
 				temp = msg.dest;
