@@ -412,7 +412,7 @@ implementation {
 		socket_addr_t socketAddr;
 		dbg(GENERAL_CHANNEL, "CommandHandler.setTestServer(%d) -- Initializing Server\n", port);
 
-		call Transport.passSeq(&nodeSeq);
+		/* call Transport.passSeq(&nodeSeq); */
 
 		// Creating our file descriptor
 		fd = call Transport.socket();
@@ -439,7 +439,7 @@ implementation {
 		error_t check = FAIL;
 		transfer = num;
 
-		call Transport.passSeq(&nodeSeq);
+		/* call Transport.passSeq(&nodeSeq); */
 		dbg(GENERAL_CHANNEL, "CommandHandler.setTestClient()\n");
 
 		// Creating our file descriptor

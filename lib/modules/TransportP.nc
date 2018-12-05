@@ -24,7 +24,7 @@ module TransportP {
 
 implementation {
 	pack sendMessage;
-	uint16_t* IPseq;
+	uint16_t* IPseq = 0;
 	uint16_t tcpSeq = 0;
 	//tcp_packet* tcp_msg;
 	uint16_t RTT = 12000;
@@ -203,6 +203,7 @@ implementation {
 			msg.src = TOS_NODE_ID;
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tseq->%u\n", IPseqnum+1);
 			msg.seq = *IPseqnum++;
+			IPseq = *IPseqnum;
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tTTL->18\n");
 			msg.TTL = 18;
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tprotocol->%u\n",PROTOCOL_TCP);
@@ -509,6 +510,7 @@ implementation {
 
 
 				socket.state = ESTABLISHED;
+
 				if(recievedTcp->ack = IPseq)
 					send = TRUE;
 
