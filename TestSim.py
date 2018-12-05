@@ -162,7 +162,7 @@ def main():
     # s.runTime(30);
     #s.newServer(2, 140);
     #s.runTime(30);
-    s.newClient(4,  3, 12, 9, 10);
+    s.newClient(4,  3, 12, 9, 20);
     s.runTime(40);
     s.runTime(40);
     s.clientClose(4, 3, 12, 9);
