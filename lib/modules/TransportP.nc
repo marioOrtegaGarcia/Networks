@@ -166,7 +166,7 @@ implementation {
 		//dbg(GENERAL_CHANNEL, "\t\t\t\t-- Segfault B4 calcWindow()\n");
 
 		// Computing aw and increasing the ACK
-		data->advertisedWindow = call Transport.calcWindow(s, data->advertisedWindow);
+		//data->advertisedWindow = call Transport.calcWindow(s, data->advertisedWindow);
 		//data->ack = s->nextExpected;
 		dbg(GENERAL_CHANNEL, "\t\t\t\t-- Data->advertisedWindow: %u, Data->ack: %u\n", data->advertisedWindow, data->ack);
 		//call Transport.makeTCPPack(data, data->destPort, data->srcPort, data->seq, data->ack, data->flag, data->advertisedWindow, data->numBytes, (void*)data->payload);
