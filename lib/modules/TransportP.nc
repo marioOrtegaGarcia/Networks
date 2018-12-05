@@ -513,7 +513,7 @@ implementation {
 
 
 				socket.state = ESTABLISHED;
-				dbg(GENERAL_CHANNEL, "\n\n\t\tComparing Ack to Sequence number: tcp ack: %u, IPseq: %u", recievedTcp->ack, IPseq)
+				dbg(GENERAL_CHANNEL, "\n\n\t\tComparing Ack to Sequence number: tcp ack: %u, IPseq: %u", recievedTcp->ack, IPseq);
 				if(recievedTcp->ack = IPseq){
 					send = TRUE;
 					tempSeq = IPseq;
