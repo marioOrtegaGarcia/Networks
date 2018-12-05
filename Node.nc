@@ -189,7 +189,7 @@ implementation {
 		subtract the amount of data you were able to write(fd, buffer, buffer len)
 		*/
 		socket_store_t sock;
-		uint8_t data = 0;
+
 
 		dbg(GENERAL_CHANNEL, "\t WriteTimer.fired() ->\n");
 
@@ -205,11 +205,8 @@ implementation {
 			dbg(GENERAL_CHANNEL, "\t\t\t    -- Begining to  make data\n");
 			//TODO use read/write to implement fixed sliding window
 			//in the meantime, here is stop & wait
-			while(data < transfer){
-				data = call Transport.stopWait(sock, transfer, nodeSeq);
-				nodeSeq++;
-			}
-
+			call Transport.stopWait(sock, transfer, nodeSeq);
+			nodeSeq++;
 		} else {
 			dbg(GENERAL_CHANNEL, "WriteTimer.fired() -- fd could not befound\n");
 		}
