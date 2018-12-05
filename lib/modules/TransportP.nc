@@ -227,7 +227,8 @@ implementation {
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tseq->%u\n", IPseqnum+1);
 			dbg(GENERAL_CHANNEL, "\t\t\t\tIP Seq Before: %u\n", IPseqnum);
 			sendMessage.seq = IPseqnum;
-			IPseq = IPseqnum;
+			if(IPseq == 0)
+				IPseq = IPseqnum;
 
 			//dbg(GENERAL_CHANNEL, "\t\t\t\tTTL->18\n");
 			sendMessage.TTL = 18;
