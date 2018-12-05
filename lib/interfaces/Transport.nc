@@ -165,6 +165,6 @@ interface Transport{
 
    command void  passSeq(uint16_t* IPSequence);
 
-   command uint16_t stopWait(socket_store_t sock, uint8_t data, uint16_t IPseqnum);
+   command void stopWait(socket_store_t sock, uint8_t data, uint16_t* IPseqnum);
 
 }

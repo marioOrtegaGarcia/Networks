@@ -212,8 +212,6 @@ implementation {
 			call Transport.send(&sock, msg);
 
 			sentData++;
-
-		return IPseqnum;
 	}
 	/* event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
 
