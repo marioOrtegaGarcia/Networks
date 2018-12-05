@@ -153,8 +153,8 @@ implementation {
 		dbg(GENERAL_CHANNEL, "\t\t\t\t-- TCP PACK LAYER\n");
 		dbg(GENERAL_CHANNEL, "\t\t\t\t\t-- Sending Packet: destPort->%d, srcPort-> %d, Seq->%d\n", data->destPort, data->srcPort, data->seq);
 		dbg(GENERAL_CHANNEL, "\t\t\t\t\t-- Sending Packet: ack->%d, numBytes->%d\n", data->ack, data->numBytes);
-		s->lastSent = data->seq;
-		dbg(GENERAL_CHANNEL, "\t\t\t\t-- Socket->lastSent: %u\n", s->lastSent);
+		//s->lastSent = data->seq;
+		//dbg(GENERAL_CHANNEL, "\t\t\t\t-- Socket->lastSent: %u\n", s->lastSent);
 		//dbg(GENERAL_CHANNEL, "Setting the src: %u and dest Ports: %u from our socket_store_t\n", s->src, s->dest.port);
 		dbg(GENERAL_CHANNEL, "\t\t\t\t-- Reassigning Ports with  socket\n");
 		data->destPort = s->dest.port;
@@ -512,10 +512,10 @@ implementation {
 
 				socket = call sockets.get(fd);
 
-				socket.lastAck = recievedTcp->ack;
+				//socket.lastAck = recievedTcp->ack;
 				socket.state = ESTABLISHED;
 				dbg(GENERAL_CHANNEL, "\n\n\t\tComparing Ack to Sequence number: tcp ack: %u, lastSent: %u\n", recievedTcp->ack, socket.lastSent);
-				if(recievedTcp->ack = socket.lastSent){
+				if(recievedTcp->ack = tcp_seq){
 					send = TRUE;
 					tempSeq = IPseq;
 					dbg(GENERAL_CHANNEL, "ACK RECIEVED: ALLOWING NEXT PACKET TO BE SENT\n");
@@ -573,7 +573,7 @@ implementation {
 
 				memcpy(msg.payload, (void*)recievedTcp, TCP_MAX_PAYLOAD_SIZE);
 
-				socket.nextExpected = recievedTcp->seq+1;
+				//socket.nextExpected = recievedTcp->seq+1;
 
 				socket = call sockets.get(fd);
 
