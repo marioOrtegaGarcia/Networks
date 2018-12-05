@@ -799,7 +799,7 @@ implementation {
 			tcp_msg.destPort = socket.dest.port;
 			dbg(GENERAL_CHANNEL, "\t\t\t\tsrcPort->%u\n", socket.src);
 			tcp_msg.srcPort = socket.src;
-			dbg(GENERAL_CHANNEL, "\t\t\t\tseq->%u\n", seq);
+			dbg(GENERAL_CHANNEL, "\t\t\t\tseq->%u\n", tcpSeq+1);
 			tcp_msg.seq = tcpSeq++;
 			dbg(GENERAL_CHANNEL, "\t\t\t\tflag->%u\n", RST);
 			tcp_msg.flag = RST;
