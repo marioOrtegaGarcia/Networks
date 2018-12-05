@@ -180,7 +180,7 @@ implementation {
 	}
 
 
-	command void Transport.stopWait(socket_store_t sock, uint8_t data, uint16_t* IPseqnum){
+	command void Transport.stopWait(socket_store_t sock, uint8_t data, uint16_t IPseqnum){
 
 		pack msg;
 		tcp_packet tcp;
