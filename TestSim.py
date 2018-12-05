@@ -167,6 +167,9 @@ def main():
 
     s.clientClose(4, 3, 12, 9);
     s.runTime(40);
+    s.runTime(40);
+    s.runTime(40);
+    s.runTime(40);
     # s.ping(3, 6, "Hello, World");
     # s.runTime(10);
 
