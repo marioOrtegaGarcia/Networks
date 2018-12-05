@@ -715,7 +715,7 @@ implementation {
 
 			//send SYN packet
 			dbg(GENERAL_CHANNEL, "\t\t\t\t-- newConnection [ port src: %d dest: [ port: %d addr: %d]]\n", newConnection.src, newConnection.dest.port, newConnection.dest.addr);
-			seq = call Random.rand16() % 65530;
+			seq = call Random.rand16() % 33000;
 			tcpSeq = seq;
 
 			dbg(GENERAL_CHANNEL, "\t\t\t\t-- MADE TCP_MSG LETS SEE IF THIS IS WHATS BREAKING \n");
