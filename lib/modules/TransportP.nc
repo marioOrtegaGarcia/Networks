@@ -167,7 +167,7 @@ implementation {
 
 		// Computing aw and increasing the ACK
 		data->advertisedWindow = call Transport.calcWindow(s, data->advertisedWindow);
-		data->ack = s->nextExpected;
+		//data->ack = s->nextExpected;
 		dbg(GENERAL_CHANNEL, "\t\t\t\t-- Data->advertisedWindow: %u, Data->ack: %u\n", data->advertisedWindow, data->ack);
 		//call Transport.makeTCPPack(data, data->destPort, data->srcPort, data->seq, data->ack, data->flag, data->advertisedWindow, data->numBytes, (void*)data->payload);
 		//call Transport.makePack(&IPpack, IPpack->src, IPpack->dest, IPpack->TTL, IPpack->protocol, IPpack->seq, (void*) data, sizeof(data));
@@ -514,7 +514,7 @@ implementation {
 
 				//socket.lastAck = recievedTcp->ack;
 				socket.state = ESTABLISHED;
-				dbg(GENERAL_CHANNEL, "\n\n\t\tComparing Ack to Sequence number: tcp ack: %u, lastSent: %u\n", recievedTcp->ack, socket.lastSent);
+				dbg(GENERAL_CHANNEL, "\n\n\t\tComparing Ack to Sequence number: tcp ack: %u, tcp seq: %u\n", recievedTcp->ack, tcpSeq);
 				if(recievedTcp->ack = tcpSeq){
 					send = TRUE;
 					tempSeq = IPseq;
