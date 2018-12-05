@@ -164,6 +164,7 @@ implementation {
 
 		//dbg(GENERAL_CHANNEL, "\t\t\t\t-- Segfault B4 calcWindow()\n");
 		s->lastSent = data->seq;
+		dbg(GENERAL_CHANNEL, "\t\t\t\t-- Socket->lastSent: %u\n", s->lastSent);
 		// Computing aw and increasing the ACK
 		data->advertisedWindow = call Transport.calcWindow(s, data->advertisedWindow);
 		data->ack = s->nextExpected;
@@ -513,7 +514,7 @@ implementation {
 
 				socket.lastAck = recievedTcp->ack;
 				socket.state = ESTABLISHED;
-				dbg(GENERAL_CHANNEL, "\n\n\t\tComparing Ack to Sequence number: tcp ack: %u, IPseq: %u\n", recievedTcp->ack, socket.lastSent);
+				dbg(GENERAL_CHANNEL, "\n\n\t\tComparing Ack to Sequence number: tcp ack: %u, lastSent: %u\n", recievedTcp->ack, socket.lastSent);
 				if(recievedTcp->ack = socket.lastSent){
 					send = TRUE;
 					tempSeq = IPseq;
