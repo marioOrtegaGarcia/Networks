@@ -187,7 +187,7 @@ implementation {
 		data = transfer;
 
 		dbg(GENERAL_CHANNEL, "\t\t\tBegining Stop & Wait, Trasnfer: %u\n", transfer);
-		if(send == TRUE && sentData < transfer){
+		if(send == TRUE){
 			//make tcp_packet
 			tcpSeq = tcpSeq + 1;
 			tcp.destPort = sock.dest.port;
