@@ -551,7 +551,7 @@ implementation {
 				msg.src = temp;
 				dbg(GENERAL_CHANNEL, "\tTransport.receive() Data packet\n");
 
-				dbg(GENERAL_CHANNEL, "\tData:\t%u\n", recievedTcp->payload);
+				dbg(GENERAL_CHANNEL, "\tData:\t%u\n", *recievedTcp->payload);
 				fd = call Transport.findSocket(recievedTcp->srcPort, recievedTcp->destPort, msg.dest);
 
 				socket = call sockets.get(fd);
