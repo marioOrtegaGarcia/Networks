@@ -33,6 +33,7 @@ implementation {
 	uint8_t max_tcp_payload = 20;
 	uint8_t transfer;
 	uint8_t sentData = 0;
+	bool send = TRUE;
 
 	command void Transport.passSeq(uint16_t* seq) {
 		IPseq = seq;
@@ -186,7 +187,7 @@ implementation {
 		data = transfer;
 
 		dbg(GENERAL_CHANNEL, "\t\t\tBegining Stop & Wait\n");
-
+		if(send == TRUE){
 			//make tcp_packet
 			tcpSeq = tcpSeq + 1;
 			tcp.destPort = sock.dest.port;
@@ -211,7 +212,9 @@ implementation {
 			dbg(GENERAL_CHANNEL, "\t\t\tSending num %u to Node %u over socket %u\n", sentData, sock.dest.addr, sock.dest.port);
 			call Transport.send(&sock, msg);
 
+			send = FALSE;
 			sentData++;
+		}
 	}
 	/* event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
 
@@ -506,7 +509,8 @@ implementation {
 
 
 				socket.state = ESTABLISHED;
-
+				if(recievedTcp->ack = IPseq)
+					send = TRUE;
 
 				call sockets.remove(fd);
 				call sockets.insert(fd, socket);
