@@ -93,7 +93,7 @@ implementation{
 
             case CMD_SET_APP_CLIENT:
                     dbg(COMMAND_CHANNEL, "Command Type: Setting App Client \n");
-                    signal CommandHandler.setAppServer();
+                    signal CommandHandler.setAppClient(buff[0]);
                     break;
 
             default:

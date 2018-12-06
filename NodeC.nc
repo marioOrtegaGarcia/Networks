@@ -39,6 +39,7 @@ implementation {
     components new TimerMilliC() as TimerC3;
     components new TimerMilliC() as TimerC4;
     components new TimerMilliC() as TimerC5;
+    components new TimerMilliC() as TimerC6;
 
     // Wiring interfaces
     //<usr.interface -> dev.interface>;
@@ -67,6 +68,7 @@ implementation {
     Node.ListenTimer-> TimerC3;
     Node.WriteTimer-> TimerC4;
     Node.TimedOut-> TimerC5;
+    Node.ChatTimer-> TimerC6;
 
     components CommandHandlerC;
     Node.CommandHandler -> CommandHandlerC;

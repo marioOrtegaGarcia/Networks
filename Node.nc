@@ -48,6 +48,8 @@ module Node {
 
         uses interface Timer<TMilli> as WriteTimer;
 
+	uses interface Timer<TMilli> as ChatTimer;
+
 	uses interface Timer<TMilli> as TimedOut;
 
         //uses interface DVRTableC <uint8_t> as Table;
@@ -89,6 +91,19 @@ implementation {
         void splitHorizon(uint8_t nextHop);
         uint8_t findNextHop(uint8_t dest);
 
+	uint8_t* convert2String(char* commandString[], uint8_t size) {
+		uint8_t* commandInts[size];
+		int i = 0;
+
+		dbg(GENERAL_CHANNEL, "----------> HERE\n");
+		for (i = 0; i < size; i++) {
+			dbg(GENERAL_CHANNEL, "Char(%c) -> Int(%d)\n", commandString[i], (uint8_t)commandString[i]);
+			commandInts[i] = (uint8_t)commandString[i];
+			/* commandInts[i] = (uint8_t)*commandString[i]; */
+		}
+		dbg(GENERAL_CHANNEL, "----------> HERE\n");
+		return (uint8_t*)commandInts;
+	}
 
         //  Node boot time calls
         event void Boot.booted(){
@@ -210,6 +225,10 @@ implementation {
 		} else {
 			dbg(GENERAL_CHANNEL, "WriteTimer.fired() -- fd could not befound\n");
 		}
+
+	}
+
+	event void ChatTimer.fired() {
 
 	}
 
@@ -474,10 +493,11 @@ implementation {
 	}
 
 	event void CommandHandler.setAppServer() {
+		// This pretty much remakes this function but addapts itself to be able to send a Array of Chats to an array of Ints
+		//signal CommandHandler.setTestServer(41);
+
 		socket_addr_t socketAddr;
-		uint8_t*  stringInts;
 		uint8_t port = 41;
-		char commandSent[] = "hello acerpa 3\r\n";
 
 		dbg(GENERAL_CHANNEL, "Creating App Server at port: %d\n", port);
 		fd = call Transport.socket();
@@ -494,10 +514,9 @@ implementation {
 
 				dbg(GENERAL_CHANNEL, "One shot to be coded for concatenation of recieved command\n");
 				// One shot maybe for concatenation of recieved command
-				stringInts = convert2String(commandSent, 18);
+
 			}
 		}
-
 
 
 		dbg(GENERAL_CHANNEL, "\tDEBUG\n");
@@ -505,11 +524,16 @@ implementation {
 	//event void CommandHandler.setTestClient(uint16_t dest, uint8_t srcPort, uint8_t destPort, uint8_t num){
 	event void CommandHandler.setAppClient(uint8_t port) {
 		uint8_t i, num;
-		socket_store_t socket;
-		socket_addr_t socketAddr, serverAddr;
-		error_t check = FAIL;
+		uint8_t*  stringInts;
 
-		/* num  = "" */
+		socket_store_t socket;
+
+		socket_addr_t socketAddr, serverAddr;
+
+		error_t check = FAIL;
+		char commandSent[] = "hello acerpa 3\r\n";
+
+		//num  = ""
 		transfer = num;
 
 		dbg(GENERAL_CHANNEL, "SETTING APP CLIENT FOR %d\n", TOS_NODE_ID);
@@ -531,9 +555,12 @@ implementation {
 			if (call Transport.connect(fd, &serverAddr) == SUCCESS)  {
 				dbg(GENERAL_CHANNEL, "\t-- Connection Secure.\n");
 				//send [max transfer size] data in packet
-				/* call WriteTimer.startOneShot(30000); */
+				//call WriteTimer.startOneShot(30000);
 				//call WriteTimer.startOneShot(60000);
-				dbg(GENERAL_CHANNEL, "Where we insert to  the list\n");
+				dbg(GENERAL_CHANNEL, "Where we insert to  the array\n");
+
+				dbg(GENERAL_CHANNEL, "Attempting to convert string\n");
+				stringInts = convert2String(&commandSent, 18);
 			}
 		}
 
@@ -852,14 +879,5 @@ implementation {
         }
 
 
-	uint8_t* convert2String(char* commandString[], uint8_t size) {
-		uint8_t* commandInts[size];
-		int i = 0;
 
-		for (i = 0; i < size; i++) {
-			dbg(GENERAL_CHANNEL, "Char(%c) -> Int(%d)", commandString[i], commandInts[i]);
-			commandInts[i] = (uint8_t)commandString[i];
-		}
-		return commandInts;
-	}
 }
