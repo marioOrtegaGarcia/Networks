@@ -436,13 +436,13 @@ implementation {
 
 	event void CommandHandler.setTestClient(uint16_t dest, uint8_t srcPort, uint8_t destPort, uint8_t num){
 
-		int i;
+		/* int i;
 		socket_store_t socket;
 		socket_addr_t socketAddr, serverAddr;
 		error_t check = FAIL;
 		transfer = num;
 
-		/* call Transport.passSeq(&nodeSeq); */
+		//call Transport.passSeq(&nodeSeq);
 		dbg(GENERAL_CHANNEL, "CommandHandler.setTestClient()\n");
 
 		// Creating our file descriptor
@@ -463,14 +463,14 @@ implementation {
 			if (call Transport.connect(fd, &serverAddr) == SUCCESS)  {
 				dbg(GENERAL_CHANNEL, "\t-- Connection Secure.\n");
 				//send [max transfer size] data in packet
-				/* call WriteTimer.startOneShot(30000); */
+				//call WriteTimer.startOneShot(30000);
 				call WriteTimer.startOneShot(60000);
 			} else {
 				dbg(GENERAL_CHANNEL, "\t-- Couldnt Connect\n");
 			}
 		} else {
 			dbg(GENERAL_CHANNEL, "\t-- Get rekt son, Couldn't bind.\n");
-		}
+		} */
 	}
 
 	event void CommandHandler.setAppServer() {
@@ -492,6 +492,7 @@ implementation {
 
 				dbg(GENERAL_CHANNEL, "One shot to be coded for concatenation of recieved command\n");
 				// One shot maybe for concatenation of recieved command
+				convertString("Hello!");
 			}
 		}
 
@@ -501,7 +502,38 @@ implementation {
         }
 	//event void CommandHandler.setTestClient(uint16_t dest, uint8_t srcPort, uint8_t destPort, uint8_t num){
 	event void CommandHandler.setAppClient(uint8_t port) {
-		
+		uint8_t i, num;
+		socket_store_t socket;
+		socket_addr_t socketAddr, serverAddr;
+		error_t check = FAIL;
+
+		/* num  = "" */
+		transfer = num;
+
+		dbg(GENERAL_CHANNEL, "SETTING APP CLIENT FOR %d\n", TOS_NODE_ID);
+		// Creating our file descriptor
+		fd = call Transport.socket();
+
+		// Setting the port and address of our Client
+		socketAddr.addr = TOS_NODE_ID;
+		socketAddr.port = port;
+
+		if  (call Transport.bind(fd, &socketAddr) == SUCCESS) {
+
+
+			// Setting our destination address and port for App Server
+			serverAddr.addr = 1;
+			serverAddr.port = 41;
+			call Transport.passNeighborsList(&NeighborList);
+
+			if (call Transport.connect(fd, &serverAddr) == SUCCESS)  {
+				dbg(GENERAL_CHANNEL, "\t-- Connection Secure.\n");
+				//send [max transfer size] data in packet
+				/* call WriteTimer.startOneShot(30000); */
+				call WriteTimer.startOneShot(60000);
+			}
+		}
+
         }
         event void CommandHandler.closeConnection(uint16_t dest, uint8_t srcPort, uint8_t  destPort, uint8_t num) {
                 int i;
@@ -816,4 +848,19 @@ implementation {
                 }
 
         }
+
+
+	uint8_t* convertString(char commandString[]) {
+		uint8_t length, commandInts[255];
+		int i = 0;
+
+		length = commandString.size();
+		commandInts[legth];
+
+		for (i = 0; i < length; i++) {
+			dbg(GENERAL_CHANNEL, "Char(%c) -> Int(%d)", commandString[i], commandInts[i]);
+			commandInts[i] = (uint8_t) commandString[i];
+		}
+		return commandInts;
+	}
 }

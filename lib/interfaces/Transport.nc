@@ -168,7 +168,4 @@ interface Transport{
    command void stopWait(socket_store_t sock, uint8_t data, uint16_t IPseqnum);
 
    command void passNeighborsList(uint8_t* neighbors[]);
-
-   //command void sendtoANeighbor(pack msg);
-
 }

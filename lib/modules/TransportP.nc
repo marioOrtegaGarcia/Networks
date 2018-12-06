@@ -799,10 +799,10 @@ implementation {
 			//remove old connection info
 			//insert new connection into list of current connections
 			call sockets.insert(fd, newConnection);
-			dbg(GENERAL_CHANNEL, "\t\t\t\t-- Successful\n");
+			dbg(GENERAL_CHANNEL, "\t\t\t\t-- Successful Connection\n");
 			return SUCCESS;
 		} else {
-			dbg(GENERAL_CHANNEL, "\t\t\t\t-- Failed\n");
+			dbg(GENERAL_CHANNEL, "\t\t\t\t-- Failed Connection\n");
 			return FAIL;
 		}
 	}
