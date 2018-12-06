@@ -436,13 +436,13 @@ implementation {
 
 	event void CommandHandler.setTestClient(uint16_t dest, uint8_t srcPort, uint8_t destPort, uint8_t num){
 
-		/* int i;
+		int i;
 		socket_store_t socket;
 		socket_addr_t socketAddr, serverAddr;
 		error_t check = FAIL;
 		transfer = num;
 
-		//call Transport.passSeq(&nodeSeq);
+		/* call Transport.passSeq(&nodeSeq); */
 		dbg(GENERAL_CHANNEL, "CommandHandler.setTestClient()\n");
 
 		// Creating our file descriptor
@@ -470,12 +470,14 @@ implementation {
 			}
 		} else {
 			dbg(GENERAL_CHANNEL, "\t-- Get rekt son, Couldn't bind.\n");
-		} */
+		}
 	}
 
 	event void CommandHandler.setAppServer() {
 		socket_addr_t socketAddr;
+		uint8_t*  stringInts;
 		uint8_t port = 41;
+		char commandSent[] = "hello acerpa 3\r\n";
 
 		dbg(GENERAL_CHANNEL, "Creating App Server at port: %d\n", port);
 		fd = call Transport.socket();
@@ -492,7 +494,7 @@ implementation {
 
 				dbg(GENERAL_CHANNEL, "One shot to be coded for concatenation of recieved command\n");
 				// One shot maybe for concatenation of recieved command
-				convertString("Hello!");
+				stringInts = convert2String(commandSent, 18);
 			}
 		}
 
@@ -530,7 +532,8 @@ implementation {
 				dbg(GENERAL_CHANNEL, "\t-- Connection Secure.\n");
 				//send [max transfer size] data in packet
 				/* call WriteTimer.startOneShot(30000); */
-				call WriteTimer.startOneShot(60000);
+				//call WriteTimer.startOneShot(60000);
+				dbg(GENERAL_CHANNEL, "Where we insert to  the list\n");
 			}
 		}
 
@@ -649,7 +652,7 @@ implementation {
         }
 
         //  sends message to all known neighbors in neighbor list; if list is empty, forwards to everyone within range using AM_BROADCAST_ADDR.
-        void relayToNeighbors(pack* recievedMsg) {
+	void relayToNeighbors(pack* recievedMsg) {
 		/* if(recievedMsg->protocol == PROTOCOL_TCP) {
 			dbg(GENERAL_CHANNEL, "RELAYING TCP PACKET(%d) TO  NEIGHBOR %d\n", recievedMsg->TTL, findNextHop(recievedMsg->dest));
 		} */
@@ -846,20 +849,16 @@ implementation {
                                 return nHop;
                         }
                 }
-
         }
 
 
-	uint8_t* convertString(char commandString[]) {
-		uint8_t length, commandInts[255];
+	uint8_t* convert2String(char* commandString[], uint8_t size) {
+		uint8_t* commandInts[size];
 		int i = 0;
 
-		length = commandString.size();
-		commandInts[legth];
-
-		for (i = 0; i < length; i++) {
+		for (i = 0; i < size; i++) {
 			dbg(GENERAL_CHANNEL, "Char(%c) -> Int(%d)", commandString[i], commandInts[i]);
-			commandInts[i] = (uint8_t) commandString[i];
+			commandInts[i] = (uint8_t)commandString[i];
 		}
 		return commandInts;
 	}

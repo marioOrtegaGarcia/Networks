@@ -169,10 +169,9 @@ def main():
     s.runTime(30);
 
 
-    print 'Calling setTestServer()';
     s.setAppServer();
     s.runTime(30);
-    # s.setAppClient(2, 49);
+    s.setAppClient(2, 49);
 
 
     # s.newServer(3, 9);
