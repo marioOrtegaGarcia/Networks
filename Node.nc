@@ -473,10 +473,35 @@ implementation {
 		}
 	}
 
-        event void CommandHandler.setAppServer(){
-        }
+	event void CommandHandler.setAppServer() {
+		socket_addr_t socketAddr;
+		uint8_t port = 41;
 
-        event void CommandHandler.setAppClient(){
+		dbg(GENERAL_CHANNEL, "Creating App Server at port: %d\n", port);
+		fd = call Transport.socket();
+
+		dbg(GENERAL_CHANNEL, "Generating socketAddr\n");
+		socketAddr.port = port;
+		socketAddr.addr = TOS_NODE_ID;
+
+		dbg(GENERAL_CHANNEL, "Binding to the socket\n");
+		if (call Transport.bind(fd, &socketAddr) == SUCCESS) {
+			// Sharing the neighbors list
+			call Transport.passNeighborsList(&NeighborList);
+			if (call Transport.listen(fd) == SUCCESS) {
+
+				dbg(GENERAL_CHANNEL, "One shot to be coded for concatenation of recieved command\n");
+				// One shot maybe for concatenation of recieved command
+			}
+		}
+
+
+
+		dbg(GENERAL_CHANNEL, "\tDEBUG\n");
+        }
+	//event void CommandHandler.setTestClient(uint16_t dest, uint8_t srcPort, uint8_t destPort, uint8_t num){
+	event void CommandHandler.setAppClient(uint8_t port) {
+		
         }
         event void CommandHandler.closeConnection(uint16_t dest, uint8_t srcPort, uint8_t  destPort, uint8_t num) {
                 int i;

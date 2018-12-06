@@ -16,6 +16,8 @@ class TestSim:
     CMD_TEST_CLIENT = 4
     CMD_TEST_SERVER = 5
     CMD_CLOSE_CONNECTION = 7
+    CMD_SET_APP_SERVER = 10
+    CMD_SET_APP_CLIENT = 11
 
     # CHANNELS - see includes/channels.h
     COMMAND_CHANNEL="command";
@@ -141,10 +143,13 @@ class TestSim:
         print 'Adding Channel', channelName;
         self.t.addChannel(channelName, out);
 
-    def setChatServer(self):
-        print 'Chat Server Set-Up';
-        self.sendCMD(self.CMD_TEST_SERVER, 1, "{0}".format(chr(41)));
+    def setAppServer(self):
+        print 'Set App Server';
+        self.sendCMD(self.CMD_SET_APP_SERVER, 1, "{0}".format(chr(41)));
 
+    def setAppClient(self, target, port):
+        print 'Set App Client';
+        self.sendCMD(self.CMD_SET_APP_CLIENT, target, "{0}".format(chr(port)));
 
 
 def main():
@@ -163,12 +168,17 @@ def main():
     s.addChannel(s.FLOODING_CHANNEL);
     s.runTime(30);
 
+
+    print 'Calling setTestServer()';
+    s.setAppServer();
+    s.runTime(30);
+    s.setAppClient(2, 49);
+
+
     # s.newServer(3, 9);
     # s.runTime(10);
     # # s.newServer(3, 8);
     # s.runTime(10);
-    s.setChatServer();
-    s.runTime(30);
     #s.newServer(2, 140);
     #s.runTime(30);
     # s.newClient(4,  3, 12, 9, 200);
@@ -209,7 +219,7 @@ def main():
     # s.ping(1, 11, "Tralalalala");
     # # s.runTime(10);
     # s.neighborDMP(6);
-    s.runTime(4);
+    # s.runTime(4);
 
 if __name__ == '__main__':
     main()
