@@ -426,6 +426,7 @@ implementation {
 		// Making sure we have a Successful bind
 		if (call Transport.bind(fd, &socketAddr) == SUCCESS) {
 			// Making sure were in the listening state
+			call Transport.passNeighborsList(&NeighborList);
 			if(call Transport.listen(fd) == SUCCESS) {
 				// Calling our listen timer
 				call ListenTimer.startOneShot(30000);
@@ -457,11 +458,13 @@ implementation {
 			// Setting our destination address and port
 			serverAddr.addr = dest;
 			serverAddr.port = destPort;
+			call Transport.passNeighborsList(&NeighborList);
 
 			if (call Transport.connect(fd, &serverAddr) == SUCCESS)  {
 				dbg(GENERAL_CHANNEL, "\t-- Connection Secure.\n");
 				//send [max transfer size] data in packet
-				call WriteTimer.startOneShot(30000);
+				/* call WriteTimer.startOneShot(30000); */
+				call WriteTimer.startOneShot(60000);
 			} else {
 				dbg(GENERAL_CHANNEL, "\t-- Couldnt Connect\n");
 			}
@@ -590,13 +593,20 @@ implementation {
 
         //  sends message to all known neighbors in neighbor list; if list is empty, forwards to everyone within range using AM_BROADCAST_ADDR.
         void relayToNeighbors(pack* recievedMsg) {
-		if(recievedMsg->protocol == PROTOCOL_TCP)
-			dbg(GENERAL_CHANNEL, "RELAYING TCP PACKET TO NEIGHBORS");
+		/* if(recievedMsg->protocol == PROTOCOL_TCP) {
+			dbg(GENERAL_CHANNEL, "RELAYING TCP PACKET(%d) TO  NEIGHBOR %d\n", recievedMsg->TTL, findNextHop(recievedMsg->dest));
+		} */
                 if(destIsNeighbor(recievedMsg)) {
                         /* dbg(NEIGHBOR_CHANNEL, "\tDeliver Message to Destination\n"); */
+			if(recievedMsg->protocol == PROTOCOL_TCP) {
+				dbg(GENERAL_CHANNEL, "RELAYING TCP PACKET(%d) TO Destination %d\n", recievedMsg->TTL, findNextHop(recievedMsg->dest));
+			}
                         call Sender.send(sendPackage, recievedMsg->dest);
                 } else {
                         //dbg(NEIGHBOR_CHANNEL, "\tTrynna Forward To Neighbors\n");
+			if(recievedMsg->protocol == PROTOCOL_TCP) {
+				dbg(GENERAL_CHANNEL, "RELAYING TCP PACKET(%d) TO NEIGHBOR %d\n", recievedMsg->TTL, findNextHop(recievedMsg->dest));
+			}
                         call Sender.send(sendPackage, findNextHop(recievedMsg->dest));
                 }
         }

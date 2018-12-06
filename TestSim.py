@@ -141,11 +141,17 @@ class TestSim:
         print 'Adding Channel', channelName;
         self.t.addChannel(channelName, out);
 
+    def setChatServer(self):
+        print 'Chat Server Set-Up';
+        self.sendCMD(self.CMD_TEST_SERVER, 1, "{0}".format(chr(41)));
+
+
+
 def main():
     s = TestSim();
     s.runTime(20);
 
-    s.loadTopo("example.topo");
+    s.loadTopo("long_line.topo");
     #s.loadTopo("long_line.topo");
     s.loadNoise("no_noise.txt");
     s.bootAll();
@@ -157,32 +163,37 @@ def main():
     s.addChannel(s.FLOODING_CHANNEL);
     s.runTime(30);
 
-    s.newServer(3, 9);
-    s.runTime(10);
-    # s.runTime(30);
+    # s.newServer(3, 9);
+    # s.runTime(10);
+    # # s.newServer(3, 8);
+    # s.runTime(10);
+    s.setChatServer();
+    s.runTime(30);
     #s.newServer(2, 140);
     #s.runTime(30);
-    s.newClient(4,  3, 12, 9, 200);
-    s.runTime(40);
-    s.runTime(40);
-    s.runTime(40);
-    s.runTime(40);
-    s.runTime(40);
-    s.runTime(40);
-    s.runTime(40);
-    s.runTime(40);
-    s.clientClose(4, 3, 12, 9);
-    s.runTime(40);
-    s.runTime(40);
-    s.runTime(40);
+    # s.newClient(4,  3, 12, 9, 200);
+    # s.runTime(40);
+    # s.runTime(40);
+    # s.runTime(40);
+    # # s.newClient(8,  3, 6, 8, 200);
+    # s.runTime(40);
+    # s.runTime(40);
+    # s.runTime(40);
+    # s.runTime(40);
+    # s.runTime(40);
+    # s.clientClose(4, 3, 12, 9);
+    # s.runTime(40);
+    # s.runTime(40);
+    # s.clientClose(8, 3, 6, 8);
+    # s.runTime(40);
     # s.ping(3, 6, "Hello, World");
     # s.runTime(10);
 
-    s.moteOff(6);
+    # s.moteOff(6);
     s.runTime(200);
 
     #s.neighborDMP(3);
-    s.runTime(20);
+    # s.runTime(20);
     #s.neighborDMP(4);
     # s.runTime(55);
 	#
