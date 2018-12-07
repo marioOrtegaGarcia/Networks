@@ -24,6 +24,7 @@ module TransportP {
 	uses interface Timer<TMilli> as AckTimer;
 	uses interface List<uint8_t> as cChars;
 	uses interface List<char> as chars;
+	uses interface List<char[]> as users;
 }
 
 implementation {
@@ -87,6 +88,8 @@ implementation {
 		char param1[25];
 		int portParam;
 		uint8_t w1, w2;
+		char username[] = "acerpa";
+
 
 		switch(commandReceived[0]) {
 			case 'h':
@@ -97,12 +100,18 @@ implementation {
 				for(i = w1; i < w2; i++) {
 					param1[i-w1] = commandReceived[i];
 				}
+
+				if (call Transport.compareCharArr(commandReceived, username, w1, 0, w2) == SUCCESS){
+					dbg(GENERAL_CHANNEL, "acerpa loging in\n");
+				}
+
 				for (i = 0; i < w2-w1; i++) {
 					dbg(GENERAL_CHANNEL, "Param Char: %c\n", param1[i]);
 				}
 				w1 = w2;
 				w2 = call Transport.findWS(3);
 				portParam = (uint8_t)commandReceived[w2-1];
+
 				dbg(GENERAL_CHANNEL, "portParam: %d\n", portParam);
 
 
@@ -125,6 +134,25 @@ implementation {
 
 		}
 	}
+
+	command error_t Transport.compareCharArr(uint8_t a[], uint8_t b[], uint8_t sA, uint8_t sB, uint8_t count) {
+		uint8_t charLeft = count;
+		uint8_t i,j;
+		dbg(GENERAL_CHANNEL, "Called compareCharArr\n");
+		i = sA;
+		j = sB;
+		dbg(GENERAL_CHANNEL, "Starting at positions i: %d j: %d\n", i, j);
+		//dbg(GENERAL_CHANNEL, "Passed letter %c\n", b[0]);
+		while (charLeft > 0) {
+			if (a[i] != b[j]) return FAIL;
+			dbg(GENERAL_CHANNEL, "Passed letter %c\n", a[i]);
+			i++;
+			j++;
+			charLeft--;
+		}
+		return SUCCESS;
+	}
+
 	command uint8_t Transport.findWS(uint8_t order) {
 		uint8_t i;
 		uint8_t seen = 0;
@@ -135,6 +163,7 @@ implementation {
 			if(seen == order) return i;
 		}
 	}
+
 
 	command void Transport.passChar(uint8_t c) {
 		dbg(GENERAL_CHANNEL, "Transport Pushed %d\n", c);

@@ -178,4 +178,6 @@ interface Transport{
    command char* getParam();
 
    command uint8_t findWS(uint8_t order);
+
+   command error_t compareCharArr(uint8_t a[], uint8_t b[], uint8_t sA, uint8_t sB, uint8_t count);
 }
