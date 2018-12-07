@@ -74,6 +74,6 @@ stopWait
 	isAcked()
 
 		receive function sets ack
-		
+
 		startOneShot
 			-resend

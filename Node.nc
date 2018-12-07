@@ -34,6 +34,7 @@ module Node {
 
         uses interface List <pack> as PackLogs;
 	uses interface List <socket_t> as Socks;
+	uses interface List <uint8_t> as stringInts;
 
         //uses interface List <uint16_t> as NeighborList;
         //uses interface List <NeighborNode> as NeighborList;
@@ -66,11 +67,9 @@ implementation {
         uint8_t numroutes = 0;
         uint8_t NeighborListSize = 19;
         uint8_t MAX_NEIGHBOR_TTL = 20;
-
         uint8_t NeighborList[19];
         uint8_t routing[255][3];
 	socket_t fd;
-
 	uint8_t transfer = 0;
 
         //  Prototypes
@@ -91,18 +90,22 @@ implementation {
         void splitHorizon(uint8_t nextHop);
         uint8_t findNextHop(uint8_t dest);
 
-	uint8_t* convert2String(char* commandString[], uint8_t size) {
-		uint8_t* commandInts[size];
+	error_t pushComm2List(char commandString[], uint8_t size) {
 		int i = 0;
 
-		dbg(GENERAL_CHANNEL, "----------> HERE\n");
-		for (i = 0; i < size; i++) {
-			dbg(GENERAL_CHANNEL, "Char(%c) -> Int(%d)\n", commandString[i], (uint8_t)commandString[i]);
-			commandInts[i] = (uint8_t)commandString[i];
-			/* commandInts[i] = (uint8_t)*commandString[i]; */
+		/* dbg(GENERAL_CHANNEL, "----------> HERE\n"); */
+		for (i = 0; i < size-1; i++) {
+			/* dbg(GENERAL_CHANNEL, "Char(%c) -> Int(%i)\n", commandString[i], (uint8_t)commandString[i]); */
+			call stringInts.pushback((uint8_t)commandString[i]);
 		}
-		dbg(GENERAL_CHANNEL, "----------> HERE\n");
-		return (uint8_t*)commandInts;
+
+		if(call stringInts.size() == size-1) {
+			dbg(GENERAL_CHANNEL, "Pushed All to List\n");
+			return SUCCESS;
+		}
+
+		dbg(GENERAL_CHANNEL, "Failed to push all to list");
+		return FAIL;
 	}
 
         //  Node boot time calls
@@ -229,7 +232,18 @@ implementation {
 	}
 
 	event void ChatTimer.fired() {
+		socket_store_t sock;
+		dbg(GENERAL_CHANNEL,  "Chat Write Timer Fired\n");
 
+		if (call Transport.isValidSocket(fd)) {
+			sock = call Transport.getSocket(fd);
+			if (sock.lastWritten == SOCKET_BUFFER_SIZE || sock.lastWritten == 0) {
+				while (call stringInts.size() !=  0) {
+					call Transport.passChar(call stringInts.popfront());
+				}
+				call Transport.charSend(sock, nodeSeq, 0);
+			}
+		}
 	}
 
 	event void TimedOut.fired(){
@@ -523,18 +537,16 @@ implementation {
         }
 	//event void CommandHandler.setTestClient(uint16_t dest, uint8_t srcPort, uint8_t destPort, uint8_t num){
 	event void CommandHandler.setAppClient(uint8_t port) {
-		uint8_t i, num;
-		uint8_t*  stringInts;
-
+		uint8_t i;
 		socket_store_t socket;
-
 		socket_addr_t socketAddr, serverAddr;
-
 		error_t check = FAIL;
-		char commandSent[] = "hello acerpa 3\r\n";
+		char commandSent[] = "hello ascerpa 3\r\n";
+		transfer = sizeof(commandSent)/ sizeof(char);
 
-		//num  = ""
-		transfer = num;
+		/* for (i = 0; i < 18; i++) {
+			dbg(GENERAL_CHANNEL, "\t%c\n", commandSent[i]);
+		} */
 
 		dbg(GENERAL_CHANNEL, "SETTING APP CLIENT FOR %d\n", TOS_NODE_ID);
 		// Creating our file descriptor
@@ -545,11 +557,10 @@ implementation {
 		socketAddr.port = port;
 
 		if  (call Transport.bind(fd, &socketAddr) == SUCCESS) {
-
-
 			// Setting our destination address and port for App Server
 			serverAddr.addr = 1;
 			serverAddr.port = 41;
+
 			call Transport.passNeighborsList(&NeighborList);
 
 			if (call Transport.connect(fd, &serverAddr) == SUCCESS)  {
@@ -560,7 +571,11 @@ implementation {
 				dbg(GENERAL_CHANNEL, "Where we insert to  the array\n");
 
 				dbg(GENERAL_CHANNEL, "Attempting to convert string\n");
-				stringInts = convert2String(&commandSent, 18);
+				if(pushComm2List(commandSent, sizeof(commandSent)/sizeof(char)) == SUCCESS) {
+					call ChatTimer.startOneShot(5000);
+				}
+
+
 			}
 		}
 

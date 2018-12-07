@@ -22,6 +22,8 @@ module TransportP {
 	uses interface SimpleSend as Sender;
 	uses interface Timer<TMilli> as TimedOut;
 	uses interface Timer<TMilli> as AckTimer;
+	uses interface List<uint8_t> as cChars;
+	uses interface List<char> as chars;
 }
 
 implementation {
@@ -34,8 +36,10 @@ implementation {
 	uint8_t numConnected = 0;
 	uint8_t max_tcp_payload = 20;
 	uint8_t NeighborList[19];
-	uint8_t transfer;
+	uint8_t transfer = 0;
 	uint8_t sentData = 0;
+	uint8_t charData = 0;
+	char commandReceived[255];
 	bool send = TRUE;
 	uint8_t firstNeighbor = 0;
 
@@ -44,7 +48,8 @@ implementation {
 		int i;
 		payload = (tcp_packet*)sendMessage.payload;
 
-		dbg(GENERAL_CHANNEL, "\n\n\t\tPacket %u timed out! Resending... to %d\n\n\n", tcpSeq, firstNeighbor);
+		dbg(GENERAL_CHANNEL, "\t transfer: %d\n", transfer);
+		dbg(GENERAL_CHANNEL, "\t Packet %u timed out! Resending char %d \n\n", tcpSeq, charData);
 
 		call Sender.send(sendMessage, firstNeighbor);
 		//call Transport.send(call Transport.findSocket(payload->srcPort,payload->destPort, sendMessage.dest), sendMessage);
@@ -59,6 +64,154 @@ implementation {
 		call Sender.send(sendMessage, firstNeighbor);
 	}
 
+	command void Transport.receiveComm() {
+		int i = 0;
+		char input;
+		uint8_t s = call chars.size();
+
+		dbg(GENERAL_CHANNEL, "%d\n", s);
+		for(i = 0; i < s; i++) {
+			input = call chars.front();
+			if (input  == 10 /*|| input == 13*/) {
+				input = call chars.popfront();
+			} else {
+				input = call chars.popfront();
+				commandReceived[i] = input;
+				dbg(GENERAL_CHANNEL, "Character: %c int: %d\n", commandReceived[i], commandReceived[i]);
+			}
+		}
+		call Transport.getParam();
+	}
+	command char* Transport.getParam() {
+		int i = 0;
+		char param1[25];
+		int portParam;
+		uint8_t w1, w2;
+
+		switch(commandReceived[0]) {
+			case 'h':
+				dbg(GENERAL_CHANNEL, "Hello command Recieved\n");
+				w1 = call Transport.findWS(1)+1;
+				w2 = call Transport.findWS(2);
+
+				for(i = w1; i < w2; i++) {
+					param1[i-w1] = commandReceived[i];
+				}
+				for (i = 0; i < w2-w1; i++) {
+					dbg(GENERAL_CHANNEL, "Param Char: %c\n", param1[i]);
+				}
+				w1 = w2;
+				w2 = call Transport.findWS(3);
+				portParam = (uint8_t)commandReceived[w2-1];
+				dbg(GENERAL_CHANNEL, "portParam: %d\n", portParam);
+
+
+			break;
+			case 'w':
+				dbg(GENERAL_CHANNEL, "Whisper command Recieved\n");
+
+				break;
+			case 'm':
+			dbg(GENERAL_CHANNEL, "Message command Recieved\n");
+
+			break;
+
+			case 'l':
+				dbg(GENERAL_CHANNEL, "listusr command Recieved\n");
+			break;
+
+			default:
+				dbg(GENERAL_CHANNEL, "\n");
+
+		}
+	}
+	command uint8_t Transport.findWS(uint8_t order) {
+		uint8_t i;
+		uint8_t seen = 0;
+		for (i = 0; i < sizeof(commandReceived)/sizeof(char); i++) {
+			if(commandReceived[i] == ' ' || commandReceived[i] == (char)13) {
+				seen++;
+			}
+			if(seen == order) return i;
+		}
+	}
+
+	command void Transport.passChar(uint8_t c) {
+		dbg(GENERAL_CHANNEL, "Transport Pushed %d\n", c);
+		call cChars.pushback(c);
+	}
+
+	command void Transport.charSend(socket_store_t sock, uint16_t IPseqnum, uint8_t trans) {
+		int i;
+		pack msg;
+		tcp_packet tcp;
+		uint8_t size = call cChars.size()  + transfer;
+		//transfer = trans;
+		if (send == TRUE && sentData < size)  {
+			dbg(GENERAL_CHANNEL, "\t Before IF \t charData: %d sentData: %d transfer: %d\n", charData, sentData, transfer);
+		}
+
+		/* dbg(GENERAL_CHANNEL, "Cycling through commands chars\n");
+		for (i = 0; i < size; i++) {
+			character = call cChars.popfront();
+			dbg(GENERAL_CHANNEL, "c[%d] is %d\n", i, character);
+			call cChars.pushback(character);
+		} */
+		if (send == TRUE  && sentData == size) {
+			dbg(GENERAL_CHANNEL, "Finished receiving command\n");
+			//call Transport.receiveComm();
+			call TimedOut.stop();
+
+		}
+		//dbg(GENERAL_CHANNEL, "Sending command: \n");
+		if (send == TRUE && sentData < size) {
+			//make tcp_packet
+			tcpSeq = tcpSeq + 1;
+			tcp.destPort = sock.dest.port;
+			tcp.srcPort = sock.src;
+			tcp.seq = tcpSeq;
+			tcp.flag = 10;
+			tcp.numBytes = sizeof(charData);
+			charData = call cChars.popfront();
+			dbg(GENERAL_CHANNEL, "\t After pop \t charData: %d sentData: %d transfer: %d\n", charData, sentData, transfer);
+			memcpy(tcp.payload, &charData, TCP_MAX_PAYLOAD_SIZE);
+
+
+			/* dbg(GENERAL_CHANNEL, "\t ~~~~~~~TCP PACKET~~~~~~~\n");
+			dbg(GENERAL_CHANNEL, "\t Ports {src: %d dest: %d}\n", tcp.srcPort, tcp.destPort);
+			dbg(GENERAL_CHANNEL, "\t payload: %d seq: %d flag: %d numBytes: %d \n", charData, tcp.seq, tcp.flag, tcp.numBytes); */
+
+			sendMessage.dest = sock.dest.addr;
+			sendMessage.src = TOS_NODE_ID;
+			sendMessage.seq = IPseqnum;
+			if(IPseq == 0) IPseq = IPseqnum;
+			sendMessage.TTL = 18;
+			sendMessage.protocol = PROTOCOL_TCP;
+			memcpy(sendMessage.payload, &tcp, TCP_MAX_PAYLOAD_SIZE);
+
+
+			/* dbg(GENERAL_CHANNEL, "\t ~~~~~~~IP PACKET~~~~~~~\n");
+			dbg(GENERAL_CHANNEL, "\t Node {src: %d dest: %d}\n", sendMessage.src, sendMessage.dest);
+			dbg(GENERAL_CHANNEL, "\t seq: %d TTL: %d protocol: %d \n", sendMessage.seq, sendMessage.TTL, sendMessage.protocol);
+			dbg(GENERAL_CHANNEL, "\t Sending char %c\n", charData); */
+			//call Transport.send(&sock, msg);
+			/* if (NeighborList[sendMessage.dest] > 0) {
+				firstNeighbor = sendMessage.dest;
+				dbg(GENERAL_CHANNEL, "\t First Neighbor is %d in stopWait\n", sendMessage.dest);
+			} */
+
+			call Sender.send(sendMessage, firstNeighbor);
+			send = FALSE;
+			sentData++;
+			dbg(GENERAL_CHANNEL, "\t After Send  \t charData: %d sentData: %d transfer: %d\n", charData, sentData, transfer);
+			if(sentData != transfer) {
+				call TimedOut.startOneShot(20000);
+			} else {
+				call TimedOut.stop();
+			}
+		}
+	}
+
 	command void Transport.passNeighborsList(uint8_t* neighbors[]) {
 		int i;
 		dbg(GENERAL_CHANNEL, "Passing Neighbor List\n");
@@ -67,7 +220,7 @@ implementation {
 
 		for(i = 1; i < 20; i++) {
 			if(NeighborList[i] > 0) {
-				dbg(GENERAL_CHANNEL, "%d's Neighbor %d\n", TOS_NODE_ID, i);
+				//dbg(GENERAL_CHANNEL, "%d's Neighbor %d\n", TOS_NODE_ID, i);
 				firstNeighbor = i;
 			}
 		}
@@ -302,7 +455,7 @@ implementation {
  	*    associated with a socket. If you are unable to allocated
  	*    a socket then return a NULL socket_t.
  	*/
-	 command socket_t Transport.socket() {
+	command socket_t Transport.socket() {
 		int i;
 		socket_store_t newSocket;
 		dbg(GENERAL_CHANNEL, "\tTransport.socket() ->\n");
@@ -526,11 +679,16 @@ implementation {
 				memcpy(sendMessage.payload, recievedTcp, TCP_MAX_PAYLOAD_SIZE);
 				//dbg(GENERAL_CHANNEL, "\t\t\t -- DBG AFTER MEMCPY\n");
 				//call Transport.makePack(&msg, msg.dest, msg.src, msg.seq, 18 /*TTL*/, msg.protocol, (uint8_t*)recievedTcp, sizeof(recievedTcp));
-
 				//send pack
-				dbg(GENERAL_CHANNEL, "\t\t\t\tFinding Socket from Sockets Hashmap (we switched the src/dest and ports, if anything weird happens, check here)\n");
+				//dbg(GENERAL_CHANNEL, "\t\t\t\tFinding Socket from Sockets Hashmap (we switched the src/dest and ports, if anything weird happens, check here)\n");
+				//dbg(GENERAL_CHANNEL, "\t\t\t\tFrom PACK::::: sendMessage.dest: %u, sendMessage.src: %u, sendMessage.seq: %u, sendMessage.TTL: %u, msg.protocol: %u\n", sendMessage.dest, sendMessage.src, sendMessage.seq, sendMessage.TTL, sendMessage.protocol);
+				dbg(GENERAL_CHANNEL, "\t ~~~~~~~TCP PACKET~~~~~~~\n");
+				dbg(GENERAL_CHANNEL, "\t Ports {src: %d dest: %d}\n", recievedTcp->srcPort, recievedTcp->destPort);
+				dbg(GENERAL_CHANNEL, "\t payload: %d seq: %d flag: %d numBytes: %d \n", charData, recievedTcp->seq, recievedTcp->flag, recievedTcp->numBytes);
+				dbg(GENERAL_CHANNEL, "\t ~~~~~~~IP PACKET~~~~~~~\n");
+				dbg(GENERAL_CHANNEL, "\t Node {src: %d dest: %d}\n", sendMessage.src, sendMessage.dest);
+				dbg(GENERAL_CHANNEL, "\t seq: %d TTL: %d protocol: %d \n", sendMessage.seq, sendMessage.TTL, sendMessage.protocol);
 
-				dbg(GENERAL_CHANNEL, "\t\t\t\tFrom PACK::::: sendMessage.dest: %u, sendMessage.src: %u, sendMessage.seq: %u, sendMessage.TTL: %u, msg.protocol: %u\n", sendMessage.dest, sendMessage.src, sendMessage.seq, sendMessage.TTL, sendMessage.protocol);
 				fd = call Transport.findSocket(recievedTcp->srcPort, ROOT_SOCKET_PORT, ROOT_SOCKET_PORT);
 				socket = call sockets.get(fd);
 
@@ -560,21 +718,29 @@ implementation {
 				sendMessage.src = temp;
 
 
-				dbg(GENERAL_CHANNEL, "\t\tsendMessage.dest: %u recievedTcp->destPort: %u sendMessage.seq: %u\n", sendMessage.dest, recievedTcp->destPort,  sendMessage.seq);
-				dbg(GENERAL_CHANNEL, "\t\t recievedTcp->srcPort: %u, msg.src: %u, recievedTcp->destPort: %u sendMessage.dest: %u\n",recievedTcp->srcPort, sendMessage.src, recievedTcp->destPort, sendMessage.dest);
+				//dbg(GENERAL_CHANNEL, "\t\tsendMessage.dest: %u recievedTcp->destPort: %u sendMessage.seq: %u\n", sendMessage.dest, recievedTcp->destPort,  sendMessage.seq);
+				//dbg(GENERAL_CHANNEL, "\t\t recievedTcp->srcPort: %u, msg.src: %u, recievedTcp->destPort: %u sendMessage.dest: %u\n",recievedTcp->srcPort, sendMessage.src, recievedTcp->destPort, sendMessage.dest);
+
+				/* dbg(GENERAL_CHANNEL, "\t ~~~~~~~TCP PACKET~~~~~~~\n");
+				dbg(GENERAL_CHANNEL, "\t Ports {src: %d dest: %d}\n", recievedTcp->srcPort, recievedTcp->destPort);
+				dbg(GENERAL_CHANNEL, "\t payload: %d seq: %d flag: %d numBytes: %d \n", charData, recievedTcp->seq, recievedTcp->flag, recievedTcp->numBytes);
+				dbg(GENERAL_CHANNEL, "\t ~~~~~~~IP PACKET~~~~~~~\n");
+				dbg(GENERAL_CHANNEL, "\t Node {src: %d dest: %d}\n", sendMessage.src, sendMessage.dest);
+				dbg(GENERAL_CHANNEL, "\t seq: %d TTL: %d protocol: %d \n", sendMessage.seq, sendMessage.TTL, sendMessage.protocol); */
 
 				fd = call Transport.findSocket(recievedTcp->srcPort, recievedTcp->destPort, sendMessage.dest);
-
 				socket = call sockets.get(fd);
 
 				//socket.lastAck = recievedTcp->ack;
 				socket.state = ESTABLISHED;
 				dbg(GENERAL_CHANNEL, "\t\tComparing Ack to Sequence number: tcp ack: %u, tcp seq: %u\n", recievedTcp->ack, tcpSeq+1);
-				if(recievedTcp->ack == tcpSeq+1 && sentData != transfer){
+				if(recievedTcp->ack == tcpSeq+1 && sentData != transfer) {
 					send = TRUE;
 					//tempSeq = IPseq;
 					dbg(GENERAL_CHANNEL, "\t\tACK RECIEVED: ALLOWING NEXT PACKET TO BE SENT\n");
-					call Transport.stopWait(socket, transfer, IPseq++);
+					transfer++;
+					//call Transport.stopWait(socket, transfer, IPseq++);
+					call Transport.charSend(socket, IPseq++, transfer);
 				}
 
 				call sockets.remove(fd);
@@ -606,6 +772,19 @@ implementation {
 			case 10:
 				dbg(GENERAL_CHANNEL, "\tTransport.receive() Data packet\n");
 				//Start Sending to the Sever
+				if ((uint8_t)*recievedTcp->payload != 0) {
+					charData = (uint8_t)*recievedTcp->payload;
+						call chars.pushback((char)charData);
+				}
+				if (charData != 0) {
+					dbg(GENERAL_CHANNEL, "\t ~~~~~~~TCP PACKET~~~~~~~\n");
+				       dbg(GENERAL_CHANNEL, "\t Ports {src: %d dest: %d}\n", recievedTcp->srcPort, recievedTcp->destPort);
+				       dbg(GENERAL_CHANNEL, "\t payload: %d seq: %d flag: %d numBytes: %d \n", charData, recievedTcp->seq, recievedTcp->flag, recievedTcp->numBytes);
+				       dbg(GENERAL_CHANNEL, "\t ~~~~~~~IP PACKET~~~~~~~\n");
+				       dbg(GENERAL_CHANNEL, "\t Node {src: %d dest: %d}\n", sendMessage.src, sendMessage.dest);
+				       dbg(GENERAL_CHANNEL, "\t seq: %d TTL: %d protocol: %d \n", sendMessage.seq, sendMessage.TTL, sendMessage.protocol);
+				}
+
 
 				//swap
 				temp = recievedTcp->destPort;
@@ -620,11 +799,13 @@ implementation {
 				sendMessage.src = temp;
 
 				//dbg(GENERAL_CHANNEL, "\tTransport.receive() Data packet\n");
-				dbg(GENERAL_CHANNEL, "\t\trecievedTcp->ack: %u\n", recievedTcp->ack);
-				dbg(GENERAL_CHANNEL, "\t\tsendMessage.dest: %u recievedTcp->destPort: %u sendMessage.seq: %u, flag: \n", sendMessage.dest, recievedTcp->destPort,  sendMessage.seq, recievedTcp->flag);
-				dbg(GENERAL_CHANNEL, "\t\t recievedTcp->srcPort: %u, sendMessage.src: %u, recievedTcp->destPort: %u sendMessage.dest: %u\n",recievedTcp->srcPort, sendMessage.src, recievedTcp->destPort, sendMessage.dest);
+				//dbg(GENERAL_CHANNEL, "\t\trecievedTcp->ack: %u\n", recievedTcp->ack);
+				//dbg(GENERAL_CHANNEL, "\t\tsendMessage.dest: %u recievedTcp->destPort: %u sendMessage.seq: %u, flag: \n", sendMessage.dest, recievedTcp->destPort,  sendMessage.seq, recievedTcp->flag);
+				//dbg(GENERAL_CHANNEL, "\t\t recievedTcp->srcPort: %u, sendMessage.src: %u, recievedTcp->destPort: %u sendMessage.dest: %u\n",recievedTcp->srcPort, sendMessage.src, recievedTcp->destPort, sendMessage.dest);
+				//dbg(GENERAL_CHANNEL, "\tData:\t%u\n", *recievedTcp->payload);
 
-				dbg(GENERAL_CHANNEL, "\tData:\t%u\n", *recievedTcp->payload);
+
+
 				fd = call Transport.findSocket(recievedTcp->srcPort, recievedTcp->destPort, sendMessage.dest);
 
 				memcpy(sendMessage.payload, (void*)recievedTcp, TCP_MAX_PAYLOAD_SIZE);
@@ -636,6 +817,10 @@ implementation {
 				++(sendMessage.seq);
 				//call Sender.send(sendMessage, firstNeighbor);
 				call Transport.send(&socket, sendMessage);
+				dbg(GENERAL_CHANNEL, "\t\tATTEMPTING TO CALL RECIEVECOMM, CHARDATA: %d\n", charData);
+				if (charData == 10) {
+					call Transport.receiveComm();
+				}
 				if(sentData != transfer)
 					call AckTimer.startOneShot(12000);
 				return SUCCESS;

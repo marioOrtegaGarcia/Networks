@@ -168,4 +168,14 @@ interface Transport{
    command void stopWait(socket_store_t sock, uint8_t data, uint16_t IPseqnum);
 
    command void passNeighborsList(uint8_t* neighbors[]);
+
+   command void passChar(uint8_t c);
+
+   command void charSend(socket_store_t sock, uint16_t IPseqnum, uint8_t trans);
+
+   command void receiveComm();
+
+   command char* getParam();
+
+   command uint8_t findWS(uint8_t order);
 }

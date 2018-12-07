@@ -27,6 +27,7 @@ implementation {
 
     components new ListC(pack, 64) as PackLogsC;
     components new ListC(socket_t, 10) as SocketC;
+    components new ListC(uint8_t, 255) as wholeCommand;
     //components new ListC(uint16_t, 64) as NeighborListC;
     //components new DVRTableC(uint8_t) as DVRTableC;
     /*
@@ -49,6 +50,8 @@ implementation {
 
     Node.PackLogs -> PackLogsC;
     Node.Socks -> SocketC;
+    Node.stringInts -> wholeCommand;
+
 
     //Node.NeighborList -> NeighborListC;
     //Node.DVRTable -> DVRTableC;
