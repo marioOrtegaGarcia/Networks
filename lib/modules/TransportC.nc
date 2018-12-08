@@ -31,8 +31,8 @@ implementation{
      components new ListC(char, 255) as cList2;
      TransportP.chars -> cList2;
 
-     components new ListC(char[], 255) as cList3;
-     TransportP.users -> cList3;
+     /* components new ListC(char[], 255) as cList3;
+     TransportP.users -> cList3; */
 
 
 }

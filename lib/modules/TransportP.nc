@@ -24,7 +24,7 @@ module TransportP {
 	uses interface Timer<TMilli> as AckTimer;
 	uses interface List<uint8_t> as cChars;
 	uses interface List<char> as chars;
-	uses interface List<char[]> as users;
+	//uses interface List<char[255]> as users;
 }
 
 implementation {
@@ -110,7 +110,11 @@ implementation {
 				}
 				w1 = w2;
 				w2 = call Transport.findWS(3);
-				portParam = (uint8_t)commandReceived[w2-1];
+
+				if ((uint8_t)commandReceived[w2-1] > 47 && (uint8_t)commandReceived[w2-1] < 58) {
+					portParam = (uint8_t)commandReceived[w2-1] - 48;
+				}
+				
 
 				dbg(GENERAL_CHANNEL, "portParam: %d\n", portParam);
 
@@ -234,7 +238,7 @@ implementation {
 			sentData++;
 			dbg(GENERAL_CHANNEL, "\t After Send  \t charData: %d sentData: %d transfer: %d\n", charData, sentData, transfer);
 			if(sentData != transfer) {
-				call TimedOut.startOneShot(20000);
+				call TimedOut.startOneShot(20010);
 			} else {
 				call TimedOut.stop();
 			}
